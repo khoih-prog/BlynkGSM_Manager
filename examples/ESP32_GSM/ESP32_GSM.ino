@@ -1,5 +1,26 @@
-#define BLYNK_PRINT Serial
-#define BLYNK_HEARTBEAT 60
+/****************************************************************************************************************************
+ * ESP32_GSM.ino_Config.ino
+ * For ESP32 boards
+ *
+ * BlynkGSM_Manager is a library for the ESP8266/ESP32 Arduino platform (https://github.com/esp8266/Arduino) to enable easy
+ * configuration/reconfiguration and autoconnect/autoreconnect of GSM/Blynk
+ * Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+ * Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_Manager
+ * Licensed under MIT license
+ * Version: 1.0.0
+ *
+ *
+ * Version Modified By   Date      Comments
+ * ------- -----------  ---------- -----------
+ *  1.0.0   K Hoang      17/01/2020 Initial coding
+ *****************************************************************************************************************************/
+
+#ifndef ESP32
+#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
+#endif
+
+#define BLYNK_PRINT         Serial
+#define BLYNK_HEARTBEAT     60
 
 /// Change this from 1 to 0 to test the functionality between Blynk only and BLynk with HTTPClientHandle that does not work ... ///
 // TTGO T-Call pin definitions
