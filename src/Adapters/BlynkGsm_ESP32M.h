@@ -483,6 +483,41 @@ public:
       return (String(BlynkGSM_ESP32_config.board_name));
     }
 
+    String getAPN()
+    {
+      return (String(BlynkGSM_ESP32_config.apn));
+    }
+         
+    String getGPRSUser()
+    {
+      return (String(BlynkGSM_ESP32_config.gprsUser));
+    }
+    
+    String getGPRSPass()
+    {
+      return (BlynkGSM_ESP32_config.gprsPass);
+    } 
+    
+    String getGPRSPIN()
+    {
+      return (BlynkGSM_ESP32_config.gprsPin);
+    } 
+      
+    String getServerName()
+    {
+      return (String(BlynkGSM_ESP32_config.blynk_server));
+    }
+         
+    String getToken()
+    {
+      return (String(BlynkGSM_ESP32_config.blynk_token));
+    }
+    
+    int getHWPort()
+    {
+      return (BlynkGSM_ESP32_config.blynk_port);
+    }   
+    
 		void setHostname(void)
 		{
 			if (RFC952_hostname[0] != 0)
