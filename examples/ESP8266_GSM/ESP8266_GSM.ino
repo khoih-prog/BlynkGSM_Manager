@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
- * ESP32_GSM.ino_Config.ino
- * For ESP32 boards
+ * ESP8266_GSM.ino_Config.ino
+ * For ESP8266 boards
  *
  * BlynkGSM_Manager is a library for the ESP8266/ESP32 Arduino platform (https://github.com/esp8266/Arduino) to enable easy
  * configuration/reconfiguration and autoconnect/autoreconnect of GSM/Blynk
@@ -15,8 +15,8 @@
  *  1.0.0   K Hoang      17/01/2020 Initial coding
  *****************************************************************************************************************************/
 
-#ifndef ESP32
-#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
+#ifndef ESP8266
+#error This code is intended to run on the ESP8266 platform! Please check your Tools->Board setting.
 #endif
 
 #define BLYNK_PRINT         Serial
@@ -63,10 +63,11 @@
 // Set serial for debug console (to the Serial Monitor, default speed 115200)
 #define SerialMon Serial
 
-#define RXD2      16
-#define TXD2      17
-// Use ESP32 Serial2 for GSM
-#define SerialAT  Serial2
+#define RXD2              D7        // Pin D7 mapped to pin GPIO13/RXD2/HMOSI of ESP8266
+#define TXD2              D8        // Pin D8 mapped to pin GPIO15/TXD2/HCS of ESP8266
+
+#include <SoftwareSerial.h>
+SoftwareSerial SerialAT(RXD2, TXD2); // RX, TX
 
 TinyGsm modem(SerialAT);
 
@@ -74,9 +75,7 @@ void setup()
 {
   // Set console baud rate
   SerialMon.begin(115200);
-  SerialMon.println(F("\nStart ESP32_GSM"));
-
-  SerialAT.begin(115200);
+  SerialMon.println(F("\nStart ESP8266_GSM"));
 
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);
@@ -92,8 +91,18 @@ void setup()
   // Set GSM module baud rate
   SerialAT.begin(115200);
 
+  SerialMon.println(F("Begin GSM modem "));
+  if (modem.begin())
+  {
+    SerialMon.println(F("OK"));
+  }
+  else
+  {
+    SerialMon.println(F("failed"));
+  }
+
 #if USE_BLYNK_WM
-  Blynk.begin(modem, "ESP32-GSM");
+  Blynk.begin(modem, "ESP8266-GSM");
 #else
   Blynk.begin(blynk_auth, modem, apn, gprsUser, gprsPass);
 #endif

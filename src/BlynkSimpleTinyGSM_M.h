@@ -8,13 +8,17 @@
  *
  */
 
-#ifndef BlynkSimpleTinyGSM_h
-#define BlynkSimpleTinyGSM_h
+#ifndef BlynkSimpleTinyGSM_M_h
+#define BlynkSimpleTinyGSM_M_h
 
 #ifdef ESP32
   #include <Adapters/BlynkGsm_ESP32M.h>
 #else
-  #include <Adapters/BlynkGsm_ESP8266M.h>
+  #ifdef ESP8266
+    #include <Adapters/BlynkGsm_ESP8266M.h>
+  #else
+    #error This code is intended to run on the ESP32 or ESP8266 platform! Please check your Tools->Board setting.
+  #endif
 #endif
 
 static BlynkArduinoClient _blynkTransport;
