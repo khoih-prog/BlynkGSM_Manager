@@ -5,7 +5,7 @@
 
 - This is the new library, adding to the current Blynk_WiFiManager. It's designed to help you eliminate `hardcoding` your Blynk credentials in `ESP32 and ESP8266` boards using GSM shield (SIM800, SIM900, etc).
 
-- You can update Blynk Credentials any time you need to change via Configure Portal. Data are saved in configurable locations in EEPROM.
+- You can update Blynk Credentials any time you need to change via Configure Portal. Data are saved in SPIFFS or configurable locations in EEPROM.
 
 ## Prerequisite
 1. `Arduino IDE 1.8.10 or later` for Arduino (https://www.arduino.cc/en/Main/Software)
@@ -43,24 +43,25 @@ in your code. Keep `Blynk.run()` intact.
 That's it.
 
 Also see examples: 
-1. [ESP32_HTTP_GSM](examples/ESP32_HTTP_GSM)
+1. [ESP32_GSM](examples/ESP32_GSM)
+2. [ESP8266_GSM](examples/ESP8266_GSM)
 
 
 ## So, how it works?
 
-If it cannot connect to the Blynk server in 30 seconds, it will switch to `Configuration Mode`. You will see your built-in LED turned ON. In `Configuration Mode`, it starts an access point called `ESP_xxxxxx`. Connect to it using password `MyESP_xxxxxx` .
+If it cannot connect to the Blynk server in 30 seconds, it will switch to `Configuration Mode`. You will see your built-in LED turned ON. In `Configuration Mode`, it starts a WiFi access point called `ESP_xxxxxx`. Connect to it using password `MyESP_xxxxxx` .
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_1.jpg">
 </p>
 
-After you connected, go to http://192.168.4.1., the Browser will display the following picture:
+After you connected, go to http://192.168.4.1., the Browser will display the following page:
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_2.png">
 </p>
 
-Enter your credentials (APN, GPRS User, GPRS Pass, GPRS PIN, Blynk Auth, Server and Port).
+Enter your credentials (APN, GPRS User, GPRS Pass, GPRS PIN, Blynk Token, Server and Port).
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_3.png">
@@ -72,7 +73,7 @@ Then click `Save`. After the  board auto-restarted, you will see if it's connect
 This `Blynk.begin()` is not a blocking call, so you can use it for critical functions requiring in loop(). 
 Anyway, this is better for projects using Blynk just for GUI (graphical user interface).
 
-In operation, if Ethernet or Blynk connection is lost, `Blynk.run()` will try reconnecting automatically. Therefore, `Blynk.run()` must be called in the `loop()` function. Don't use:
+In operation, if GSM/GPRS or Blynk connection is lost, `Blynk.run()` will try reconnecting automatically. Therefore, `Blynk.run()` must be called in the `loop()` function. Don't use:
 
 ```cpp
 void loop()
