@@ -22,7 +22,6 @@
 #define BLYNK_PRINT         Serial
 #define BLYNK_HEARTBEAT     60
 
-/// Change this from 1 to 0 to test the functionality between Blynk only and BLynk with HTTPClientHandle that does not work ... ///
 // TTGO T-Call pin definitions
 #define MODEM_RST            5
 #define MODEM_PWKEY          4
