@@ -5,14 +5,14 @@
 
 - This is the new library, adding to the current Blynk_WiFiManager. It's designed to help you eliminate `hardcoding` your Blynk credentials in `ESP32 and ESP8266` boards using GSM shield (SIM800, SIM900, etc).
 
-- You can update Blynk Credentials any time you need to change via Configure Portal. Data are saved in SPIFFS or configurable locations in EEPROM.
+- You can update GSM Modem and Blynk Credentials any time you need to change via Configure Portal. Data are saved in SPIFFS or configurable locations in EEPROM.
 
 ## Prerequisite
 1. `Arduino IDE 1.8.10 or later` for Arduino (https://www.arduino.cc/en/Main/Software)
 2. `ESP32 core 1.0.4 or later` for ESP32 (Use Arduino Board Manager)
 3. `ESP8266 core 2.6.3 or later` for ES82662 (Use Arduino Board Manager)
 3. `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
-4. `TinyGSM library` (https://github.com/vshymanskyy/TinyGSM) 
+4. `TinyGSM library 0.7.9 or later` (https://github.com/vshymanskyy/TinyGSM) 
 
 #### Manual Install
 
@@ -30,15 +30,16 @@ Another way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager.h`
 
 ### How to use
 
-In your code, replace
-1. `BlynkSimpleTinyGSM.h`      with `BlynkSimpleTinyGSM_M.h`      for ESP32 and ESP8266
+For ESP32 and ESP8266, in your code : 
+1. Replace
+   - `BlynkSimpleTinyGSM.h` with 
+   - `BlynkSimpleTinyGSM_M.h` 
 
+2. Then replace 
+   - `Blynk.begin(blynk_auth, modem, apn, gprsUser, gprsPass)` with
+   - `Blynk.begin(modem, "Personalized-HostName")`
 
-Then replace `Blynk.begin(blynk_auth, modem, apn, gprsUser, gprsPass)` with :
-
-1. `Blynk.begin(modem, "Personalized-HostName")`
-
-in your code. Keep `Blynk.run()` intact.
+3. Keep `Blynk.run()` intact.
 
 That's it.
 
