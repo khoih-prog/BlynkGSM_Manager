@@ -14,19 +14,16 @@
 3. `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
 4. `TinyGSM library 0.7.9 or later` (https://github.com/vshymanskyy/TinyGSM) 
 
+#### Use Arduino Library Manager
+Another easiest is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager.h`, then select / install the latest version.
+
 #### Manual Install
 
 1. Navigate to [BlynkGSM_Manager] (https://github.com/khoih-prog/BlynkGSM_Manager) page.
 2. Download the latest release `BlynkGSM_Manager-master.zip`.
 3. Extract the zip file to `BlynkGSM_Manager-master` directory 
 4. Copy whole 
-  - `BlynkGSM_Manager-master/src` folder to Arduino libraries' `src` directory such as `~/Arduino/libraries/Blynk/src`.
-
-5. The files BlynkSimpleTinyGSM_M.h must be placed in Blynk libraries `src` directory (normally `~/Arduino/libraries/Blynk/src`), and 
-6. The files BlynkGSM_ESP32M.h and BlynkGSM_ESP8266M.h must be placed in Blynk libraries `Adapters` directory (normally `~/Arduino/libraries/Blynk/Adapters`), and 
-
-#### Use Arduino Library Manager
-Another way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager.h`, then select / install the latest version.
+  - `BlynkGSM_Manager-master` folder to Arduino libraries directory such as `~/Arduino/libraries`.
 
 ### How to use
 
