@@ -15,7 +15,7 @@
 4. `TinyGSM library 0.7.9 or later` (https://github.com/vshymanskyy/TinyGSM) 
 
 #### Use Arduino Library Manager
-The easiest way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager.h`, then select / install the latest version.
+The easiest way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager`, then select / install the latest version.
 
 #### Manual Install
 
