@@ -38,6 +38,10 @@ connectToWifi KEYWORD2
 handleRequest KEYWORD2
 startConfigurationMode  KEYWORD2
 getBoardName  KEYWORD2
+getAPN  KEYWORD2
+getGPRSUser  KEYWORD2
+getGPRSPass  KEYWORD2
+getGPRSPIN  KEYWORD2
 getServerName KEYWORD2
 getToken  KEYWORD2
 getHWPort KEYWORD2

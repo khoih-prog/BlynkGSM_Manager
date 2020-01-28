@@ -20,6 +20,7 @@
  * Version Modified By   Date      Comments
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      14/01/2020 Initial coding
+ *  1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
  *****************************************************************************************************************************/
 #ifndef ESP32
   #error This code is designed to run on ESP32, not ESP8266 nor Arduino AVR platform! Please check your Tools->Board setting.
@@ -27,6 +28,10 @@
 
 #ifndef BlynkGsm_ESP32M_h
 #define BlynkGsm_ESP32M_h
+
+#ifndef BLYNK_GSM_ESP32_DEBUG
+  #define BLYNK_GSM_ESP32_DEBUG    0
+#endif
 
 #ifndef BLYNK_INFO_CONNECTION
   #if defined(TINY_GSM_MODEM_SIM800)
@@ -112,90 +117,90 @@ struct Configuration
 // Currently CONFIG_DATA_SIZE  =   216
 uint16_t CONFIG_DATA_SIZE = sizeof(struct Configuration);
 
-String root_html_template = " \
+#define root_html_template " \
 <!DOCTYPE html> \
 <meta name=\"robots\" content=\"noindex\"> \
 <html> \
 <head> \
-  <meta charset=\"utf-8\"> \
-  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> \
-  <title>BlynkGSM_Esp32M</title> \
+<meta charset=\"utf-8\"> \
+<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> \
+<title>BlynkGSM_Esp8266</title> \
 </head> \
 <body> \
-  <div align=\"center\"> \
-    <table> \
-      <tbody> \
-        <tr> \
-          <th colspan=\"2\">ESP32 GSM-GPRS</th> \
-        </tr> \
-        <tr> \
-          <td>APN</td> \
-          <td><input type=\"text\" value=\"[[gsm_apn]]\" size=20 maxlength=64 id=\"gsm_apn\"></td> \
-        </tr> \
-        <tr> \
-          <td>GPRS User</td> \
-          <td><input type=\"text\" value=\"[[gsm_user]]\" size=20 maxlength=64 id=\"gsm_user\"></td> \
-        </tr> \
-        <tr> \
-          <td>GPRS Password</td> \
-          <td><input type=\"text\" value=\"[[gsm_pass]]\" size=20 maxlength=64 id=\"gsm_pass\"></td> \
-        </tr> \
-        <tr> \
-          <td>GPRS PIN</td> \
-          <td><input type=\"text\" value=\"[[gsm_pin]]\" size=20 maxlength=64 id=\"gsm_pin\"></td> \
-        </tr> \
-        <tr> \
-          <th colspan=\"2\">Blynk</th> \
-        </tr> \
-        <tr> \
-          <td>Server</td> \
-          <td><input type=\"text\" value=\"[[blynk_server]]\" size=20 maxlength=64 id=\"blynk_server\"></td> \
-        </tr> \
-        <tr> \
-          <td>Port</td> \
-          <td><input type=\"text\" value=\"[[blynk_port]]\" id=\"blynk_port\"></td> \
-        </tr> \
-        <tr> \
-          <td>Token</td> \
-          <td><input type=\"text\" value=\"[[blynk_token]]\" size=20 maxlength=64 id=\"blynk_token\"></td> \
-        </tr> \
-        <tr> \
-          <th colspan=\"2\">Hardware</th> \
-        </tr> \
-        <tr> \
-          <td>Name</td> \
-          <td><input type=\"text\" value=\"[[board_name]]\" size=20 maxlength=32 id=\"board_name\"></td> \
-        </tr> \
-        <tr> \
-          <td colspan=\"2\" align=\"center\"> \
-            <button onclick=\"save()\">Save</button> \
-          </td> \
-        </tr> \
-      </tbody> \
-    </table> \
-  </div> \
+<div align=\"center\"> \
+<table> \
+<tbody> \
+<tr> \
+<th colspan=\"2\">GSM-GPRS</th> \
+</tr> \
+<tr> \
+<td>APN</td> \
+<td><input type=\"text\" value=\"[[gsm_apn]]\" id=\"gsm_apn\"></td> \
+</tr> \
+<tr> \
+<td>GPRS User</td> \
+<td><input type=\"text\" value=\"[[gsm_user]]\" id=\"gsm_user\"></td> \
+</tr> \
+<tr> \
+<td>GPRS Password</td> \
+<td><input type=\"text\" value=\"[[gsm_pass]]\" id=\"gsm_pass\"></td> \
+</tr> \
+<tr> \
+<td>GPRS PIN</td> \
+<td><input type=\"text\" value=\"[[gsm_pin]]\" id=\"gsm_pin\"></td> \
+</tr> \
+<tr> \
+<th colspan=\"2\">Blynk</th> \
+</tr> \
+<tr> \
+<td>Server</td> \
+<td><input type=\"text\" value=\"[[bl_sv]]\" id=\"bl_sv\"></td> \
+</tr> \
+<tr> \
+<td>Port</td> \
+<td><input type=\"text\" value=\"[[bl_pt]]\" id=\"bl_pt\"></td> \
+</tr> \
+<tr> \
+<td>Token</td> \
+<td><input type=\"text\" value=\"[[bl_tk]]\" id=\"bl_tk\"></td> \
+</tr> \
+<tr> \
+<th colspan=\"2\">Hardware</th> \
+</tr> \
+<tr> \
+<td>Name</td> \
+<td><input type=\"text\" value=\"[[bd_nm]]\" id=\"bd_nm\"></td> \
+</tr> \
+<tr> \
+<td colspan=\"2\" align=\"center\"> \
+<button onclick=\"save()\">Save</button> \
+</td> \
+</tr> \
+</tbody> \
+</table> \
+</div> \
 <script id=\"jsbin-javascript\"> \
-function updateValue(key, value) { \
-  var request = new XMLHttpRequest(); \
-  var url = '/?key=' + key + '&value=' + value; \
-  console.log('calling ' + url + '...'); \
-  request.open('GET', url, false); \
-  request.send(null); \
+function udVal(key, value) { \
+var request = new XMLHttpRequest(); \
+var url = '/?key=' + key + '&value=' + value; \
+console.log('call ' + url + '...'); \
+request.open('GET',url,false); \
+request.send(null); \
 } \
 function save() { \
-  updateValue('gsm_apn', document.getElementById('gsm_apn').value); \
-  updateValue('gsm_user', document.getElementById('gsm_user').value); \
-  updateValue('gsm_pass', document.getElementById('gsm_pass').value); \
-  updateValue('gsm_pin', document.getElementById('gsm_pin').value); \
-  updateValue('blynk_server', document.getElementById('blynk_server').value); \
-  updateValue('blynk_port', document.getElementById('blynk_port').value); \
-  updateValue('blynk_token', document.getElementById('blynk_token').value); \
-  updateValue('board_name', document.getElementById('board_name').value); \
-  alert('Updated Configurations. Resetting board'); \
+udVal('gsm_apn',document.getElementById('gsm_apn').value); \
+udVal('gsm_user',document.getElementById('gsm_user').value); \
+udVal('gsm_pass',document.getElementById('gsm_pass').value); \
+udVal('gsm_pin',document.getElementById('gsm_pin').value); \
+udVal('bl_sv',document.getElementById('bl_sv').value); \
+udVal('bl_pt',document.getElementById('bl_pt').value); \
+udVal('bl_tk',document.getElementById('bl_tk').value); \
+udVal('bd_nm',document.getElementById('bd_nm').value); \
+alert('Updated. Reset'); \
 } \
 </script> \
 </body> \
-</html>";
+</html>"
 
 #define BLYNK_SERVER_HARDWARE_PORT    8080
 
@@ -214,30 +219,30 @@ public:
         BLYNK_LOG1(BLYNK_F("Modem init..."));
         if (!modem->begin()) 
         {
-           BLYNK_LOG1(BLYNK_F("Cannot init"));
+           BLYNK_LOG1(BLYNK_F("Can't init"));
            return false;
         }
         
         switch (modem->getSimStatus()) 
         {
           case SIM_ERROR:  
-            BLYNK_LOG1(BLYNK_F("SIM is missing"));    
+            BLYNK_LOG1(BLYNK_F("SIM missing"));    
             return false;
           case SIM_LOCKED: 
-            BLYNK_LOG1(BLYNK_F("SIM is PIN-locked")); 
+            BLYNK_LOG1(BLYNK_F("SIM PIN-locked")); 
             return false;
           default: 
             break;
         }
 
-        BLYNK_LOG1(BLYNK_F("Connecting to network..."));
+        BLYNK_LOG1(BLYNK_F("Connect to network..."));
         if (modem->waitForNetwork()) 
         {
           BLYNK_LOG2(BLYNK_F("Network: "), modem->getOperator());
         } 
         else 
         {
-          BLYNK_LOG1(BLYNK_F("Register in network failed"));
+          BLYNK_LOG1(BLYNK_F("Network Register failed"));
           return false;
         }
 
@@ -341,7 +346,7 @@ public:
 
           if (gsmModemReady && connectToGPRSNetwork(TIMEOUT_CONNECT_GPRS)) 
           {
-            BLYNK_LOG1(BLYNK_F("begin: GPRS connected. Try connecting to Blynk"));
+            BLYNK_LOG1(BLYNK_F("begin: GPRS connected. Connect to Blynk"));
             
             int i = 0;
             while ( (i++ < 10) && !this->connect() )
@@ -350,25 +355,25 @@ public:
             
             if  (this->connected())
             {
-              BLYNK_LOG1(BLYNK_F("begin: GPRS and Blynk connected"));
+              BLYNK_LOG1(BLYNK_F("begin: GPRS & Blynk connected"));
             }
             else 
             {
-              BLYNK_LOG1(BLYNK_F("begin: GPRS connected but Bynk not connected"));
+              BLYNK_LOG1(BLYNK_F("begin: GPRS connected but Bynk not"));
               // failed to connect to Blynk server, will start configuration mode
               startConfigurationMode();
             }
           } 
           else 
           {
-              BLYNK_LOG1(BLYNK_F("begin: Fail to connect GPRS and Blynk"));
+              BLYNK_LOG1(BLYNK_F("begin: Fail to connect GPRS & Blynk"));
               // failed to connect to Blynk server, will start configuration mode
               startConfigurationMode();
           }
         }
         else
         {
-            BLYNK_LOG1(BLYNK_F("begin: No stored config data. Will forever stay in config mode until getting data"));
+            BLYNK_LOG1(BLYNK_F("begin: No stored config data. Will forever stay in config mode"));
             // failed to connect to Blynk server, will start configuration mode
             hadConfigData = false;
             startConfigurationMode();                  
@@ -421,7 +426,10 @@ public:
 	      if ( configuration_mode && ( configTimeout == 0 ||  millis() < configTimeout ) )
 	      {
 	        retryTimes = 0;
-		      server.handleClient();		
+	        
+		      if (server)
+		        server->handleClient();
+		        	
 		      return;
 	      }
 	      else
@@ -433,7 +441,7 @@ public:
 	        {	        
 	          if (++retryTimes <= CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET)
 	          {
-	            BLYNK_LOG2(BLYNK_F("run: GPRS lost but config Timeout. Try connecting GPRS and Blynk. RetryTimes : "), retryTimes);
+	            BLYNK_LOG2(BLYNK_F("run: GPRS lost & config Timeout. Connecting GPRS & Blynk. RetryTimes : "), retryTimes);
 	          }
 	          else
 	          {
@@ -447,23 +455,23 @@ public:
 		        // Not in config mode, try reconnecting before force to config mode
 		        if ( !modem->isGprsConnected() )
 		        {
-			        BLYNK_LOG1(BLYNK_F("run: GPRS lost. Try reconnecting GPRS and Blynk"));
+			        BLYNK_LOG1(BLYNK_F("run: GPRS lost. Reconnecting GPRS & Blynk"));
 			        if (connectToGPRSNetwork(TIMEOUT_RECONNECT_GPRS)) 
 			        {
 			          // turn the LED_BUILTIN OFF to tell us we exit configuration mode.
                 digitalWrite(LED_BUILTIN, LOW);
 
-			          BLYNK_LOG1(BLYNK_F("run: GPRS reconnected. Trying connect to Blynk"));
+			          BLYNK_LOG1(BLYNK_F("run: GPRS reconnected. Connect to Blynk"));
 			          
 			          if (connect())
 			          {
-				          BLYNK_LOG1(BLYNK_F("run: GPRS and Blynk reconnected"));
+				          BLYNK_LOG1(BLYNK_F("run: GPRS & Blynk reconnected"));
 				        }
 			        }
 		        }
 		        else
 		        {
-			        BLYNK_LOG1(BLYNK_F("run: Blynk lost. Try connecting Blynk"));
+			        BLYNK_LOG1(BLYNK_F("run: Blynk lost. Connecting Blynk"));
 			        if (connect()) 
 			        {
 			          // turn the LED_BUILTIN OFF to tell us we exit configuration mode.
@@ -481,7 +489,7 @@ public:
       else if (configuration_mode)
       {
       	configuration_mode = false;
-      	BLYNK_LOG1(BLYNK_F("run: got GPRS/Blynk back, great"));
+      	BLYNK_LOG1(BLYNK_F("run: got GPRS/Blynk back"));
       	// Turn the LED_BUILTIN OFF when out of configuration mode. ESP32 LED_BUILDIN is correct polarity, LOW to turn OFF
         digitalWrite(LED_BUILTIN, LOW);      	
       }
@@ -549,7 +557,8 @@ private:
     bool          gsmModemReady = false;
     
     // KH
-    WebServer server;
+    WebServer* server;
+    
     bool configuration_mode = false;
     struct Configuration BlynkGSM_ESP32_config;
     
@@ -594,7 +603,7 @@ private:
     void loadConfigData(void)
     {
       File file = SPIFFS.open(CONFIG_FILENAME, "r");
-      BLYNK_LOG1(BLYNK_F("Loading config file..."));
+      BLYNK_LOG1(BLYNK_F("Load config file"));
       
       if (!file) 
       {
@@ -602,7 +611,7 @@ private:
         
         // Trying open redundant config file
         file = SPIFFS.open(CONFIG_FILENAME_BACKUP, "r");
-        BLYNK_LOG1(BLYNK_F("Loading backup config file...")); 
+        BLYNK_LOG1(BLYNK_F("Load backup config file")); 
         
         if (!file)
         {
@@ -620,7 +629,7 @@ private:
     void saveConfigData(void)
     {
       File file = SPIFFS.open(CONFIG_FILENAME, "w");
-      BLYNK_LOG1(BLYNK_F("Saving config file..."));
+      BLYNK_LOG1(BLYNK_F("Save config file"));
       
       if (file) 
       {
@@ -635,7 +644,7 @@ private:
       
       // Trying open redundant Auth file
       file = SPIFFS.open(CONFIG_FILENAME_BACKUP, "w");
-      BLYNK_LOG1(BLYNK_F("Saving backup config file...")); 
+      BLYNK_LOG1(BLYNK_F("Save backup config file...")); 
       
       if (file)
       {
@@ -654,7 +663,7 @@ private:
     {     
       if (!SPIFFS.begin()) 
       {
-        BLYNK_LOG1(BLYNK_F("SPIFFS failed!. Please use EEPROM."));
+        BLYNK_LOG1(BLYNK_F("SPIFFS failed! Please use EEPROM."));
         return false;
       }
       
@@ -797,7 +806,7 @@ private:
         BLYNK_LOG1(BLYNK_F("Modem init..."));
         if (!modem->begin()) 
         {
-           BLYNK_LOG1(BLYNK_F("Cannot init"));
+           BLYNK_LOG1(BLYNK_F("Can't init"));
            gsmModemReady = false;
            return false;
         }
@@ -807,10 +816,10 @@ private:
         switch (modem->getSimStatus()) 
         {
           case SIM_ERROR:  
-            BLYNK_LOG1(BLYNK_F("SIM is missing"));
+            BLYNK_LOG1(BLYNK_F("SIM missing"));
             break;
           case SIM_LOCKED: 
-            BLYNK_LOG1(BLYNK_F("SIM is PIN-locked"));
+            BLYNK_LOG1(BLYNK_F("SIM PIN-locked"));
             break;
           default: 
             break;
@@ -818,14 +827,14 @@ private:
         
         while (!modem->isGprsConnected() && 0 < timeout) 
         {
-          BLYNK_LOG1(BLYNK_F("Connecting to network..."));
+          BLYNK_LOG1(BLYNK_F("Connect to network..."));
           if (modem->waitForNetwork()) 
           {
             BLYNK_LOG2(BLYNK_F("Network: "), modem->getOperator());
           } 
           else 
           {
-            BLYNK_LOG1(BLYNK_F("Register in network failed"));
+            BLYNK_LOG1(BLYNK_F("Network Register failed"));
           }
 
           BLYNK_LOG3(BLYNK_F("Connecting to "), BlynkGSM_ESP32_config.apn, BLYNK_F(" ..."));
@@ -852,121 +861,161 @@ private:
      
     void handleRequest()
     {
-      String key = server.arg("key");
-      String value = server.arg("value");
-      
-      static int number_items_Updated = 0;
-
-      if (key == "" && value == "") 
+      if (server)
       {
-          String result = root_html_template;
-          
-          BLYNK_LOG1(BLYNK_F("handleRequest: replacing result"));
-          
-          // Reset configTimeout to stay here until finished.
-          configTimeout = 0;
-
-          result.replace("[[gsm_apn]]",         BlynkGSM_ESP32_config.apn);
-          result.replace("[[gsm_user]]",        BlynkGSM_ESP32_config.gprsUser);
-          result.replace("[[gsm_pass]]",        BlynkGSM_ESP32_config.gprsPass);
-          result.replace("[[gsm_pin]]",         BlynkGSM_ESP32_config.gprsPin);
-          result.replace("[[blynk_server]]",    BlynkGSM_ESP32_config.blynk_server);
-          result.replace("[[blynk_port]]",      String(BlynkGSM_ESP32_config.blynk_port));
-          result.replace("[[blynk_token]]",     BlynkGSM_ESP32_config.blynk_token);
-          result.replace("[[board_name]]",      BlynkGSM_ESP32_config.board_name);
-
-          server.send(200, "text/html", result);
-
-          return;
-      }
-     
-      if (number_items_Updated == 0)
-      {
-        memset(&BlynkGSM_ESP32_config, 0, sizeof(BlynkGSM_ESP32_config));
-        strcpy(BlynkGSM_ESP32_config.header, BOARD_TYPE);
-      }
-      
-      if (key == "gsm_apn")
-      {
-          number_items_Updated++;
-          if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.apn) -1)
-            strcpy(BlynkGSM_ESP32_config.apn, value.c_str());
-          else
-            strncpy(BlynkGSM_ESP32_config.apn, value.c_str(), sizeof(BlynkGSM_ESP32_config.apn) -1);    
-      }
-      else if (key == "gsm_user") 
-      {
-          number_items_Updated++;
-          if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.gprsUser) -1)
-            strcpy(BlynkGSM_ESP32_config.gprsUser, value.c_str());
-          else
-            strncpy(BlynkGSM_ESP32_config.gprsUser, value.c_str(), sizeof(BlynkGSM_ESP32_config.gprsUser) -1);    
-      }
-      else if (key == "gsm_pass") 
-      {
-          number_items_Updated++;
-          if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.gprsPass) -1)
-            strcpy(BlynkGSM_ESP32_config.gprsPass, value.c_str());
-          else
-            strncpy(BlynkGSM_ESP32_config.gprsPass, value.c_str(), sizeof(BlynkGSM_ESP32_config.gprsPass) -1);    
-      }
-      else if (key == "gsm_pin") 
-      {
-          number_items_Updated++;
-          if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.gprsPin) -1)
-            strcpy(BlynkGSM_ESP32_config.gprsPin, value.c_str());
-          else
-            strncpy(BlynkGSM_ESP32_config.gprsPin, value.c_str(), sizeof(BlynkGSM_ESP32_config.gprsPin) -1);    
-      }      
-      else if (key == "blynk_server") 
-      {
-          number_items_Updated++;
-          if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.blynk_server) -1)
-            strcpy(BlynkGSM_ESP32_config.blynk_server, value.c_str());
-          else
-            strncpy(BlynkGSM_ESP32_config.blynk_server, value.c_str(), sizeof(BlynkGSM_ESP32_config.blynk_server) -1);      
-      }
-      else if (key == "blynk_port") 
-      {
-          number_items_Updated++;
-          BlynkGSM_ESP32_config.blynk_port = value.toInt();
-      }
-      else if (key == "blynk_token") 
-      {
-          number_items_Updated++;
-          if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.blynk_token) -1)
-            strcpy(BlynkGSM_ESP32_config.blynk_token, value.c_str());
-          else
-            strncpy(BlynkGSM_ESP32_config.blynk_token, value.c_str(), sizeof(BlynkGSM_ESP32_config.blynk_token) -1);    
-      }
-      else if (key == "board_name") 
-      {
-          number_items_Updated++;
-          if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.board_name) -1)
-            strcpy(BlynkGSM_ESP32_config.board_name, value.c_str());
-          else
-            strncpy(BlynkGSM_ESP32_config.board_name, value.c_str(), sizeof(BlynkGSM_ESP32_config.board_name) -1);  
-      }
-      
-      server.send(200, "text/html", "OK");
-      
-      if (number_items_Updated == NUM_CONFIGURABLE_ITEMS)
-      {
-        #if USE_SPIFFS     
-          BLYNK_LOG2(BLYNK_F("handleRequest: Updating data to SPIFFS file "), CONFIG_FILENAME);
-        #else
-          BLYNK_LOG1(BLYNK_F("handleRequest: Updating data to EEPROM"));
-        #endif
-
-        saveConfigData();
-
-        BLYNK_LOG1(BLYNK_F("handleRequest: Resetting"));
+        String key = server->arg("key");
+        String value = server->arg("value");
         
-        // Delay then reset the ESP32 after save data
-        delay(1000);
-        ESP.restart();
-      }
-    
+        static int number_items_Updated = 0;
+
+        if (key == "" && value == "") 
+        {
+            String result = root_html_template;
+            
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: replacing result"));
+            #endif
+            
+            // Reset configTimeout to stay here until finished.
+            configTimeout = 0;
+
+            result.replace("[[gsm_apn]]",         BlynkGSM_ESP32_config.apn);
+            result.replace("[[gsm_user]]",        BlynkGSM_ESP32_config.gprsUser);
+            result.replace("[[gsm_pass]]",        BlynkGSM_ESP32_config.gprsPass);
+            result.replace("[[gsm_pin]]",         BlynkGSM_ESP32_config.gprsPin);
+            result.replace("[[bl_sv]]",           BlynkGSM_ESP32_config.blynk_server);
+            result.replace("[[bl_pt]]",           String(BlynkGSM_ESP32_config.blynk_port));
+            result.replace("[[bl_tk]]",           BlynkGSM_ESP32_config.blynk_token);
+            result.replace("[[bd_nm]]",           BlynkGSM_ESP32_config.board_name);
+
+            server->send(200, "text/html", result);
+
+            return;
+        }
+       
+        if (number_items_Updated == 0)
+        {
+          memset(&BlynkGSM_ESP32_config, 0, sizeof(BlynkGSM_ESP32_config));
+          strcpy(BlynkGSM_ESP32_config.header, BOARD_TYPE);
+        }
+        
+        if (key == "gsm_apn")
+        {
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: gsm_apn"));
+            #endif
+            
+            number_items_Updated++;
+            if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.apn) -1)
+              strcpy(BlynkGSM_ESP32_config.apn, value.c_str());
+            else
+              strncpy(BlynkGSM_ESP32_config.apn, value.c_str(), sizeof(BlynkGSM_ESP32_config.apn) -1);    
+        }
+        else if (key == "gsm_user") 
+        {
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: gsm_user"));
+            #endif
+            
+            number_items_Updated++;
+            if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.gprsUser) -1)
+              strcpy(BlynkGSM_ESP32_config.gprsUser, value.c_str());
+            else
+              strncpy(BlynkGSM_ESP32_config.gprsUser, value.c_str(), sizeof(BlynkGSM_ESP32_config.gprsUser) -1);    
+        }
+        else if (key == "gsm_pass") 
+        {
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: gsm_pass"));
+            #endif
+            
+            number_items_Updated++;
+            if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.gprsPass) -1)
+              strcpy(BlynkGSM_ESP32_config.gprsPass, value.c_str());
+            else
+              strncpy(BlynkGSM_ESP32_config.gprsPass, value.c_str(), sizeof(BlynkGSM_ESP32_config.gprsPass) -1);    
+        }
+        else if (key == "gsm_pin") 
+        {
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: gsm_pin"));
+            #endif
+            
+            number_items_Updated++;
+            if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.gprsPin) -1)
+              strcpy(BlynkGSM_ESP32_config.gprsPin, value.c_str());
+            else
+              strncpy(BlynkGSM_ESP32_config.gprsPin, value.c_str(), sizeof(BlynkGSM_ESP32_config.gprsPin) -1);    
+        }      
+        else if (key == "bl_sv") 
+        {
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: bl_sv"));
+            #endif
+            
+            number_items_Updated++;
+            if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.blynk_server) -1)
+              strcpy(BlynkGSM_ESP32_config.blynk_server, value.c_str());
+            else
+              strncpy(BlynkGSM_ESP32_config.blynk_server, value.c_str(), sizeof(BlynkGSM_ESP32_config.blynk_server) -1);      
+        }
+        else if (key == "bl_pt") 
+        {
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: bl_pt"));
+            #endif
+            
+            number_items_Updated++;
+            BlynkGSM_ESP32_config.blynk_port = value.toInt();
+        }
+        else if (key == "bl_tk") 
+        {
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: bl_tk"));
+            #endif
+            
+            number_items_Updated++;
+            if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.blynk_token) -1)
+              strcpy(BlynkGSM_ESP32_config.blynk_token, value.c_str());
+            else
+              strncpy(BlynkGSM_ESP32_config.blynk_token, value.c_str(), sizeof(BlynkGSM_ESP32_config.blynk_token) -1);    
+        }
+        else if (key == "bd_nm") 
+        {
+            #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: bd_nm"));
+            #endif
+            
+            number_items_Updated++;
+            if (strlen(value.c_str()) < sizeof(BlynkGSM_ESP32_config.board_name) -1)
+              strcpy(BlynkGSM_ESP32_config.board_name, value.c_str());
+            else
+              strncpy(BlynkGSM_ESP32_config.board_name, value.c_str(), sizeof(BlynkGSM_ESP32_config.board_name) -1);  
+        }
+        
+        server->send(200, "text/html", "OK");
+        
+        if (number_items_Updated == NUM_CONFIGURABLE_ITEMS)
+        {         
+          #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            #if USE_SPIFFS     
+              BLYNK_LOG2(BLYNK_F("hR: Update SPIFFS"), CONFIG_FILENAME);
+            #else
+              BLYNK_LOG1(BLYNK_F("hR: Update EEPROM"));
+            #endif
+          #endif
+
+          saveConfigData();
+          
+          #if (BLYNK_GSM_ESP32_DEBUG > 2)
+            BLYNK_LOG1(BLYNK_F("hR: Reset"));
+          #endif
+          
+          // Delay then reset the ESP32 after save data
+          delay(1000);
+          ESP.restart();
+        }
+      }    
     }
         
     void startConfigurationMode()
@@ -983,7 +1032,7 @@ private:
 
 	    String pass = "MyESP_" + chipID;
 	    
-	    BLYNK_LOG4(BLYNK_F("startConfigurationMode with SSID = "), ssid, BLYNK_F(" and PW = "), pass);
+	    BLYNK_LOG4(BLYNK_F("startConfigMode, SSID = "), ssid, BLYNK_F(" and PW = "), pass);
 	
       IPAddress apIP(192, 168, 4, 1);
 
@@ -993,10 +1042,15 @@ private:
       delay(100); // ref: https://github.com/espressif/arduino-esp32/issues/985#issuecomment-359157428
       WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
       
+      if (!server)
+	      server = new WebServer;
+      
       //See https://stackoverflow.com/questions/39803135/c-unresolved-overloaded-function-type?rq=1
-      server.on("/", [this](){ handleRequest(); });
-
-      server.begin();
+      if (server)
+      {
+        server->on("/", [this](){ handleRequest(); });
+        server->begin();
+      }
       
       // If there is no saved config Data, either one of APN, gprsUser, gprsPass, SSID, PW, Server,Token = "nothing"
       // stay in config mode forever until having config Data..

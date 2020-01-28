@@ -13,6 +13,7 @@
  * Version Modified By   Date      Comments
  * ------- -----------  ---------- -----------
  *  1.0.0   K Hoang      17/01/2020 Initial coding
+ *  1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
  *****************************************************************************************************************************/
 
 #ifndef ESP32
