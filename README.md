@@ -1,77 +1,106 @@
-## BlynkGSM_Manager
+## BlynkEthernet_Manager
 
-[![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
+[![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkEthernet_Manager.svg?)](https://www.ardu-badge.com/BlynkEthernet_Manager)
 
+I'm inspired by [`EasyBlynk8266`] (https://github.com/Barbayar/EasyBlynk8266)
 
-- This is the new library, adding to the current Blynk_WiFiManager. It's designed to help you eliminate `hardcoding` your Blynk credentials in `ESP32 and ESP8266` boards using GSM shield (SIM800, SIM900, etc).
+- This is the new library, adding to the current Blynk_WiFiManager. It's designed to help you eliminate `hardcoding` your Blynk credentials in `Mega 1280, Mega 2560` boards using with Ethernet board (W5100, W5200, W5500, etc). It's currently not supporting SSL because there is not enough memory (only `8 KBytes`) in Mega boards. 
+- It's not supporting UNO/Nano and other AVR boards having only `32KBytes` of program storage space.
 
-- You can update GSM Modem and Blynk Credentials any time you need to change via Configure Portal. Data are saved in SPIFFS or configurable locations in EEPROM.
+- You can update Blynk Credentials any time you need to change via Configure Portal. Data are saved in configurable locations in EEPROM.
 
 ## Prerequisite
 1. `Arduino IDE 1.8.10 or later` for Arduino (https://www.arduino.cc/en/Main/Software)
-2. `ESP32 core 1.0.4 or later` for ESP32 (Use Arduino Board Manager)
-3. `ESP8266 core 2.6.3 or later` for ES82662 (Use Arduino Board Manager)
+2. `Arduino AVR core 1.8.2 or later` for Arduino (Use Arduino Board Manager)
 3. `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
-4. `TinyGSM library 0.7.9 or later` (https://github.com/vshymanskyy/TinyGSM) 
-
-#### Use Arduino Library Manager
-The easiest way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager`, then select / install the latest version.
+4. Depending on which Ethernet card you're using:
+   - `Ethernet library` (https://www.arduino.cc/en/Reference/Ethernet) for W5100, W5200 and W5500
+   - `Ethernet2 library` (https://github.com/khoih-prog/Ethernet2) for W5500 (Deprecated, use Arduino Ethernet library)
+   - `Ethernet_Shield_W5200 library` (https://github.com/khoih-prog/Ethernet_Shield_W5200) for W5200
+5. `EthernetWebServer library` (https://github.com/khoih-prog/EthernetWebServer)
+6. `ArduinoSTL library v1.1.0 or later` (https://github.com/khoih-prog/ArduinoSTL)
+7. `Functional-VLPP library` (https://github.com/khoih-prog/functional-vlpp)
+8. `ArduinoBearSSL library` (https://github.com/khoih-prog/ArduinoBearSSL) for SSL
+9. `ArduinoECCX08  library` (https://github.com/khoih-prog/ArduinoECCX08)  for SSL
 
 #### Manual Install
 
-1. Navigate to [BlynkGSM_Manager] (https://github.com/khoih-prog/BlynkGSM_Manager) page.
-2. Download the latest release `BlynkGSM_Manager-master.zip`.
-3. Extract the zip file to `BlynkGSM_Manager-master` directory 
+1. Navigate to [BlynkEthernet_WM] (https://github.com/khoih-prog/BlynkEthernet_WM) page.
+2. Download the latest release `BlynkEthernet_WM-master.zip`.
+3. Extract the zip file to `BlynkEthernet_WM-master` directory 
 4. Copy whole 
-  - `BlynkGSM_Manager-master` folder to Arduino libraries directory such as `~/Arduino/libraries`.
+  - `BlynkEthernet_WM-master/src` folder to Arduino libraries' `src` directory such as `~/Arduino/libraries/Blynk/src`.
+  - `BlynkEthernet_WM-master/Adapters` folder to Arduino libraries' `Adapters` directory such as `~/Arduino/libraries/Blynk/Adapters`.
+
+5. The files BlynkSimpleEthernet_WM.h, BlynkSimpleEthernet2_WM.h, BlynkSimpleEthernetV2_0_WM.h and BlynkSimpleEthernetSSL_WM.h must be placed in Blynk libraries `src` directory (normally `~/Arduino/libraries/Blynk/src`), and 
+6. The files BlynkEthernet_WM.h must be placed in Blynk libraries `Adapters` directory (normally `~/Arduino/libraries/Blynk/Adapters`), and 
+
+#### Use Arduino Library Manager
+Another way is to use `Arduino Library Manager`. Search for `BlynkEthernet_WM`, then select / install the latest version.
 
 ### How to use
 
-For ESP32 and ESP8266, in your code : 
-1. Replace
-   - `BlynkSimpleTinyGSM.h` with 
-   - `BlynkSimpleTinyGSM_M.h` 
+In your code, replace
+1. `BlynkSimpleEthernet.h`      with `BlynkSimpleEthernet_WM.h`      for Mega using W5100, W5200, W5500 `without SSL`
+2. `BlynkSimpleEthernet2.h`     with `BlynkSimpleEthernet2_WM.h`     for Mega using only W5500 `without SSL`
+3. `BlynkSimpleEthernetV2_0.h`  with `BlynkSimpleEthernetV2_0_WM.h`  for Mega using only W2500 `without SSL`
+4. `BlynkSimpleEthernetSSL.h`   with `BlynkSimpleEthernetSSL_WM.h`   for other AVR boards (not Mega) using W5100, W5200, W5500 `with SSL`
 
-2. Then replace 
-   - `Blynk.begin(blynk_auth, modem, apn, gprsUser, gprsPass)` with
-   - `Blynk.begin(modem, "Personalized-HostName")`
 
-3. Keep `Blynk.run()` intact.
+```
+// EEPROM size of Mega is 4096 bytes
+// Start location to store config data to avoid conflict with other functions
+// Config Data use 112 bytes from EEPROM_START
+#define EEPROM_START   1024
+
+```
+
+Then replace `Blynk.begin(...)` with :
+
+1. `Blynk.begin()`
+
+in your code. Keep `Blynk.run()` intact.
 
 That's it.
 
 Also see examples: 
-1. [ESP32_GSM](examples/ESP32_GSM)
-2. [ESP8266_GSM](examples/ESP8266_GSM)
+1. [AM2315_W5100](examples/AM2315_W5100)
+2. [DHT11_W5100](examples/DHT11_W5100)
+3. [W5100_Blynk](examples/W5100_Blynk) 
+4. [W5100_WM_Config](examples/W5100_WM_Config)
+5. [W5100_Blynk_Email](examples/W5100_Blynk_Email)
+6. [BlynkHTTPClient](examples/BlynkHTTPClient)
 
 
 ## So, how it works?
-
-If it cannot connect to the Blynk server in 30 seconds, it will switch to `Configuration Mode`. You will see your built-in LED turned ON. In `Configuration Mode`, it starts a WiFi access point called `ESP_xxxxxx`. Connect to it using password `MyESP_xxxxxx` .
-
-<p align="center">
-    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_1.jpg">
-</p>
-
-After you connected, go to http://192.168.4.1., the Browser will display the following page:
+If no valid config data are stored in EEPROM, it will switch to `Configuration Mode`. Connect to access point at the IP address displayed on Terminal or Router's DHCP server as in the following picture:
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_2.png">
+    <img src="https://github.com/khoih-prog/BlynkEthernet_WM/blob/master/pics/Selection_1.png">
 </p>
 
-Enter your credentials (APN, GPRS User, GPRS Pass, GPRS PIN, Blynk Token, Server and Port).
+After you connected to, for example, `192.168.2.86`, the Browser will display the following picture:
 
 <p align="center">
-    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_3.png">
+    <img src="https://github.com/khoih-prog/BlynkEthernet_WM/blob/master/pics/Selection_2.png">
 </p>
 
-Then click `Save`. After the  board auto-restarted, you will see if it's connected to your Blynk server successfully.
+Enter your credentials (Blynk Server and Port). If you prefer static IP, input it (for example `192.168.2.79`) in the corresponding field. Otherwise, just leave it `blank` or `nothing` to use auto IP assigned by DHCP server.
 
+<p align="center">
+    <img src="https://github.com/khoih-prog/BlynkEthernet_WM/blob/master/pics/Selection_3.png">
+</p>
+
+Then click `Save`. After the  board auto-restarted, you will see if it's connected to your Blynk server successfully as in  the following picture:
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/BlynkEthernet_WM/blob/master/pics/Selection_4.png">
+</p>
 
 This `Blynk.begin()` is not a blocking call, so you can use it for critical functions requiring in loop(). 
 Anyway, this is better for projects using Blynk just for GUI (graphical user interface).
 
-In operation, if GSM/GPRS or Blynk connection is lost, `Blynk.run()` will try reconnecting automatically. Therefore, `Blynk.run()` must be called in the `loop()` function. Don't use:
+In operation, if Ethernet or Blynk connection is lost, `Blynk.run()` will try reconnecting automatically. Therefore, `Blynk.run()` must be called in the `loop()` function. Don't use:
 
 ```cpp
 void loop()
@@ -94,85 +123,55 @@ void loop()
 
 ## TO DO
 
-1. Same features for other boards with GSM/GPRS shield as well as other GSM/GPRS shields (SIM7x00, etc.).
+1. Same features for other boards with Ethernet.
 
 ## DONE
 
 1. Permit EEPROM size and location configurable to avoid conflict with others.
 2. More flexible to configure reconnection timeout.
 3. For fresh config data, don't need to wait for connecting timeout before entering config portal.
-4. If the config data not entered completely (APN, GPRS User, GPRS Pass, Server, HardwarePort and Blynk token), entering config portal
+4. If the config data not entered completely (Server, HardwarePort and Blynk token), entering config portal
+5. Change Synch XMLHttpRequest to Async
+6. Reduce memory usage.
 
 
-## Example for ES32 and SIM800L GSM shield
+## Example
 Please take a look at examples, as well.
 ```
 #define BLYNK_PRINT Serial
 
-// Select your modem:
-#define TINY_GSM_MODEM_SIM800
-// Increase RX buffer if needed
-#define TINY_GSM_RX_BUFFER 1024
-
-// TTGO T-Call pin definitions
-#define MODEM_RST            5
-#define MODEM_PWKEY          4
-#define MODEM_POWER_ON       23
-#define MODEM_TX             27
-#define MODEM_RX             26
-#define I2C_SDA              21
-#define I2C_SCL              22
-
 // EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
 #define EEPROM_START   1024
 
-// Those above #define's must be placed before #include <BlynkSimpleTinyGSM_M.h>
+// Those above #define's must be placed before #include <BlynkSimpleEthernet_WM.h>
 
-#include <TinyGsmClient.h>
-#include <BlynkSimpleTinyGSM_M.h>
+#include <BlynkSimpleEthernet_WM.h>
 
-// Set serial for debug console (to the Serial Monitor, default speed 115200)
-#define SerialMon Serial
-
-#define RXD2      16
-#define TXD2      17
-// Use ESP32 Serial2 for GSM
-#define SerialAT  Serial2
-
-TinyGsm modem(SerialAT);
 
 void setup() 
 {
-  // Set console baud rate
-  SerialMon.begin(115200);
-  SerialMon.println(F("\nStart ESP32_GSM"));
-
-  // Set-up modem reset, enable, power pins
-  pinMode(MODEM_PWKEY, OUTPUT);
-  pinMode(MODEM_RST, OUTPUT);
-  pinMode(MODEM_POWER_ON, OUTPUT);
-
-  digitalWrite(MODEM_PWKEY, LOW);
-  digitalWrite(MODEM_RST, HIGH);
-  digitalWrite(MODEM_POWER_ON, HIGH);
-
-  SerialMon.println(F("Set GSM module baud rate"));
-  
-  // Set GSM module baud rate
-  SerialAT.begin(115200);
-  
-  Blynk.begin(modem, "ESP32_GSM");
+  Blynk.begin();
 }
 
 void loop() 
 {
-  Blynk.run();
+    Blynk.run();
 }
 ```
 
-### Contributions and thanks
+### Releases v1.0.5
 
-1. Thanks to [Mike Kranidis](https://community.blynk.cc/u/mikekgr) and (https://github.com/mikekgr) for initial testing the library and giving reasons, advices to start this library.
+***New in this version***
+
+1. Change Synch XMLHttpRequest to Async to avoid  "InvalidAccessError" DOMException (https://xhr.spec.whatwg.org/)
+2. Reduce memory usage.
+
+### Releases v1.0.4 (Fast jumping to v1.0.4 to synch with other Blynk_WM Library)
+
+***New in this version***
+
+1. Add Blynk WiFiManager support to Arduino AVR boards (Mega 1280, Mega 2560, etc.) with Ethernet adapters (W5x00)
+2. Configuration data (Blynk Server,Hardware Port, Token, Board Name) saved in configurable EEPROM locations.
 
 ## Contributing
 
