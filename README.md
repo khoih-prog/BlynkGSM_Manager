@@ -8,18 +8,19 @@
 - You can update GSM Modem and Blynk Credentials any time you need to change via Configure Portal. Data are saved in SPIFFS or configurable locations in EEPROM.
 
 ## Prerequisite
-1. `Arduino IDE 1.8.10 or later` for Arduino (https://www.arduino.cc/en/Main/Software)
+1. [`Arduino IDE 1.8.10 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
 2. `ESP32 core 1.0.4 or later` for ESP32 (Use Arduino Board Manager)
 3. `ESP8266 core 2.6.3 or later` for ES82662 (Use Arduino Board Manager)
-3. `Blynk library 0.6.1 or later` (https://www.arduino.cc/en/guide/libraries#toc3)
-4. `TinyGSM library 0.7.9 or later` (https://github.com/vshymanskyy/TinyGSM) 
+3. [`Blynk library 0.6.1 or later`](https://github.com/blynkkk/blynk-library/releases)
+4. [`TinyGSM library 0.7.9 or later`](https://github.com/vshymanskyy/TinyGSM) 
 
 #### Use Arduino Library Manager
+
 The easiest way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager`, then select / install the latest version.
 
 #### Manual Install
 
-1. Navigate to [BlynkGSM_Manager] (https://github.com/khoih-prog/BlynkGSM_Manager) page.
+1. Navigate to [BlynkGSM_Manager](https://github.com/khoih-prog/BlynkGSM_Manager) page.
 2. Download the latest release `BlynkGSM_Manager-master.zip`.
 3. Extract the zip file to `BlynkGSM_Manager-master` directory 
 4. Copy whole 
@@ -174,12 +175,12 @@ void loop()
 
 ***New in this version***
 
-1. Change Synch XMLHttpRequest to Async to avoid  "InvalidAccessError" DOMException (https://xhr.spec.whatwg.org/)
+1. Change Synch XMLHttpRequest to Async to avoid ["InvalidAccessError" DOMException](https://xhr.spec.whatwg.org/)
 2. Reduce memory usage.
 
 ### Contributions and thanks
 
-1. Thanks to [Mike Kranidis](https://community.blynk.cc/u/mikekgr) and (https://github.com/mikekgr) for initial testing the library and giving reasons, advices to start this library.
+1. Thanks to [Mike Kranidis](https://community.blynk.cc/u/mikekgr) and [Mike Kranidis @ GitHub](https://github.com/mikekgr) for initial testing the library and giving reasons, advices to start this library.
 
 ## Contributing
 
