@@ -37,14 +37,23 @@ getConfigData KEYWORD2
 connectToWifi KEYWORD2
 handleRequest KEYWORD2
 startConfigurationMode  KEYWORD2
+setConfigPortalIP KEYWORD2
+setConfigPortal KEYWORD2
+setConfigPortalChannel  KEYWORD2
+setSTAStaticIPConfig  KEYWORD2
 getBoardName  KEYWORD2
+getWiFiSSID KEYWORD2
+getWiFiPW KEYWORD2
+getWiFiToken  KEYWORD2
 getAPN  KEYWORD2
 getGPRSUser  KEYWORD2
 getGPRSPass  KEYWORD2
 getGPRSPIN  KEYWORD2
 getServerName KEYWORD2
-getToken  KEYWORD2
+getGSMToken  KEYWORD2
 getHWPort KEYWORD2
+setHostname KEYWORD2
+getFullConfigData
 
 
 # Handler helpers
