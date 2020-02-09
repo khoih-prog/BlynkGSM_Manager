@@ -60,7 +60,7 @@
 #endif
 
 #ifndef BLYNK_TIMEOUT_MS
-#define BLYNK_TIMEOUT_MS 6000
+#define BLYNK_TIMEOUT_MS 30000
 #endif
 
 #define BLYNK_SEND_ATOMIC
