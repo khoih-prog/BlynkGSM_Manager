@@ -53,10 +53,13 @@ getServerName KEYWORD2
 getGSMToken  KEYWORD2
 getHWPort KEYWORD2
 setHostname KEYWORD2
-getFullConfigData
+getFullConfigData KEYWORD2
+clearConfigData KEYWORD2
 
-
+#######################################
 # Handler helpers
+#######################################
+
 BLYNK_READ	KEYWORD2
 BLYNK_WRITE	KEYWORD2
 BLYNK_READ_DEFAULT	KEYWORD2
@@ -72,13 +75,17 @@ BLYNK_INPUT	KEYWORD2
 BLYNK_OUTPUT_DEFAULT	KEYWORD2
 BLYNK_INPUT_DEFAULT	KEYWORD2
 
+#######################################
 # Variables binding
+#######################################
 BLYNK_VAR_INT	KEYWORD2
 BLYNK_VAR_LONG	KEYWORD2
 BLYNK_VAR_DOUBLE	KEYWORD2
 BLYNK_VAR_STRING	KEYWORD2
 
+#######################################
 # Special defines
+#######################################
 BLYNK_DEBUG	KEYWORD2
 BLYNK_DEBUG_ALL	KEYWORD2
 BLYNK_PRINT	KEYWORD2
@@ -93,7 +100,9 @@ BLYNK_USE_DIRECT_CONNECT	KEYWORD2
 BLYNK_MAX_SENDBYTES	KEYWORD2
 BLYNK_MAX_READBYTES	KEYWORD2
 
+#######################################
 # Periodic actions
+#######################################
 #BLYNK_EVERY_N_MILLIS	KEYWORD2
 #BLYNK_EVERY_N_SECONDS	KEYWORD2
 #BLYNK_EVERY_N_MINUTES	KEYWORD2
@@ -103,7 +112,9 @@ BLYNK_MAX_READBYTES	KEYWORD2
 # Literals (LITERAL1)
 #######################################
 
+#######################################
 # Virtual pins
+#######################################
 V0	LITERAL1
 V1	LITERAL1
 V2	LITERAL1

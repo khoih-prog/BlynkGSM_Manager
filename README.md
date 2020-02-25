@@ -2,7 +2,7 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
 
-By design, Blynk user can run ESP32/ESP8266 boards with either WiFi or GSM/GPRS by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk GSM/GPRS and WiFi libraries in one sketch, run both WiFi and GSM/GPRS simultaneously, or select one to use at runtime after reboot.
+By design, Blynk user can run ESP32/ESP8266 boards with either WiFi or GSM/GPRS by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk GSM/GPRS and WiFi libraries in one sketch, run ***both WiFi and GSM/GPRS simultaneously***, or select one to use at runtime after reboot.
 
 - This is the new library, adding to the current Blynk_WiFiManager. It's designed to help you eliminate `hardcoding` your Blynk credentials in `ESP32 and ESP8266` boards using GSM shield (SIM800, SIM900, etc).
 
@@ -17,7 +17,8 @@ By design, Blynk user can run ESP32/ESP8266 boards with either WiFi or GSM/GPRS 
 
 #### Use Arduino Library Manager
 
-The easiest way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager`, then select / install the latest version.
+1. The easiest way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager`, then select / install the latest version.
+2. More detailed instructions at [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
 
 #### Manual Install
 
@@ -388,6 +389,12 @@ gprs apn = rogers-core-appl1.apn
 BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG
 
 ```
+### Releases v1.0.3
+
+***New in this version***
+
+1. Add checksum for more reliable data
+2. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
 
 ### Releases v1.0.2
 

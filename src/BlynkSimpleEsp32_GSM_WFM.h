@@ -6,10 +6,10 @@
  * Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
  * Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
  * Licensed under MIT license
- * Version: 1.0.2
+ * Version: 1.0.3
  *
  * Original Blynk Library author:
- * @file       BlynkSimpleESP32.h
+ * @file       BlynkSimpleESP8266.h
  * @author     Volodymyr Shymanskyy
  * @license    This project is released under the MIT License (MIT)
  * @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
@@ -21,6 +21,7 @@
  *  1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
  *  1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
  *  1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
+ *  1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleEsp32_GSM_WFM_h
@@ -77,10 +78,11 @@ typedef struct Configuration
     int  blynk_port;
     char gsm_blynk_tok  [36];
     char board_name     [24];
+    int  checkSum;
 } Blynk_WF_Configuration;
 
 
-// Currently CONFIG_DATA_SIZE  =   320    //216
+// Currently CONFIG_DATA_SIZE  =   324
 uint16_t CONFIG_DATA_SIZE = sizeof(struct Configuration);
 
 #define root_html_template " \
@@ -188,8 +190,8 @@ alert('Updated. Reset'); \
 
 #define BLYNK_SERVER_HARDWARE_PORT    8080
 
-#define BOARD_TYPE      "ESP32_GSM_WFM"
-#define NO_CONFIG       "nothing"
+#define BLYNK_BOARD_TYPE      "ESP32_GSM_WFM"
+#define NO_CONFIG             "nothing"
 
 class BlynkWifi
     : public BlynkProtocol<BlynkArduinoClient>
@@ -274,6 +276,8 @@ public:
         //Turn OFF
         pinMode(LED_BUILTIN, OUTPUT);
         digitalWrite(LED_BUILTIN, LED_OFF);
+        
+        WiFi.mode(WIFI_STA);
         
 				if (iHostname[0] == 0)
 				{
@@ -597,10 +601,16 @@ public:
         
       // Check if NULL pointer
       if (configData)
-        memcpy(configData, &BlynkGSM_ESP32_config, sizeof(Blynk_WF_Configuration));
+        memcpy(configData, &BlynkGSM_ESP32_config, sizeof(BlynkGSM_ESP32_config));
 
       return (configData);
     }
+    
+    void clearConfigData()
+    {
+      memset(&BlynkGSM_ESP32_config, 0, sizeof(BlynkGSM_ESP32_config));  
+      saveConfigData(); 
+    }   
                          
 private:
     WebServer *server;
@@ -672,6 +682,17 @@ private:
         BLYNK_LOG4(BLYNK_F("DNS1 = "), WiFi.dnsIP(0).toString(), BLYNK_F(", DNS2 = "), WiFi.dnsIP(1).toString());
     }
     
+    int calcChecksum()
+    {
+      int checkSum = 0;
+      for (uint16_t index = 0; index < (sizeof(BlynkGSM_ESP32_config) - sizeof(BlynkGSM_ESP32_config.checkSum)); index++)
+      {
+        checkSum += * ( ( (byte*) &BlynkGSM_ESP32_config ) + index);
+      }
+     
+      return checkSum;
+    }
+    
 #if USE_SPIFFS     
 
     #define  CONFIG_FILENAME         BLYNK_F("/gsm_config.dat")
@@ -707,6 +728,10 @@ private:
     {
       File file = SPIFFS.open(CONFIG_FILENAME, "w");
       BLYNK_LOG1(BLYNK_F("Save configfile "));
+      
+      int calChecksum = calcChecksum();
+      BlynkGSM_ESP32_config.checkSum = calChecksum;
+      BLYNK_LOG2(BLYNK_F("chkSum = 0x"), String(calChecksum, HEX));
       
       if (file) 
       {
@@ -750,15 +775,21 @@ private:
         loadConfigData();
       }
 
-      displayConfigData();
+      int calChecksum = calcChecksum();
       
-      if (strncmp(BlynkGSM_ESP32_config.header, BOARD_TYPE, strlen(BOARD_TYPE)) != 0) 
+      BLYNK_LOG4(BLYNK_F("Calc Cksum = 0x"), String(calChecksum, HEX),
+                 BLYNK_F(", Read Cksum = 0x"), String(BlynkGSM_ESP32_config.checkSum, HEX)); 
+      
+      //displayConfigData();
+      
+      if ( (strncmp(BlynkGSM_ESP32_config.header, BLYNK_BOARD_TYPE, strlen(BLYNK_BOARD_TYPE)) != 0) ||
+           (calChecksum != BlynkGSM_ESP32_config.checkSum) )
       {
           memset(&BlynkGSM_ESP32_config, 0, sizeof(BlynkGSM_ESP32_config));
                                    
           BLYNK_LOG2(BLYNK_F("Init new configfile, size = "), sizeof(BlynkGSM_ESP32_config));          
           // doesn't have any configuration
-          strcpy(BlynkGSM_ESP32_config.header,           BOARD_TYPE);
+          strcpy(BlynkGSM_ESP32_config.header,           BLYNK_BOARD_TYPE);
           strcpy(BlynkGSM_ESP32_config.wifi_ssid,        NO_CONFIG);
           strcpy(BlynkGSM_ESP32_config.wifi_pw,          NO_CONFIG);
           strcpy(BlynkGSM_ESP32_config.wifi_blynk_tok,   NO_CONFIG);
@@ -770,6 +801,8 @@ private:
           BlynkGSM_ESP32_config.blynk_port = BLYNK_SERVER_HARDWARE_PORT;
           strcpy(BlynkGSM_ESP32_config.gsm_blynk_tok,    NO_CONFIG);
           strcpy(BlynkGSM_ESP32_config.board_name,       NO_CONFIG);
+          // Don't need
+          BlynkGSM_ESP32_config.checkSum = 0;
           
           saveConfigData();
           
@@ -828,15 +861,19 @@ private:
       EEPROM.begin(EEPROM_SIZE);
       EEPROM.get(EEPROM_START, BlynkGSM_ESP32_config);
       
-      displayConfigData();
-
-      if (strncmp(BlynkGSM_ESP32_config.header, BOARD_TYPE, strlen(BOARD_TYPE)) != 0) 
+      int calChecksum = calcChecksum();
+      
+      BLYNK_LOG4(BLYNK_F("Calc Cksum = 0x"), String(calChecksum, HEX), 
+                 BLYNK_F(", Read Cksum = 0x"), String(BlynkGSM_ESP32_config.checkSum, HEX)); 
+           
+      if ( (strncmp(BlynkGSM_ESP32_config.header, BLYNK_BOARD_TYPE, strlen(BLYNK_BOARD_TYPE)) != 0) ||
+           (calChecksum != BlynkGSM_ESP32_config.checkSum) )
       {
           memset(&BlynkGSM_ESP32_config, 0, sizeof(BlynkGSM_ESP32_config));
                                    
           BLYNK_LOG2(BLYNK_F("Init new EEPROM, size = "), EEPROM_SIZE /*EEPROM.length()*/);          
           // doesn't have any configuration
-          strcpy(BlynkGSM_ESP32_config.header,           BOARD_TYPE);
+          strcpy(BlynkGSM_ESP32_config.header,           BLYNK_BOARD_TYPE);
           strcpy(BlynkGSM_ESP32_config.wifi_ssid,        NO_CONFIG);
           strcpy(BlynkGSM_ESP32_config.wifi_pw,          NO_CONFIG);
           strcpy(BlynkGSM_ESP32_config.wifi_blynk_tok,   NO_CONFIG);
@@ -848,6 +885,8 @@ private:
           BlynkGSM_ESP32_config.blynk_port = BLYNK_SERVER_HARDWARE_PORT;
           strcpy(BlynkGSM_ESP32_config.gsm_blynk_tok,    NO_CONFIG);
           strcpy(BlynkGSM_ESP32_config.board_name,       NO_CONFIG);
+          // Don't need
+          BlynkGSM_ESP32_config.checkSum = 0;
           
           EEPROM.put(EEPROM_START, BlynkGSM_ESP32_config);
           EEPROM.commit();
@@ -876,7 +915,10 @@ private:
     
     void saveConfigData()
     {      
-      BLYNK_LOG2(BLYNK_F("Save EEPROM, size = "), EEPROM_SIZE /*EEPROM.length()*/);   
+      int calChecksum = calcChecksum();
+      BlynkGSM_ESP32_config.checkSum = calChecksum;
+      BLYNK_LOG4(BLYNK_F("Save EEPROM, size = "), EEPROM.length(), BLYNK_F(", chkSum = 0x"), String(calChecksum, HEX));
+         
       EEPROM.put(EEPROM_START, BlynkGSM_ESP32_config);
       EEPROM.commit();
     }
@@ -965,7 +1007,7 @@ private:
         if (number_items_Updated == 0)
         {
           memset(&BlynkGSM_ESP32_config, 0, sizeof(BlynkGSM_ESP32_config));
-          strcpy(BlynkGSM_ESP32_config.header, BOARD_TYPE);
+          strcpy(BlynkGSM_ESP32_config.header, BLYNK_BOARD_TYPE);
         }
         
         if (key == "wf_id")
@@ -1114,7 +1156,7 @@ private:
 
           BLYNK_LOG1(BLYNK_F("hR: Reset"));
           
-          // Delay then reset the ESP8266 after save data
+          // Delay then reset the ESP32 after save data
           delay(1000);
           ESP.restart();
         }
