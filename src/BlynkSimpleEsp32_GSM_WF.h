@@ -1,27 +1,27 @@
 /****************************************************************************************************************************
- * BlynkSimpleESP32_GSM_WF.h
- * For ESP32 with GSM/GPRS and WiFi running simultaneously, with WiFi config portal
- *
- * Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
- * Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
- * Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
- * Licensed under MIT license
- * Version: 1.0.3
- *
- * Original Blynk Library author:
- * @file       BlynkSimpleESP8266.h
- * @author     Volodymyr Shymanskyy
- * @license    This project is released under the MIT License (MIT)
- * @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
- * @date       Oct 2016
- * @brief
- *
- * Version Modified By   Date      Comments
- * ------- -----------  ---------- -----------
- *  1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
- *  1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
- *  1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
- *  1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
+   BlynkSimpleESP32_GSM_WF.h
+   For ESP32 with GSM/GPRS and WiFi running simultaneously, with WiFi config portal
+
+   Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
+   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+   Licensed under MIT license
+   Version: 1.0.3
+
+   Original Blynk Library author:
+   @file       BlynkSimpleESP8266.h
+   @author     Volodymyr Shymanskyy
+   @license    This project is released under the MIT License (MIT)
+   @copyright  Copyright (c) 2015 Volodymyr Shymanskyy
+   @date       Oct 2016
+   @brief
+
+   Version Modified By   Date      Comments
+   ------- -----------  ---------- -----------
+    1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
+    1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
+    1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
+    1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleEsp32_GSM_WF_h
@@ -42,46 +42,46 @@
 #include <WiFi.h>
 
 class BlynkWifi
-    : public BlynkProtocol<BlynkArduinoClient>
+  : public BlynkProtocol<BlynkArduinoClient>
 {
     typedef BlynkProtocol<BlynkArduinoClient> Base;
-public:
+  public:
     BlynkWifi(BlynkArduinoClient& transp)
-        : Base(transp)
+      : Base(transp)
     {}
 
     void connectWiFi(const char* ssid, const char* pass)
     {
-        BLYNK_LOG2(BLYNK_F("Connecting to "), ssid);
-        WiFi.mode(WIFI_STA);
-        if (pass && strlen(pass)) {
-            WiFi.begin(ssid, pass);
-        } else {
-            WiFi.begin(ssid);
-        }
-        while (WiFi.status() != WL_CONNECTED) {
-            BlynkDelay(500);
-        }
-        BLYNK_LOG1(BLYNK_F("Connected to WiFi"));
+      BLYNK_LOG2(BLYNK_F("Connecting to "), ssid);
+      WiFi.mode(WIFI_STA);
+      if (pass && strlen(pass)) {
+        WiFi.begin(ssid, pass);
+      } else {
+        WiFi.begin(ssid);
+      }
+      while (WiFi.status() != WL_CONNECTED) {
+        BlynkDelay(500);
+      }
+      BLYNK_LOG1(BLYNK_F("Connected to WiFi"));
 
-        IPAddress myip = WiFi.localIP();
-        BLYNK_LOG_IP("IP: ", myip);
+      IPAddress myip = WiFi.localIP();
+      BLYNK_LOG_IP("IP: ", myip);
     }
 
     void config(const char* auth,
                 const char* domain = BLYNK_DEFAULT_DOMAIN,
                 uint16_t    port   = BLYNK_DEFAULT_PORT)
     {
-        Base::begin(auth);
-        this->conn.begin(domain, port);
+      Base::begin(auth);
+      this->conn.begin(domain, port);
     }
 
     void config(const char* auth,
                 IPAddress   ip,
                 uint16_t    port = BLYNK_DEFAULT_PORT)
     {
-        Base::begin(auth);
-        this->conn.begin(ip, port);
+      Base::begin(auth);
+      this->conn.begin(ip, port);
     }
 
     void begin(const char* auth,
@@ -90,9 +90,9 @@ public:
                const char* domain = BLYNK_DEFAULT_DOMAIN,
                uint16_t    port   = BLYNK_DEFAULT_PORT)
     {
-        connectWiFi(ssid, pass);
-        config(auth, domain, port);
-        while(this->connect() != true) {}
+      connectWiFi(ssid, pass);
+      config(auth, domain, port);
+      while (this->connect() != true) {}
     }
 
     void begin(const char* auth,
@@ -101,9 +101,9 @@ public:
                IPAddress   ip,
                uint16_t    port   = BLYNK_DEFAULT_PORT)
     {
-        connectWiFi(ssid, pass);
-        config(auth, ip, port);
-        while(this->connect() != true) {}
+      connectWiFi(ssid, pass);
+      config(auth, ip, port);
+      while (this->connect() != true) {}
     }
 
 };
