@@ -6,13 +6,15 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.2
+   Version: 1.0.4
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
     1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
     1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
     1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
+    1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
+    1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
  *****************************************************************************************************************************/
 
 #ifndef ESP32
@@ -51,31 +53,31 @@
 #include <BlynkSimpleTinyGSM_M.h>
 
 #if USE_BLYNK_WM
-  #include <BlynkSimpleEsp32_GSM_WFM.h>
+#include <BlynkSimpleEsp32_GSM_WFM.h>
 #else
-  #include <BlynkSimpleEsp32_GSM_WF.h>
+#include <BlynkSimpleEsp32_GSM_WF.h>
 
-  // Your WiFi credentials.
-  #define ssid  "****"
-  #define pass  "****"
-  
-  #define USE_LOCAL_SERVER      true
-  //#define USE_LOCAL_SERVER      false
-  
-  #if USE_LOCAL_SERVER
-    #define wifi_blynk_tok        "****"
-    #define gsm_blynk_tok         "****"
-    //#define blynk_server          "account.duckdns.org"
-    #define blynk_server          "xxx.xxx.xxx.xxx"
-  #else
-    #define wifi_blynk_tok        "****"
-    #define gsm_blynk_tok         "****"
-    #define blynk_server          "blynk-cloud.com"
-  #endif
-  
-  #define apn         "rogers-core-appl1.apn"
-  #define gprsUser    ""    //"wapuser1"
-  #define gprsPass    ""    //"wap"
+// Your WiFi credentials.
+#define ssid  "****"
+#define pass  "****"
+
+#define USE_LOCAL_SERVER      true
+//#define USE_LOCAL_SERVER      false
+
+#if USE_LOCAL_SERVER
+#define wifi_blynk_tok        "****"
+#define gsm_blynk_tok         "****"
+//#define blynk_server          "account.duckdns.org"
+#define blynk_server          "xxx.xxx.xxx.xxx"
+#else
+#define wifi_blynk_tok        "****"
+#define gsm_blynk_tok         "****"
+#define blynk_server          "blynk-cloud.com"
+#endif
+
+#define apn         "rogers-core-appl1.apn"
+#define gprsUser    ""    //"wapuser1"
+#define gprsPass    ""    //"wap"
 #endif
 
 #define BLYNK_HARDWARE_PORT       8080
@@ -141,7 +143,7 @@ void check_status()
 {
   static unsigned long checkstatus_timeout = 0;
 
-#define STATUS_CHECK_INTERVAL     1000L //60000L
+#define STATUS_CHECK_INTERVAL     60000L
 
   // Send status report every STATUS_REPORT_INTERVAL (60) seconds: we don't need to send updates frequently if there is no status change.
   if ((millis() > checkstatus_timeout) || (checkstatus_timeout == 0))
@@ -205,16 +207,16 @@ void setup()
 
   if (String(localBlynkGSM_ESP32_config.apn) == String("nothing"))
   {
-    Serial.println(F("No valid stored apn. Have to run WiFi then enter config portal"));
+    Serial.println(F("No valid stored apn. Must run WiFi to Open config portal"));
     valid_apn = false;
   }
   else
   {
     valid_apn = true;
-    
+
     Blynk_GSM.config(modem, localBlynkGSM_ESP32_config.gsm_blynk_tok, localBlynkGSM_ESP32_config.blynk_server, BLYNK_HARDWARE_PORT);
-    GSM_CONNECT_OK = Blynk_GSM.connectNetwork(localBlynkGSM_ESP32_config.apn, localBlynkGSM_ESP32_config.gprsUser, 
-                                              localBlynkGSM_ESP32_config.gprsPass);
+    GSM_CONNECT_OK = Blynk_GSM.connectNetwork(localBlynkGSM_ESP32_config.apn, localBlynkGSM_ESP32_config.gprsUser,
+                     localBlynkGSM_ESP32_config.gprsPass);
 
     if (GSM_CONNECT_OK)
       Blynk_GSM.connect();
@@ -223,7 +225,7 @@ void setup()
 }
 
 void loop()
-{ 
+{
   Blynk_WF.run();
 
 #if USE_BLYNK_WM

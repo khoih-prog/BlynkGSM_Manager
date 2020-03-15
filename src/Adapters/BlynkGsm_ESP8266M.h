@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -22,6 +22,7 @@
     1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
     1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
     1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
+    1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
  *****************************************************************************************************************************/
 #ifndef ESP8266
 #error This code is designed to run on ESP8266, not ESP32 nor Arduino AVR platform! Please check your Tools->Board setting.
@@ -61,7 +62,7 @@
 #endif
 
 #ifndef BLYNK_TIMEOUT_MS
-#define BLYNK_TIMEOUT_MS 30000
+#define BLYNK_TIMEOUT_MS 30000UL
 #endif
 
 #define BLYNK_SEND_ATOMIC
@@ -83,44 +84,44 @@ class BlynkSIM
 
     bool connectNetwork(const char* apn, const char* user, const char* pass)
     {
-      BLYNK_LOG1(BLYNK_F("Modem init..."));
+      BLYNK_LOG1(BLYNK_F("InitModem"));
       if (!modem->begin())
       {
-        BLYNK_LOG1(BLYNK_F("Can't init"));
+        BLYNK_LOG1(BLYNK_F("failed"));
         return false;
       }
 
       switch (modem->getSimStatus())
       {
         case SIM_ERROR:
-          BLYNK_LOG1(BLYNK_F("SIM missing"));
+          BLYNK_LOG1(BLYNK_F("NoSIM"));
           return false;
         case SIM_LOCKED:
-          BLYNK_LOG1(BLYNK_F("SIM PIN-locked"));
+          BLYNK_LOG1(BLYNK_F("SIMPINLocked"));
           return false;
         default:
           break;
       }
 
-      BLYNK_LOG1(BLYNK_F("Connect to network..."));
+      BLYNK_LOG1(BLYNK_F("Con2Network"));
       if (modem->waitForNetwork())
       {
-        BLYNK_LOG2(BLYNK_F("Network: "), modem->getOperator());
+        BLYNK_LOG2(BLYNK_F("Network:"), modem->getOperator());
       }
       else
       {
-        BLYNK_LOG1(BLYNK_F("Network Register failed"));
+        BLYNK_LOG1(BLYNK_F("NetworkRegisterFailed"));
         return false;
       }
 
-      BLYNK_LOG3(BLYNK_F("Connecting to "), apn, BLYNK_F(" ..."));
+      BLYNK_LOG2(BLYNK_F("Conn2 "), apn);
       if (!modem->gprsConnect(apn, user, pass))
       {
-        BLYNK_LOG1(BLYNK_F("Connect GPRS failed"));
+        BLYNK_LOG1(BLYNK_F("GPRSConFailed"));
         return false;
       }
 
-      BLYNK_LOG1(BLYNK_F("Connected to GPRS"));
+      BLYNK_LOG1(BLYNK_F("GPRSConOK"));
       return true;
     }
 

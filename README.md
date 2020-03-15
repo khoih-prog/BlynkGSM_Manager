@@ -2,6 +2,11 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
 
+### Releases v1.0.4
+
+1. Enhance Config Portal GUI.
+2. Reduce code size.
+
 By design, Blynk user can run ESP32/ESP8266 boards with either WiFi or GSM/GPRS by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk GSM/GPRS and WiFi libraries in one sketch, run ***both WiFi and GSM/GPRS simultaneously***, or select one to use at runtime after reboot.
 
 - This is the new library, adding to the current Blynk_WiFiManager. It's designed to help you eliminate `hardcoding` your Blynk credentials in `ESP32 and ESP8266` boards using GSM shield (SIM800, SIM900, etc).
@@ -10,8 +15,8 @@ By design, Blynk user can run ESP32/ESP8266 boards with either WiFi or GSM/GPRS 
 
 ## Prerequisite
 1. [`Arduino IDE 1.8.10 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. `ESP32 core 1.0.4 or later` for ESP32 (Use Arduino Board Manager)
-3. `ESP8266 core 2.6.3 or later` for ES82662 (Use Arduino Board Manager)
+2. [`ESP32 core 1.0.4 or later`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
+3. [`ESP8266 core 2.6.3 or later`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager)
 3. [`Blynk library 0.6.1 or later`](https://github.com/blynkkk/blynk-library/releases)
 4. [`TinyGSM library 0.7.9 or later`](https://github.com/vshymanskyy/TinyGSM) 
 
@@ -63,7 +68,7 @@ Also see examples:
 
 ## So, how it works?
 
-If it detects no valid stored Credentials or it cannot connect to the Blynk server in 30 seconds, it will switch to `Configuration Mode`. You will see your built-in LED turned ON. In `Configuration Mode`, it starts a WiFi access point called `ESP_xxxxxx`. Connect to it using password `MyESP_xxxxxx` .
+If it detects no valid stored Credentials or it cannot connect to the Blynk server in 30 seconds, it will switch to ***Configuration Mode***. You will see your built-in LED turned ON. In `Configuration Mode`, it starts a WiFi access point called ***ESP_xxxxxx***. Connect to it using password ***MyESP_xxxxxx***.
 
 You can set:
 
@@ -81,13 +86,13 @@ After you connected, go to http://192.168.4.1., the Browser will display the fol
     <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_2.png">
 </p>
 
-Enter your credentials (APN, GPRS User, GPRS Pass, GPRS PIN, Blynk Token, Server and Port).
+Enter your credentials (WiFi SSID/Password/WiFi-Token, GPRS APN/User/Pass/PIN, Blynk Server/Port/GSM-Token).
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_3.png">
 </p>
 
-Then click `Save`. After the  board auto-restarted, you will see if it's connected to your Blynk server successfully.
+Then click ***Save***. After the  board auto-restarted, you will see if it's connected to your Blynk server successfully.
 
 
 This `Blynk.begin()` is not a blocking call, so you can use it for critical functions requiring in loop(). 
@@ -124,6 +129,7 @@ void loop()
 2. More flexible to configure reconnection timeout.
 3. For fresh config data, don't need to wait for connecting timeout before entering config portal.
 4. If the config data not entered completely (APN, GPRS User, GPRS Pass, Server, HardwarePort and Blynk token), entering config portal
+5. Better Cofig Portal GUI
 
 
 ## Example for ES32 and SIM800L GSM shield
@@ -308,7 +314,7 @@ void setup()
     
     if (String(localBlynkGSM_ESP32_config.apn) == String("nothing"))
     {
-      Serial.println(F("No valid stored apn. Have to run WiFi then enter config portal"));
+      Serial.println(F("No valid stored apn. Must run WiFi to Open config portal"));
       valid_apn = false;
     }
     else
@@ -345,12 +351,13 @@ and this is the terminal debug output when running both WiFi and GSM/GPRS at the
 Start TTGO-TCALL-GSM
 Set GSM module baud rate
 Use WiFi to connect Blynk
-[3034] RFC925 Hostname = TTGO-TCALL-GSM
-[3040] Header = ESP32_GSM_WFM, SSID = ****, PW = ****
-[3040] Server = xxx.xxx.xxx.xxx, Port = 8080, WiFi Token = ****
-[3044] APN = rogers-core-appl1.apn, GPRS User = wapuser1
-[3049] GPRS PW = wap, GPRS PIN = 12345678, GSM Token = ****
-[3057] Board Name = TTGO-TCALL
+[3034] Hostname=TTGO-TCALL-GSM
+[3040] CCSum=0x3a8e,RCSum=0x3a8e
+[3040] Hdr=ESP32_GSM_WFM,SSID=your-ssid,PW=your-pass
+[3040] Svr=account.duckdns.org,Prt=8080,WiFiToken=wifi-token
+[3044] APN=rogers-core-appl1.apn,User=wapuser1
+[3049] PW=wap,PIN=12345678,GSMToken=gsm-token
+[3057] BrdName=TTGO-TCALL
 [3059] Header = ESP32_GSM_WFM, SSID = ****, PW = ****
 [3064] Server = 45.72.166.253, Port = 8080, WiFi Token = ****
 [3072] APN = rogers-core-appl1.apn, GPRS User = wapuser1
@@ -363,14 +370,14 @@ Use WiFi to connect Blynk
  /____/_/\_, /_//_/_/\_\
         /___/ v0.6.1 on ESP32
 
-[3210] con2WF: start
-[4711] con2WF: con OK
-[4711] IP = 192.168.2.137, GW = 192.168.2.1, SN = 255.255.0.0
-[4711] DNS1 = 192.168.2.1, DNS2 = 0.0.0.0
-[4711] bg: WiFi connected. Try Blynk
-[4714] BlynkArduinoClient.connect: Connecting to xxx.xxx.xxx.xxx:8080
+[3210] con2WF:start
+[4711] con2WF:OK
+[4711] IP=192.168.2.137,GW=192.168.2.1,SN=255.255.0.0
+[4711] DNS1=192.168.2.1,DNS2=0.0.0.0
+[4711] b:WOK.TryB
+[4714] BlynkArduinoClient.connect: Connecting to account.duckdns.org:8080
 [4746] Ready (ping: 6ms).
-[4814] bg: WiFi+Blynk connected
+[4814] b:WBOK
 gprs apn = rogers-core-appl1.apn
 [4815] 
     ___  __          __
@@ -379,16 +386,23 @@ gprs apn = rogers-core-appl1.apn
  /____/_/\_, /_//_/_/\_\
         /___/ v0.6.1 on ESP32
 
-[4822] Modem init...
-[4944] Connecting to network...
-[4955] Network: Rogers Wireless
-[4955] Connecting to rogers-core-appl1.apn ...
-[10084] Connected to GPRS
-[10094] BlynkArduinoClient.connect: Connecting to xxx.xxx.xxx.xxx:8080
+[4822] InitModem
+[4944] Con2Network
+[4955] Network:Rogers Wireless
+[4955] Conn2 rogers-core-appl1.apn
+[10084] GPRSConOK
+[10094] BlynkArduinoClient.connect: Connecting to account.duckdns.org:8080
 [10738] Ready (ping: 315ms).
 BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG
-
 ```
+
+### Releases v1.0.4
+
+***Why this version***
+
+1. Enhance Config Portal GUI.
+2. Reduce code size.
+
 ### Releases v1.0.3
 
 ***New in this version***

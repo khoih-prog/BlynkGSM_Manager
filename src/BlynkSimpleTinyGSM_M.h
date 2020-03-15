@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.3
+   Version: 1.0.4
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -22,6 +22,7 @@
     1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
     1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
     1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
+    1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleTinyGSM_M_h
