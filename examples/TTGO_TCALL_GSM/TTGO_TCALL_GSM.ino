@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.4
+   Version: 1.0.5
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -15,6 +15,7 @@
     1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
     1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
     1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
+    1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
  *****************************************************************************************************************************/
 
 #ifndef ESP32
@@ -35,6 +36,29 @@
 
 // Select your modem:
 #define TINY_GSM_MODEM_SIM800
+//#define TINY_GSM_MODEM_SIM808
+//#define TINY_GSM_MODEM_SIM868
+//#define TINY_GSM_MODEM_SIM900
+//#define TINY_GSM_MODEM_SIM5300
+//#define TINY_GSM_MODEM_SIM5320
+//#define TINY_GSM_MODEM_SIM5360
+//#define TINY_GSM_MODEM_SIM7000
+//#define TINY_GSM_MODEM_SIM7100
+//#define TINY_GSM_MODEM_SIM7500
+//#define TINY_GSM_MODEM_SIM7600
+//#define TINY_GSM_MODEM_SIM7800
+//#define TINY_GSM_MODEM_UBLOX
+//#define TINY_GSM_MODEM_SARAR4
+//#define TINY_GSM_MODEM_M95
+//#define TINY_GSM_MODEM_BG96
+//#define TINY_GSM_MODEM_A6
+//#define TINY_GSM_MODEM_A7
+//#define TINY_GSM_MODEM_M590
+//#define TINY_GSM_MODEM_MC60
+//#define TINY_GSM_MODEM_MC60E
+//#define TINY_GSM_MODEM_XBEE
+//#define TINY_GSM_MODEM_SEQUANS_MONARCH
+
 // Increase RX buffer if needed
 #define TINY_GSM_RX_BUFFER 1024
 

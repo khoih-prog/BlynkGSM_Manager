@@ -2,6 +2,45 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
 
+### Releases v1.0.5
+
+1. Add more modem supports. Thanks to new [TinyGSM library v0.10.1+](https://github.com/vshymanskyy/TinyGSM).
+
+## Supported modems
+
+- SIMCom SIM800 series (SIM800A, SIM800C, SIM800L, SIM800H, SIM808, SIM868)
+- SIMCom SIM900 series (SIM900A, SIM900D, SIM908, SIM968)
+- SIMCom WCDMA/HSPA/HSPA+ Modules (SIM5360, SIM5320, SIM5300E, SIM5300EA)
+- SIMCom LTE Modules (SIM7100E, SIM7500E, SIM7500A, SIM7600C, SIM7600E)
+- SIMCom SIM7000E CAT-M1/NB-IoT Module
+- AI-Thinker A6, A6C, A7, A20
+- ESP8266 (AT commands interface, similar to GSM modems)
+- Digi XBee WiFi and Cellular (using XBee command mode)
+- Neoway M590
+- u-blox 2G, 3G, 4G, and LTE Cat1 Cellular Modems (many modules including LEON-G100, LISA-U2xx, SARA-G3xx, SARA-U2xx, TOBY-L2xx, LARA-R2xx, MPCI-L2xx)
+- u-blox LTE-M Modems (SARA-R4xx, SARA-N4xx, _but NOT SARA-N2xx_)
+- Sequans Monarch LTE Cat M1/NB1 (VZM20Q)
+- Quectel BG96
+- Quectel M95
+- Quectel MC60 ***(alpha)***
+
+### Supported boards/modules
+- Arduino MKR GSM 1400
+- GPRSbee
+- Microduino GSM
+- Adafruit FONA (Mini Cellular GSM Breakout)
+- Adafruit FONA 800/808 Shield
+- Industruino GSM
+- RAK WisLTE ***(alpha)***
+- ... other modules, based on supported modems. Some boards require [**special configuration**](https://github.com/vshymanskyy/TinyGSM/wiki/Board-configuration).
+
+More modems may be supported later:
+- [ ] Quectel M10, UG95
+- [ ] SIMCom SIM7020
+- [ ] Telit GL865
+- [ ] ZTE MG2639
+- [ ] Hi-Link HLK-RM04
+
 ### Releases v1.0.4
 
 1. Enhance Config Portal GUI.
@@ -14,11 +53,11 @@ By design, Blynk user can run ESP32/ESP8266 boards with either WiFi or GSM/GPRS 
 - You can update GSM Modem and Blynk Credentials any time you need to change via Configure Portal. Data are saved in SPIFFS or configurable locations in EEPROM.
 
 ## Prerequisite
-1. [`Arduino IDE 1.8.10 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
+1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
 2. [`ESP32 core 1.0.4 or later`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
 3. [`ESP8266 core 2.6.3 or later`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager)
 3. [`Blynk library 0.6.1 or later`](https://github.com/blynkkk/blynk-library/releases)
-4. [`TinyGSM library 0.7.9 or later`](https://github.com/vshymanskyy/TinyGSM) 
+4. [`TinyGSM library 0.10.1 or later`](https://github.com/vshymanskyy/TinyGSM) 
 
 #### Use Arduino Library Manager
 
@@ -139,6 +178,29 @@ Please take a look at examples, as well.
 
 // Select your modem:
 #define TINY_GSM_MODEM_SIM800
+//#define TINY_GSM_MODEM_SIM808
+//#define TINY_GSM_MODEM_SIM868
+//#define TINY_GSM_MODEM_SIM900
+//#define TINY_GSM_MODEM_SIM5300
+//#define TINY_GSM_MODEM_SIM5320
+//#define TINY_GSM_MODEM_SIM5360
+//#define TINY_GSM_MODEM_SIM7000
+//#define TINY_GSM_MODEM_SIM7100
+//#define TINY_GSM_MODEM_SIM7500
+//#define TINY_GSM_MODEM_SIM7600
+//#define TINY_GSM_MODEM_SIM7800
+//#define TINY_GSM_MODEM_UBLOX
+//#define TINY_GSM_MODEM_SARAR4
+//#define TINY_GSM_MODEM_M95
+//#define TINY_GSM_MODEM_BG96
+//#define TINY_GSM_MODEM_A6
+//#define TINY_GSM_MODEM_A7
+//#define TINY_GSM_MODEM_M590
+//#define TINY_GSM_MODEM_MC60
+//#define TINY_GSM_MODEM_MC60E
+//#define TINY_GSM_MODEM_XBEE
+//#define TINY_GSM_MODEM_SEQUANS_MONARCH
+
 // Increase RX buffer if needed
 #define TINY_GSM_RX_BUFFER 1024
 
@@ -395,6 +457,9 @@ gprs apn = rogers-core-appl1.apn
 [10738] Ready (ping: 315ms).
 BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG
 ```
+### Releases v1.0.5
+
+1. Add more modem supports. Thanks to new [TinyGSM library v0.10.1+](https://github.com/vshymanskyy/TinyGSM).
 
 ### Releases v1.0.4
 
@@ -428,6 +493,7 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 ### Contributions and thanks
 
 1. Thanks to [Mike Kranidis](https://community.blynk.cc/u/mikekgr) and [Mike Kranidis @ GitHub](https://github.com/mikekgr) for initial testing the library and giving reasons, advices to start this library.
+2. Thanks to [Volodymyr Shymanskyy](https://github.com/vshymanskyy) for the [TinyGSM library](https://github.com/vshymanskyy/TinyGSM) this library depends on.
 
 ## Contributing
 

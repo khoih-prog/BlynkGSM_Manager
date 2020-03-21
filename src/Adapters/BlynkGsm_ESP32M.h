@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.4
+   Version: 1.0.5
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -23,6 +23,7 @@
     1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
     1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
     1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
+    1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
  *****************************************************************************************************************************/
 #ifndef ESP32
 #error This code is designed to run on ESP32, not ESP8266 nor Arduino AVR platform! Please check your Tools->Board setting.
@@ -38,10 +39,34 @@
 #ifndef BLYNK_INFO_CONNECTION
 #if defined(TINY_GSM_MODEM_SIM800)
 #define BLYNK_INFO_CONNECTION  "SIM800"
+#elif defined(TINY_GSM_MODEM_SIM808)
+#define BLYNK_INFO_CONNECTION  "SIM808"
+#elif defined(TINY_GSM_MODEM_SIM868)
+#define BLYNK_INFO_CONNECTION  "SIM868"
 #elif defined(TINY_GSM_MODEM_SIM900)
 #define BLYNK_INFO_CONNECTION  "SIM900"
+#elif defined(TINY_GSM_MODEM_SIM5300)
+#define BLYNK_INFO_CONNECTION  "SIM5300"
+#elif defined(TINY_GSM_MODEM_SIM5320)
+#define BLYNK_INFO_CONNECTION  "SIM5320"
+#elif defined(TINY_GSM_MODEM_SIM5360)
+#define BLYNK_INFO_CONNECTION  "SIM5360"
+#elif defined(TINY_GSM_MODEM_SIM7000)
+#define BLYNK_INFO_CONNECTION  "SIM7000"
+#elif defined(TINY_GSM_MODEM_SIM7100)
+#define BLYNK_INFO_CONNECTION  "SIM7100"
+#elif defined(TINY_GSM_MODEM_SIM7500)
+#define BLYNK_INFO_CONNECTION  "SIM7500"
+#elif defined(TINY_GSM_MODEM_SIM7600)
+#define BLYNK_INFO_CONNECTION  "SIM7600"
+#elif defined(TINY_GSM_MODEM_SIM7800)
+#define BLYNK_INFO_CONNECTION  "SIM7800"
 #elif defined(TINY_GSM_MODEM_UBLOX)
 #define BLYNK_INFO_CONNECTION  "UBLOX"
+#elif defined(TINY_GSM_MODEM_SARAR4)
+#define BLYNK_INFO_CONNECTION  "SARAR4"
+#elif defined(TINY_GSM_MODEM_M95)
+#define BLYNK_INFO_CONNECTION  "M95"
 #elif defined(TINY_GSM_MODEM_BG96)
 #define BLYNK_INFO_CONNECTION  "BG96"
 #elif defined(TINY_GSM_MODEM_A6)
@@ -50,8 +75,16 @@
 #define BLYNK_INFO_CONNECTION  "A7"
 #elif defined(TINY_GSM_MODEM_M590)
 #define BLYNK_INFO_CONNECTION  "M590"
+#elif defined(TINY_GSM_MODEM_MC60)
+#define BLYNK_INFO_CONNECTION  "MC60"
+#elif defined(TINY_GSM_MODEM_MC60)
+#define BLYNK_INFO_CONNECTION  "MC60"
+#elif defined(TINY_GSM_MODEM_MC60E)
+#define BLYNK_INFO_CONNECTION  "MC60E"
 #elif defined(TINY_GSM_MODEM_XBEE)
 #define BLYNK_INFO_CONNECTION  "XBEE"
+#elif defined(TINY_GSM_MODEM_SEQUANS_MONARCH)
+#define BLYNK_INFO_CONNECTION  "SEQUANS_MONARCH"
 #else
 #define BLYNK_INFO_CONNECTION  "TinyGSM"
 #endif
