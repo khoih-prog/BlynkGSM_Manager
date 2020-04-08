@@ -107,7 +107,7 @@ That's it.
 
 ### How to add dynamic parameters from sketch
 
-- To add custom parameters, just mofify from the example below
+- To add custom parameters, just modify from the example below
 
 ```
 /////////////// Start dynamic Credentials ///////////////
@@ -156,7 +156,6 @@ MenuItem myMenuItems [] =
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
 /////// // End dynamic Credentials ///////////
-
 ```
 
 Also see examples: 
