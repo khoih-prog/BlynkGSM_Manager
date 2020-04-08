@@ -107,7 +107,7 @@ That's it.
 
 ### How to add dynamic parameters from sketch
 
-- To add custom parameters, just mofify from the example below
+- To add custom parameters, just modify from the example below
 
 ```
 /////////////// Start dynamic Credentials ///////////////
