@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.5
+   Version: 1.0.6
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -24,6 +24,7 @@
     1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
     1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
     1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
+    1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleESP8266_GSM_WFM
@@ -67,6 +68,23 @@
 #define LED_ON    LOW
 #define LED_OFF   HIGH
 
+//NEW
+#define MAX_ID_LEN                5
+#define MAX_DISPLAY_NAME_LEN      16
+
+typedef struct
+{
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+} MenuItem;
+//
+
+///NEW
+extern uint16_t NUM_MENU_ITEMS;
+extern MenuItem myMenuItems [];
+
 // Configurable items besides fixed Header
 #define NUM_CONFIGURABLE_ITEMS    11
 #define DEFAULT_GPRS_PIN          "1234"
@@ -94,10 +112,8 @@ typedef struct Configuration
 // Currently CONFIG_DATA_SIZE  =   324
 uint16_t CONFIG_DATA_SIZE = sizeof(struct Configuration);
 
-#if 1
-
-#define root_html_template "\
-<!DOCTYPE html><html><head><title>BlynkGSM_ESP8266</title><style>div,input{padding:2px;font-size:1em;}input{width:95%;}\
+// -- HTML page fragments
+const char BLYNK_GSM_HTML_HEAD[]     /*PROGMEM*/ = "<!DOCTYPE html><html><head><title>BlynkGSM_ESP8266</title><style>div,input{padding:2px;font-size:1em;}input{width:95%;}\
 body{text-align: center;}button{background-color:#16A1E7;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;}fieldset{border-radius:0.5rem;margin:0px;}\
 </style></head><div style=\"text-align:left;display:inline-block;min-width:260px;\">\
 <fieldset><div><label>WiFi SSID</label><input value=\"[[id]]\"id=\"id\"><div></div></div>\
@@ -110,122 +126,24 @@ body{text-align: center;}button{background-color:#16A1E7;color:#fff;line-height:
 <fieldset><div><label>Blynk Server</label><input value=\"[[sv]]\"id=\"sv\"><div></div></div>\
 <div><label>Port</label><input value=\"[[pt]]\"id=\"pt\"><div></div></div>\
 <div><label>Token</label><input value=\"[[tk1]]\"id=\"tk1\"><div></div></div></fieldset>\
-<fieldset><div><label>Board Name</label><input value=\"[[nm]]\"id=\"nm\"><div></div></div></fieldset>\
-<button onclick=\"sv()\">Save</button></div><script id=\"jsbin-javascript\">\
+<fieldset><div><label>Board Name</label><input value=\"[[nm]]\"id=\"nm\"><div></div></div></fieldset>";
+const char BLYNK_GSM_FLDSET_START[]  /*PROGMEM*/ = "<fieldset>";
+const char BLYNK_GSM_FLDSET_END[]    /*PROGMEM*/ = "</fieldset>";
+const char BLYNK_GSM_HTML_PARAM[]    /*PROGMEM*/ = "<div><label>{b}</label><input value='[[{v}]]'id='{i}'><div></div></div>";
+const char BLYNK_GSM_HTML_BUTTON[]   /*PROGMEM*/ = "<button onclick=\"sv()\">Save</button></div>";
+const char BLYNK_GSM_HTML_SCRIPT[]   /*PROGMEM*/ = "<script id=\"jsbin-javascript\">\
 function udVal(key,val){var request=new XMLHttpRequest();var url='/?key='+key+'&value='+val;request.open('GET',url,false);request.send(null);}\
 function sv(){udVal('id',document.getElementById('id').value);udVal('pw',document.getElementById('pw').value);\
 udVal('tk',document.getElementById('tk').value);udVal('apn',document.getElementById('apn').value);\
 udVal('usr',document.getElementById('usr').value);udVal('pwd',document.getElementById('pwd').value);\
 udVal('pin',document.getElementById('pin').value);udVal('sv',document.getElementById('sv').value);\
 udVal('pt',document.getElementById('pt').value);udVal('tk1',document.getElementById('tk1').value);\
-udVal('nm',document.getElementById('nm').value);alert('Updated');}</script></html>"
+udVal('nm',document.getElementById('nm').value);";
 
-#else
-
-#define root_html_template " \
-<!DOCTYPE html> \
-<meta name=\"robots\" content=\"noindex\"> \
-<html> \
-<head> \
-<meta charset=\"utf-8\"> \
-<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> \
-<title>BlynkGSM_ESP8266</title> \
-</head> \
-<body> \
-<div align=\"center\"> \
-<table> \
-<tbody> \
-<tr> \
-<th colspan=\"2\">WiFi</th> \
-</tr> \
-<tr> \
-<td>SSID</td> \
-<td><input type=\"text\" value=\"[[id]]\" size=20 maxlength=64 id=\"id\"></td> \
-</tr> \
-<tr> \
-<td>Password</td> \
-<td><input type=\"text\" value=\"[[pw]]\" size=20 maxlength=64 id=\"pw\"></td> \
-</tr> \
-<tr> \
-<td>WiFi Token</td> \
-<td><input type=\"text\" value=\"[[tk]]\" size=20 maxlength=64 id=\"tk\"></td> \
-</tr> \
-<tr> \
-<th colspan=\"2\">GSM-GPRS</th> \
-</tr> \
-<tr> \
-<td>APN</td> \
-<td><input type=\"text\" value=\"[[apn]]\" id=\"apn\"></td> \
-</tr> \
-<tr> \
-<td>GPRS User</td> \
-<td><input type=\"text\" value=\"[[usr]]\" id=\"usr\"></td> \
-</tr> \
-<tr> \
-<td>GPRS Password</td> \
-<td><input type=\"text\" value=\"[[pwd]]\" id=\"pwd\"></td> \
-</tr> \
-<tr> \
-<td>GPRS PIN</td> \
-<td><input type=\"text\" value=\"[[pin]]\" id=\"pin\"></td> \
-</tr> \
-<tr> \
-<th colspan=\"2\">Blynk</th> \
-</tr> \
-<tr> \
-<td>Server</td> \
-<td><input type=\"text\" value=\"[[sv]]\" id=\"sv\"></td> \
-</tr> \
-<tr> \
-<td>Port</td> \
-<td><input type=\"text\" value=\"[[pt]]\" id=\"pt\"></td> \
-</tr> \
-<tr> \
-<td>Token</td> \
-<td><input type=\"text\" value=\"[[tk1]]\" id=\"tk1\"></td> \
-</tr> \
-<tr> \
-<th colspan=\"2\">Hardware</th> \
-</tr> \
-<tr> \
-<td>Name</td> \
-<td><input type=\"text\" value=\"[[nm]]\" id=\"nm\"></td> \
-</tr> \
-<tr> \
-<td colspan=\"2\" align=\"center\"> \
-<button onclick=\"save()\">Save</button> \
-</td> \
-</tr> \
-</tbody> \
-</table> \
-</div> \
-<script id=\"jsbin-javascript\"> \
-function udVal(key, value) { \
-var request = new XMLHttpRequest(); \
-var url = '/?key=' + key + '&value=' + value; \
-console.log('call ' + url + '...'); \
-request.open('GET',url,false); \
-request.send(null); \
-} \
-function save() { \
-udVal('id',document.getElementById('id').value); \
-udVal('pw',document.getElementById('pw').value); \
-udVal('tk',document.getElementById('tk').value); \
-udVal('apn',document.getElementById('apn').value); \
-udVal('usr',document.getElementById('usr').value); \
-udVal('pwd',document.getElementById('pwd').value); \
-udVal('pin',document.getElementById('pin').value); \
-udVal('sv',document.getElementById('sv').value); \
-udVal('pt',document.getElementById('pt').value); \
-udVal('tk1',document.getElementById('tk1').value); \
-udVal('nm',document.getElementById('nm').value); \
-alert('Updated. Reset'); \
-} \
-</script> \
-</body> \
-</html>"
-
-#endif
+const char BLYNK_GSM_HTML_SCRIPT_ITEM[]  /*PROGMEM*/ = "udVal('{d}',document.getElementById('{d}').value);";
+const char BLYNK_GSM_HTML_SCRIPT_END[]   /*PROGMEM*/ = "alert('Updated');}</script>";
+const char BLYNK_GSM_HTML_END[]          /*PROGMEM*/ = "</html>";
+///
 
 #define BLYNK_SERVER_HARDWARE_PORT    8080
 
@@ -649,6 +567,8 @@ class BlynkWifi
     int WiFiAPChannel = 1;
 
     Blynk_WF_Configuration BlynkGSM_ESP8266_config;
+    
+    uint16_t totalDataSize = 0;
 
     // For Config Portal, from Blynk_WM v1.0.5
     IPAddress portal_apIP = IPAddress(192, 168, 4, 1);
@@ -721,8 +641,143 @@ class BlynkWifi
 
 #if USE_SPIFFS
 
-#define  CONFIG_FILENAME         BLYNK_F("/gsm_config.dat")
-#define  CONFIG_FILENAME_BACKUP  BLYNK_F("/gsm_config.bak")
+#define  CONFIG_FILENAME              BLYNK_F("/gsm_config.dat")
+#define  CONFIG_FILENAME_BACKUP       BLYNK_F("/gsm_config.bak")
+
+#define  CREDENTIALS_FILENAME         BLYNK_F("/gsm_cred.dat")
+#define  CREDENTIALS_FILENAME_BACKUP  BLYNK_F("/gsm_cred.bak")
+
+    bool loadCredentials(void)
+    {
+      int checkSum = 0;
+      int readCheckSum;
+      totalDataSize = sizeof(BlynkGSM_ESP8266_config) + sizeof(readCheckSum);
+      
+      File file = SPIFFS.open(CREDENTIALS_FILENAME, "r");
+      BLYNK_LOG1(BLYNK_F("LoadCredFile "));
+
+      if (!file)
+      {
+        BLYNK_LOG1(BLYNK_F("failed"));
+
+        // Trying open redundant config file
+        file = SPIFFS.open(CREDENTIALS_FILENAME_BACKUP, "r");
+        BLYNK_LOG1(BLYNK_F("LoadBkUpCredFile "));
+
+        if (!file)
+        {
+          BLYNK_LOG1(BLYNK_F("failed"));
+          return false;
+        }
+      }
+     
+      //file.readBytes((char *) &BlynkGSM_ESP8266_config, sizeof(BlynkGSM_ESP8266_config));
+      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        char* _pointer = myMenuItems[i].pdata;
+        totalDataSize += myMenuItems[i].maxlen;
+        
+        file.readBytes(_pointer, myMenuItems[i].maxlen);
+               
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
+          checkSum += *_pointer;  
+        }       
+      }
+
+      file.readBytes((char *) &readCheckSum, sizeof(readCheckSum));
+      
+      BLYNK_LOG1(BLYNK_F("OK"));
+      file.close();
+      
+      BLYNK_LOG4(F("CrCCsum="), checkSum, F(",CrRCsum="), readCheckSum);
+      
+      if ( checkSum != readCheckSum)
+      {
+        return false;
+      }
+      
+      return true;    
+    }
+
+    void saveCredentials(void)
+    {
+      int checkSum = 0;
+    
+      File file = SPIFFS.open(CREDENTIALS_FILENAME, "w");
+      BLYNK_LOG1(BLYNK_F("SaveCredFile "));
+
+      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        char* _pointer = myMenuItems[i].pdata;
+        
+        BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        
+        if (file)
+        {
+          file.write((uint8_t*) _pointer, myMenuItems[i].maxlen);         
+        }
+        else
+        {
+          BLYNK_LOG1(BLYNK_F("failed"));
+        }        
+                     
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
+          checkSum += *_pointer;     
+         }
+      }
+      
+      if (file)
+      {
+        file.write((uint8_t*) &checkSum, sizeof(checkSum));     
+        file.close();
+        BLYNK_LOG1(BLYNK_F("OK"));    
+      }
+      else
+      {
+        BLYNK_LOG1(BLYNK_F("failed"));
+      }   
+           
+      BLYNK_LOG2(F("CrCCSum="), checkSum);
+      
+
+      // Trying open redundant Auth file
+      file = SPIFFS.open(CREDENTIALS_FILENAME_BACKUP, "w");
+      BLYNK_LOG1(BLYNK_F("SaveBkUpCredFile "));
+
+      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        char* _pointer = myMenuItems[i].pdata;
+        
+        BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        
+        if (file)
+        {
+          file.write((uint8_t*) _pointer, myMenuItems[i].maxlen);         
+        }
+        else
+        {
+          BLYNK_LOG1(BLYNK_F("failed"));
+        }        
+                     
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
+        {         
+          checkSum += *_pointer;     
+         }
+      }
+      
+      if (file)
+      {
+        file.write((uint8_t*) &checkSum, sizeof(checkSum));     
+        file.close();
+        BLYNK_LOG1(BLYNK_F("OK"));    
+      }
+      else
+      {
+        BLYNK_LOG1(BLYNK_F("failed"));
+      }   
+    }
 
     void loadConfigData(void)
     {
@@ -784,11 +839,17 @@ class BlynkWifi
       {
         BLYNK_LOG1(BLYNK_F("failed"));
       }
+      
+      saveCredentials();
     }
 
     // Return false if init new EEPROM or SPIFFS. No more need trying to connect. Go directly to config mode
     bool getConfigData()
     {
+      bool credDataValid;   
+      
+      hadConfigData = false;
+      
       if (!SPIFFS.begin())
       {
         BLYNK_LOG1(BLYNK_F("SPIFFS failed! Pls Use EEPROM."));
@@ -807,11 +868,17 @@ class BlynkWifi
                  BLYNK_F(",RCSum=0x"), String(BlynkGSM_ESP8266_config.checkSum, HEX));
 
       //displayConfigData();
+      credDataValid = loadCredentials();
 
       if ( (strncmp(BlynkGSM_ESP8266_config.header, BLYNK_BOARD_TYPE, strlen(BLYNK_BOARD_TYPE)) != 0) ||
-           (calChecksum != BlynkGSM_ESP8266_config.checkSum) )
+           (calChecksum != BlynkGSM_ESP8266_config.checkSum) || !credDataValid )
       {
         memset(&BlynkGSM_ESP8266_config, 0, sizeof(BlynkGSM_ESP8266_config));
+        
+        for (int i = 0; i < NUM_MENU_ITEMS; i++)
+        {
+          memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen);
+        }
 
         BLYNK_LOG2(BLYNK_F("InitCfgFile,sz="), sizeof(BlynkGSM_ESP8266_config));
         // doesn't have any configuration
@@ -827,6 +894,12 @@ class BlynkWifi
         BlynkGSM_ESP8266_config.blynk_port = BLYNK_SERVER_HARDWARE_PORT;
         strcpy(BlynkGSM_ESP8266_config.gsm_blynk_tok,    NO_CONFIG);
         strcpy(BlynkGSM_ESP8266_config.board_name,       NO_CONFIG);
+        
+        for (int i = 0; i < NUM_MENU_ITEMS; i++)
+        {
+          strncpy(myMenuItems[i].pdata, NO_CONFIG, myMenuItems[i].maxlen - 1);
+        }
+        
         // Don't need
         BlynkGSM_ESP8266_config.checkSum = 0;
 
@@ -881,9 +954,71 @@ class BlynkWifi
 #endif
 #endif
 
+    bool EEPROM_getCredentials(void)
+    {
+      int readCheckSum;
+      int checkSum = 0;
+      uint16_t offset = EEPROM_START + sizeof(BlynkGSM_ESP8266_config);
+           
+      totalDataSize = sizeof(BlynkGSM_ESP8266_config) + sizeof(readCheckSum);
+      
+      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        char* _pointer = myMenuItems[i].pdata;
+        totalDataSize += myMenuItems[i].maxlen;
+               
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++,offset++)
+        {
+          *_pointer = EEPROM.read(offset);
+          
+          checkSum += *_pointer;  
+         }       
+      }
+      
+      EEPROM.get(offset, readCheckSum);
+      
+      BLYNK_LOG4(F("CrCCsum="), checkSum, F(",CrRCsum="), readCheckSum);
+      
+      if ( checkSum != readCheckSum)
+      {
+        return false;
+      }
+      
+      return true;
+    }
+
+    void EEPROM_putCredentials(void)
+    {
+      int checkSum = 0;
+      uint16_t offset = EEPROM_START + sizeof(BlynkGSM_ESP8266_config);
+                
+      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      {       
+        char* _pointer = myMenuItems[i].pdata;
+        
+        BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+                            
+        for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++,offset++)
+        {
+          EEPROM.write(offset, *_pointer);
+          
+          checkSum += *_pointer;     
+         }
+      }
+      
+      EEPROM.put(offset, checkSum);
+      //EEPROM.commit();
+      
+      BLYNK_LOG2(F("CrCCSum="), checkSum);
+    }
+
     // Return false if init new EEPROM or SPIFFS. No more need trying to connect. Go directly to config mode
     bool getConfigData()
     {
+      bool credDataValid;   
+      
+      hadConfigData = false; 
+      
       EEPROM.begin(EEPROM_SIZE);
       EEPROM.get(EEPROM_START, BlynkGSM_ESP8266_config);
 
@@ -891,13 +1026,22 @@ class BlynkWifi
 
       BLYNK_LOG4(BLYNK_F("CCSum=0x"), String(calChecksum, HEX),
                  BLYNK_F(",RCSum=0x"), String(BlynkGSM_ESP8266_config.checkSum, HEX));
+                 
+      credDataValid = EEPROM_getCredentials();           
 
       if ( (strncmp(BlynkGSM_ESP8266_config.header, BLYNK_BOARD_TYPE, strlen(BLYNK_BOARD_TYPE)) != 0) ||
-           (calChecksum != BlynkGSM_ESP8266_config.checkSum) )
+           (calChecksum != BlynkGSM_ESP8266_config.checkSum) || !credDataValid )
       {
         memset(&BlynkGSM_ESP8266_config, 0, sizeof(BlynkGSM_ESP8266_config));
-
-        BLYNK_LOG2(BLYNK_F("InitEEPROM,sz="), EEPROM_SIZE /*EEPROM.length()*/);
+        
+        for (int i = 0; i < NUM_MENU_ITEMS; i++)
+        {
+          memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen);
+        }
+        
+        // Including Credentials CSum
+        BLYNK_LOG4(F("InitEEPROM,sz="), EEPROM_SIZE, F(",Datasz="), totalDataSize);
+        
         // doesn't have any configuration
         strcpy(BlynkGSM_ESP8266_config.header,           BLYNK_BOARD_TYPE);
         strcpy(BlynkGSM_ESP8266_config.wifi_ssid,        NO_CONFIG);
@@ -911,10 +1055,17 @@ class BlynkWifi
         BlynkGSM_ESP8266_config.blynk_port = BLYNK_SERVER_HARDWARE_PORT;
         strcpy(BlynkGSM_ESP8266_config.gsm_blynk_tok,    NO_CONFIG);
         strcpy(BlynkGSM_ESP8266_config.board_name,       NO_CONFIG);
+        
+        for (int i = 0; i < NUM_MENU_ITEMS; i++)
+        {
+          strncpy(myMenuItems[i].pdata, NO_CONFIG, myMenuItems[i].maxlen - 1);
+        }
+        
         // Don't need
         BlynkGSM_ESP8266_config.checkSum = 0;
 
         EEPROM.put(EEPROM_START, BlynkGSM_ESP8266_config);
+        EEPROM_putCredentials();
         EEPROM.commit();
 
         return false;
@@ -946,6 +1097,8 @@ class BlynkWifi
       BLYNK_LOG4(BLYNK_F("SaveEEPROM,sz="), EEPROM.length(), BLYNK_F(",CSum=0x"), String(calChecksum, HEX));
 
       EEPROM.put(EEPROM_START, BlynkGSM_ESP8266_config);
+      EEPROM_putCredentials();
+      
       EEPROM.commit();
     }
 
@@ -995,6 +1148,42 @@ class BlynkWifi
       return WiFi.status() == WL_CONNECTED;
     }
 
+    // NEW
+    String root_html_template;
+       
+    String createHTML(void)
+    {
+      String pitem;
+      
+      root_html_template = String(BLYNK_GSM_HTML_HEAD)  + BLYNK_GSM_FLDSET_START;
+      
+      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      {
+        pitem = String(BLYNK_GSM_HTML_PARAM);
+
+        pitem.replace("{b}", myMenuItems[i].displayName);
+        pitem.replace("{v}", myMenuItems[i].id);
+        pitem.replace("{i}", myMenuItems[i].id);
+        
+        root_html_template += pitem;
+      }
+      
+      root_html_template += String(BLYNK_GSM_FLDSET_END) + BLYNK_GSM_HTML_BUTTON + BLYNK_GSM_HTML_SCRIPT;     
+      
+      for (int i = 0; i < NUM_MENU_ITEMS; i++)
+      {
+        pitem = String(BLYNK_GSM_HTML_SCRIPT_ITEM);
+        
+        pitem.replace("{d}", myMenuItems[i].id);
+        
+        root_html_template += pitem;
+      }
+      
+      root_html_template += String(BLYNK_GSM_HTML_SCRIPT_END) + BLYNK_GSM_HTML_END;
+      
+      return root_html_template;     
+    }
+    
     void handleRequest()
     {
       if (server)
@@ -1006,7 +1195,7 @@ class BlynkWifi
 
         if (key == "" && value == "")
         {
-          String result = root_html_template;
+          String result = createHTML();
 
           BLYNK_LOG1(BLYNK_F("h:repl"));
 
@@ -1024,6 +1213,12 @@ class BlynkWifi
           result.replace("[[pt]]",   String(BlynkGSM_ESP8266_config.blynk_port));
           result.replace("[[tk1]]",  BlynkGSM_ESP8266_config.gsm_blynk_tok);
           result.replace("[[nm]]",   BlynkGSM_ESP8266_config.board_name);
+          
+          for (int i = 0; i < NUM_MENU_ITEMS; i++)
+          {
+            String toChange = String("[[") + myMenuItems[i].id + "]]";
+            result.replace(toChange, myMenuItems[i].pdata);
+          }
 
           server->send(200, "text/html", result);
 
@@ -1124,9 +1319,24 @@ class BlynkWifi
             strncpy(BlynkGSM_ESP8266_config.board_name, value.c_str(), sizeof(BlynkGSM_ESP8266_config.board_name) - 1);
         }
 
+        for (int i = 0; i < NUM_MENU_ITEMS; i++)
+        {
+          if (key == myMenuItems[i].id)
+          {
+            BLYNK_LOG4(F("h:"), myMenuItems[i].id, F("="), value.c_str() );
+            number_items_Updated++;
+
+            if ((int) strlen(value.c_str()) < myMenuItems[i].maxlen - 1)
+              strcpy(myMenuItems[i].pdata, value.c_str());
+            else
+              strncpy(myMenuItems[i].pdata, value.c_str(), myMenuItems[i].maxlen - 1);
+          }
+        }
+        
         server->send(200, "text/html", "OK");
 
-        if (number_items_Updated == NUM_CONFIGURABLE_ITEMS)
+        // NEW
+        if (number_items_Updated == NUM_CONFIGURABLE_ITEMS + NUM_MENU_ITEMS)
         {
 #if USE_SPIFFS
           BLYNK_LOG2(BLYNK_F("h:UpdSPIFFS:"), CONFIG_FILENAME);

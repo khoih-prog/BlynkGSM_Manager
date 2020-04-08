@@ -2,6 +2,12 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
 
+### Releases v1.0.6
+
+1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
+2. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
+3. See issue [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
+
 ### Releases v1.0.5
 
 1. Add more modem supports. Thanks to new [TinyGSM library v0.10.1+](https://github.com/vshymanskyy/TinyGSM).
@@ -98,6 +104,60 @@ For ESP32 and ESP8266, in your code :
 5. Change `Blynk.run()` for GSM/GPRS to `Blynk_GSM.run()`.
 
 That's it.
+
+### How to add dynamic parameters from sketch
+
+- To add custom parameters, just mofify from the example below
+
+```
+/////////////// Start dynamic Credentials ///////////////
+
+//Defined in <BlynkSimpleEsp32_GSM_WFM.h>
+/**************************************
+  #define MAX_ID_LEN                5
+  #define MAX_DISPLAY_NAME_LEN      16
+
+  typedef struct
+  {
+  char id             [MAX_ID_LEN + 1];
+  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+  char *pdata;
+  uint8_t maxlen;
+  } MenuItem;
+**************************************/
+
+#define MAX_MQTT_SERVER_LEN      34
+char MQTT_Server  [MAX_MQTT_SERVER_LEN]   = "";
+
+#define MAX_MQTT_PORT_LEN        6
+char MQTT_Port   [MAX_MQTT_PORT_LEN]  = "";
+
+#define MAX_MQTT_USERNAME_LEN      34
+char MQTT_UserName  [MAX_MQTT_USERNAME_LEN]   = "";
+
+#define MAX_MQTT_PW_LEN        34
+char MQTT_PW   [MAX_MQTT_PW_LEN]  = "";
+
+#define MAX_MQTT_SUBS_TOPIC_LEN      34
+char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN]   = "";
+
+#define MAX_MQTT_PUB_TOPIC_LEN       34
+char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN]  = "";
+
+MenuItem myMenuItems [] =
+{
+  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
+  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
+  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
+  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
+  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
+  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
+};
+
+uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+/////// // End dynamic Credentials ///////////
+
+```
 
 Also see examples: 
 1. [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM)
@@ -413,50 +473,60 @@ and this is the terminal debug output when running both WiFi and GSM/GPRS at the
 Start TTGO-TCALL-GSM
 Set GSM module baud rate
 Use WiFi to connect Blynk
-[3034] Hostname=TTGO-TCALL-GSM
-[3040] CCSum=0x3a8e,RCSum=0x3a8e
-[3040] Hdr=ESP32_GSM_WFM,SSID=your-ssid,PW=your-pass
-[3040] Svr=account.duckdns.org,Prt=8080,WiFiToken=wifi-token
-[3044] APN=rogers-core-appl1.apn,User=wapuser1
-[3049] PW=wap,PIN=12345678,GSMToken=gsm-token
-[3057] BrdName=TTGO-TCALL
-[3059] Header = ESP32_GSM_WFM, SSID = ****, PW = ****
-[3064] Server = 45.72.166.253, Port = 8080, WiFi Token = ****
-[3072] APN = rogers-core-appl1.apn, GPRS User = wapuser1
-[3077] GPRS PW = wap, GPRS PIN = 12345678, GSM Token = ****
-[3085] Board Name = TTGO
-[3087] 
+[3108] Hostname=TTGO-TCALL-GSM
+[3114] CCSum=0x37d8,RCSum=0x37d8
+[3114] CrCCsum=5323,CrRCsum=5323
+[3114] Hdr=ESP32_GSM_WFM,SSID=your-ssid,PW=your-pass
+[3114] Svr=account.duckdns.org,Prt=8080,WiFiToken=wifi-token
+[3120] APN=rogers-core-appl1.apn,User=wapuser1
+[3124] PW=wap,PIN=12345678,GSMToken=gsm-token
+[3130] BrdName=TTGO-TCALL
+[3133] 
     ___  __          __
    / _ )/ /_ _____  / /__
   / _  / / // / _ \/  '_/
  /____/_/\_, /_//_/_/\_\
         /___/ v0.6.1 on ESP32
 
-[3210] con2WF:start
-[4711] con2WF:OK
-[4711] IP=192.168.2.137,GW=192.168.2.1,SN=255.255.0.0
-[4711] DNS1=192.168.2.1,DNS2=0.0.0.0
-[4711] b:WOK.TryB
-[4714] BlynkArduinoClient.connect: Connecting to account.duckdns.org:8080
-[4746] Ready (ping: 6ms).
-[4814] b:WBOK
+[3150] con2WF:start
+[4651] con2WF:OK
+[4651] IP=192.168.2.142,GW=192.168.2.1,SN=255.255.0.0
+[4651] DNS1=192.168.2.1,DNS2=0.0.0.0
+[4651] b:WOK.TryB
+[4651] BlynkArduinoClient.connect: Connecting to account.duckdns.org:8080
+[4778] Ready (ping: 5ms).
+[4846] b:WBOK
 gprs apn = rogers-core-appl1.apn
-[4815] 
+[4846] 
     ___  __          __
    / _ )/ /_ _____  / /__
   / _  / / // / _ \/  '_/
  /____/_/\_, /_//_/_/\_\
         /___/ v0.6.1 on ESP32
 
-[4822] InitModem
-[4944] Con2Network
-[4955] Network:Rogers Wireless
-[4955] Conn2 rogers-core-appl1.apn
-[10084] GPRSConOK
-[10094] BlynkArduinoClient.connect: Connecting to account.duckdns.org:8080
-[10738] Ready (ping: 315ms).
+[4852] InitModem
+[4974] Con2Network
+[4985] Network:Rogers Wireless
+[4985] Conn2 rogers-core-appl1.apn
+[10114] GPRSConOK
+[10124] BlynkArduinoClient.connect: Connecting to account.duckdns.org:8080
+[10768] Ready (ping: 315ms).
+Your stored Credentials :
+MQTT Server = mqtt.duckdns.org
+Port = 1883
+MQTT UserName = yourName
+MQTT PWD = yourPWD
+Subs Topics = SubsTopic1
+Pubs Topics = PubsTopic1
 BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG
 ```
+
+### Releases v1.0.6
+
+1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
+2. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
+3. See issue [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
+
 ### Releases v1.0.5
 
 1. Add more modem supports. Thanks to new [TinyGSM library v0.10.1+](https://github.com/vshymanskyy/TinyGSM).
@@ -494,6 +564,7 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 
 1. Thanks to [Mike Kranidis](https://community.blynk.cc/u/mikekgr) and [Mike Kranidis @ GitHub](https://github.com/mikekgr) for initial testing the library and giving reasons, advices to start this library.
 2. Thanks to [Volodymyr Shymanskyy](https://github.com/vshymanskyy) for the [TinyGSM library](https://github.com/vshymanskyy/TinyGSM) this library depends on.
+3. Thanks to [FRANAIRBUS](https://github.com/FRANAIRBUS) to open the request to [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
 
 ## Contributing
 
