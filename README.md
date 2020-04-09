@@ -158,6 +158,19 @@ uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSiz
 /////// // End dynamic Credentials ///////////
 
 ```
+If you don't need to add dynamic parameters, use the following in sketch
+
+```
+/////////////// Start dynamic Credentials ///////////////
+
+MenuItem myMenuItems [] =
+{
+};
+
+uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+/////// // End dynamic Credentials ///////////
+
+```
 
 Also see examples: 
 1. [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM)
