@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.6
+   Version: 1.0.7
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -17,6 +17,7 @@
     1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
     1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
     1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
+    1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
  *****************************************************************************************************************************/
 
 #ifndef ESP32
@@ -299,6 +300,7 @@ void setup()
 #endif
 }
 
+#if USE_BLYNK_WM
 void displayCredentials(void)
 {
   Serial.println("Your stored Credentials :");
@@ -308,6 +310,7 @@ void displayCredentials(void)
     Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
   }
 }
+#endif
 
 void loop()
 {
@@ -321,6 +324,9 @@ void loop()
       Blynk_GSM.run();
   }
 
+  check_status();
+  
+#if USE_BLYNK_WM
   static bool displayedCredentials = false;
 
   if (!displayedCredentials)
@@ -339,6 +345,5 @@ void loop()
       }
     }
   }
-
-  check_status();
+#endif
 }

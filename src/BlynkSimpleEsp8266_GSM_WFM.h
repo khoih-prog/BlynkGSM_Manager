@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.6
+   Version: 1.0.7
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -25,6 +25,7 @@
     1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
     1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
     1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
+    1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleESP8266_GSM_WFM
@@ -93,7 +94,7 @@ typedef struct Configuration
   char header         [16];
   // WiFi related
   char wifi_ssid      [32];
-  char wifi_pw        [32];
+  char wifi_pw        [64];               //From v1.0.7, WPA2 passwords can be up to 63 characters long.
   char wifi_blynk_tok [36];
   // YOUR GSM / GPRS RELATED
   char apn            [32];
@@ -109,7 +110,7 @@ typedef struct Configuration
 } Blynk_WF_Configuration;
 
 
-// Currently CONFIG_DATA_SIZE  =   324
+// Currently CONFIG_DATA_SIZE  =   356
 uint16_t CONFIG_DATA_SIZE = sizeof(struct Configuration);
 
 // -- HTML page fragments
@@ -132,7 +133,7 @@ const char BLYNK_GSM_FLDSET_END[]    /*PROGMEM*/ = "</fieldset>";
 const char BLYNK_GSM_HTML_PARAM[]    /*PROGMEM*/ = "<div><label>{b}</label><input value='[[{v}]]'id='{i}'><div></div></div>";
 const char BLYNK_GSM_HTML_BUTTON[]   /*PROGMEM*/ = "<button onclick=\"sv()\">Save</button></div>";
 const char BLYNK_GSM_HTML_SCRIPT[]   /*PROGMEM*/ = "<script id=\"jsbin-javascript\">\
-function udVal(key,val){var request=new XMLHttpRequest();var url='/?key='+key+'&value='+val;request.open('GET',url,false);request.send(null);}\
+function udVal(key,val){var request=new XMLHttpRequest();var url='/?key='+key+'&value='+encodeURIComponent(val);request.open('GET',url,false);request.send(null);}\
 function sv(){udVal('id',document.getElementById('id').value);udVal('pw',document.getElementById('pw').value);\
 udVal('tk',document.getElementById('tk').value);udVal('apn',document.getElementById('apn').value);\
 udVal('usr',document.getElementById('usr').value);udVal('pwd',document.getElementById('pwd').value);\

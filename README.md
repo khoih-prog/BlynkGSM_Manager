@@ -2,6 +2,11 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
 
+### Releases v1.0.7
+
+1. WiFi Password max length is 63, according to WPA2 standard.
+2. Permit to input special chars such as ***%*** and ***#*** into data fields.
+
 ### Releases v1.0.6
 
 1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
@@ -246,6 +251,7 @@ void loop()
 
 ## Example for ES32 and SIM800L GSM shield
 Please take a look at examples, as well.
+
 ```
 #ifndef ESP32
 #error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
@@ -527,6 +533,7 @@ void setup()
 #endif
 }
 
+#if USE_BLYNK_WM
 void displayCredentials(void)
 {
   Serial.println("Your stored Credentials :");
@@ -536,6 +543,7 @@ void displayCredentials(void)
     Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
   }
 }
+#endif
 
 void loop()
 {
@@ -549,6 +557,9 @@ void loop()
       Blynk_GSM.run();
   }
 
+  check_status();
+  
+#if USE_BLYNK_WM
   static bool displayedCredentials = false;
 
   if (!displayedCredentials)
@@ -567,8 +578,7 @@ void loop()
       }
     }
   }
-
-  check_status();
+#endif
 }
 ```
 
@@ -625,6 +635,10 @@ Subs Topics = SubsTopic1
 Pubs Topics = PubsTopic1
 BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG
 ```
+### Releases v1.0.7
+
+1. WiFi Password max length is 63, according to WPA2 standard.
+2. Permit to input special chars such as ***%*** and ***#*** into data fields.
 
 ### Releases v1.0.6
 
@@ -670,6 +684,7 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 1. Thanks to [Mike Kranidis](https://community.blynk.cc/u/mikekgr) and [Mike Kranidis @ GitHub](https://github.com/mikekgr) for initial testing the library and giving reasons, advices to start this library.
 2. Thanks to [Volodymyr Shymanskyy](https://github.com/vshymanskyy) for the [TinyGSM library](https://github.com/vshymanskyy/TinyGSM) this library depends on.
 3. Thanks to [FRANAIRBUS](https://github.com/FRANAIRBUS) to open the request to [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
+4. Thanks to [brondolin](https://github.com/brondolin) to provide the amazing fix. See [Issue 3](https://github.com/khoih-prog/Blynk_WM/issues/3).
 
 ## Contributing
 
