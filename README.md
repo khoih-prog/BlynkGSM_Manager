@@ -492,9 +492,11 @@ void setup()
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
-  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
+  // Use configurable AP IP, instead of default IP 192.168.4.1
   Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
+  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
+  // Set personalized Hostname
   Blynk_WF.begin("ESP32-WiFi-GSM");
 #else
   Blynk_WF.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT);
