@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.7
+   Version: 1.0.8
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -26,6 +26,7 @@
     1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
     1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
     1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
+    1.0.8   K Hoang      14/04/2020 Fix bug.
  *****************************************************************************************************************************/
 #ifndef ESP32
 #error This code is designed to run on ESP32, not ESP8266 nor Arduino AVR platform! Please check your Tools->Board setting.

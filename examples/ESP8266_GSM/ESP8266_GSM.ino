@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.7
+   Version: 1.0.8
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -18,6 +18,7 @@
     1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
     1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
     1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
+    1.0.8   K Hoang      14/04/2020 Fix bug.
  *****************************************************************************************************************************/
 
 #ifndef ESP8266
@@ -81,9 +82,11 @@
 #if USE_BLYNK_WM
 #include <BlynkSimpleEsp8266_GSM_WFM.h>
 
+#define USE_DYNAMIC_PARAMETERS      true
+
 /////////////// Start dynamic Credentials ///////////////
 
-//Defined in <BlynkSimpleEsp32_GSM_WFM.h>
+//Defined in <BlynkSimpleEsp8266_GSM_WFM.h>
 /**************************************
   #define MAX_ID_LEN                5
   #define MAX_DISPLAY_NAME_LEN      16
@@ -97,23 +100,25 @@
   } MenuItem;
 **************************************/
 
+#if USE_DYNAMIC_PARAMETERS
+
 #define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN]   = "";
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
 
 #define MAX_MQTT_PORT_LEN        6
-char MQTT_Port   [MAX_MQTT_PORT_LEN]  = "";
+char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
 
 #define MAX_MQTT_USERNAME_LEN      34
-char MQTT_UserName  [MAX_MQTT_USERNAME_LEN]   = "";
+char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
 
 #define MAX_MQTT_PW_LEN        34
-char MQTT_PW   [MAX_MQTT_PW_LEN]  = "";
+char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
 
 #define MAX_MQTT_SUBS_TOPIC_LEN      34
-char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN]   = "";
+char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
 
 #define MAX_MQTT_PUB_TOPIC_LEN       34
-char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN]  = "";
+char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
 
 MenuItem myMenuItems [] =
 {
@@ -126,6 +131,15 @@ MenuItem myMenuItems [] =
 };
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+
+#else
+
+MenuItem myMenuItems [] = {};
+
+uint16_t NUM_MENU_ITEMS = 0;
+#endif
+
+
 /////// // End dynamic Credentials ///////////
 
 #else
@@ -250,10 +264,12 @@ void setup()
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
-  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
+  // Use configurable AP IP, instead of default IP 192.168.4.1
   Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
-  Blynk_WF.setConfigPortalChannel(1);
-  Blynk_WF.begin("ESP32-WiFi-GSM");
+  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
+  Blynk_WF.setConfigPortalChannel(0);
+  // Set personalized Hostname
+  Blynk_WF.begin("ESP8266-WiFi-GSM");
 #else
   Blynk_WF.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT);
 
@@ -291,7 +307,7 @@ void setup()
 #endif
 }
 
-#if USE_BLYNK_WM
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
 void displayCredentials(void)
 {
   Serial.println("Your stored Credentials :");
@@ -317,7 +333,7 @@ void loop()
 
   check_status();
   
-#if USE_BLYNK_WM
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
   static bool displayedCredentials = false;
 
   if (!displayedCredentials)

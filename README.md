@@ -2,7 +2,13 @@
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
 
+### Releases v1.0.8
+
+1. Fix potential dangerous bug in code and examples of v1.07.
+
 ### Releases v1.0.7
+
+#### Potential dangerous bug, Don't use this version
 
 1. WiFi Password max length is 63, according to WPA2 standard.
 2. Permit to input special chars such as ***%*** and ***#*** into data fields.
@@ -115,6 +121,8 @@ That's it.
 - To add custom parameters, just modify from the example below
 
 ```
+#define USE_DYNAMIC_PARAMETERS      true
+
 /////////////// Start dynamic Credentials ///////////////
 
 //Defined in <BlynkSimpleEsp32_GSM_WFM.h>
@@ -131,23 +139,25 @@ That's it.
   } MenuItem;
 **************************************/
 
+#if USE_DYNAMIC_PARAMETERS
+
 #define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN]   = "";
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
 
 #define MAX_MQTT_PORT_LEN        6
-char MQTT_Port   [MAX_MQTT_PORT_LEN]  = "";
+char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
 
 #define MAX_MQTT_USERNAME_LEN      34
-char MQTT_UserName  [MAX_MQTT_USERNAME_LEN]   = "";
+char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
 
 #define MAX_MQTT_PW_LEN        34
-char MQTT_PW   [MAX_MQTT_PW_LEN]  = "";
+char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
 
 #define MAX_MQTT_SUBS_TOPIC_LEN      34
-char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN]   = "";
+char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
 
 #define MAX_MQTT_PUB_TOPIC_LEN       34
-char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN]  = "";
+char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
 
 MenuItem myMenuItems [] =
 {
@@ -160,161 +170,16 @@ MenuItem myMenuItems [] =
 };
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-/////// // End dynamic Credentials ///////////
 
-```
-If you don't need to add dynamic parameters, use the following in sketch
+#else
 
-```
-/////////////// Start dynamic Credentials ///////////////
+MenuItem myMenuItems [] = {};
 
-MenuItem myMenuItems [] =
-{
-};
-
-uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-/////// // End dynamic Credentials ///////////
-
-```
-
-Also see examples: 
-1. [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM)
-2. [ESP32_GSM](examples/ESP32_GSM)
-3. [ESP8266_GSM](examples/ESP8266_GSM)
-
-
-## So, how it works?
-
-If it detects no valid stored Credentials or it cannot connect to the Blynk server in 30 seconds, it will switch to ***Configuration Mode***. You will see your built-in LED turned ON. In `Configuration Mode`, it starts a WiFi access point called ***ESP_xxxxxx***. Connect to it using password ***MyESP_xxxxxx***.
-
-You can set:
-
-1. static Config Portal IP address by using `Blynk_WF.setConfigPortalIP(IPAddress(xxx, xxx, xxx, xxx))`
-2. random Config Portal WiFi channel by using `Blynk_WF.setConfigPortalChannel(0)`
-3. selected Config Portal WiFi channel by using `Blynk_WF.setConfigPortalChannel(channel)`
-
-<p align="center">
-    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_1.jpg">
-</p>
-
-After you connected, go to http://192.168.4.1., the Browser will display the following page:
-
-<p align="center">
-    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_2.png">
-</p>
-
-Enter your credentials (WiFi SSID/Password/WiFi-Token, GPRS APN/User/Pass/PIN, Blynk Server/Port/GSM-Token).
-
-<p align="center">
-    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_3.png">
-</p>
-
-Then click ***Save***. After the  board auto-restarted, you will see if it's connected to your Blynk server successfully.
-
-
-This `Blynk.begin()` is not a blocking call, so you can use it for critical functions requiring in loop(). 
-Anyway, this is better for projects using Blynk just for GUI (graphical user interface).
-
-In operation, if GSM/GPRS or Blynk connection is lost, `Blynk_WF.run()` or `Blynk_GSM.run()` will try reconnecting automatically. Therefore, `Blynk_WF.run()` `Blynk_GSM.run()` and must be called in the `loop()` function. Don't use:
-
-```cpp
-void loop()
-{
-  if (Blynk.connected())
-     Blynk_WF.run();
-     
-  ...
-}
-```
-just
-
-```cpp
-void loop()
-{
-  Blynk_WF.run();
-  ...
-}
-```
-
-## TO DO
-
-1. Same features for other boards with GSM/GPRS shield as well as other GSM/GPRS shields (SIM7x00, etc.).
-
-## DONE
-
-1. Permit EEPROM size and location configurable to avoid conflict with others.
-2. More flexible to configure reconnection timeout.
-3. For fresh config data, don't need to wait for connecting timeout before entering config portal.
-4. If the config data not entered completely (APN, GPRS User, GPRS Pass, Server, HardwarePort and Blynk token), entering config portal
-5. Better Cofig Portal GUI
-
-
-## Example for ES32 and SIM800L GSM shield
-Please take a look at examples, as well.
-
-```
-#ifndef ESP32
-#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
+uint16_t NUM_MENU_ITEMS = 0;
 #endif
 
-#define BLYNK_PRINT         Serial
-#define BLYNK_HEARTBEAT     60
 
-// TTGO T-Call pin definitions
-#define MODEM_RST            5
-#define MODEM_PWKEY          4
-#define MODEM_POWER_ON       23
-
-#define MODEM_TX             27
-#define MODEM_RX             26
-
-#define I2C_SDA              21
-#define I2C_SCL              22
-
-// Select your modem:
-#define TINY_GSM_MODEM_SIM800
-//#define TINY_GSM_MODEM_SIM808
-//#define TINY_GSM_MODEM_SIM868
-//#define TINY_GSM_MODEM_SIM900
-//#define TINY_GSM_MODEM_SIM5300
-//#define TINY_GSM_MODEM_SIM5320
-//#define TINY_GSM_MODEM_SIM5360
-//#define TINY_GSM_MODEM_SIM7000
-//#define TINY_GSM_MODEM_SIM7100
-//#define TINY_GSM_MODEM_SIM7500
-//#define TINY_GSM_MODEM_SIM7600
-//#define TINY_GSM_MODEM_SIM7800
-//#define TINY_GSM_MODEM_UBLOX
-//#define TINY_GSM_MODEM_SARAR4
-//#define TINY_GSM_MODEM_M95
-//#define TINY_GSM_MODEM_BG96
-//#define TINY_GSM_MODEM_A6
-//#define TINY_GSM_MODEM_A7
-//#define TINY_GSM_MODEM_M590
-//#define TINY_GSM_MODEM_MC60
-//#define TINY_GSM_MODEM_MC60E
-//#define TINY_GSM_MODEM_XBEE
-//#define TINY_GSM_MODEM_SEQUANS_MONARCH
-
-
-// Increase RX buffer if needed
-#define TINY_GSM_RX_BUFFER 1024
-
-#include <TinyGsmClient.h>
-
-#define USE_SPIFFS      true
-//#define USE_SPIFFS      false
-
-//#define USE_BLYNK_WM      false
-#define USE_BLYNK_WM      true
-
-#define EEPROM_SIZE       2048
-#define EEPROM_START      512
-
-#include <BlynkSimpleTinyGSM_M.h>
-
-#if USE_BLYNK_WM
-#include <BlynkSimpleEsp32_GSM_WFM.h>
+/////// // End dynamic Credentials ///////////#define USE_DYNAMIC_PARAMETERS      true
 
 /////////////// Start dynamic Credentials ///////////////
 
@@ -332,23 +197,25 @@ Please take a look at examples, as well.
   } MenuItem;
 **************************************/
 
+#if USE_DYNAMIC_PARAMETERS
+
 #define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN]   = "";
+char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
 
 #define MAX_MQTT_PORT_LEN        6
-char MQTT_Port   [MAX_MQTT_PORT_LEN]  = "";
+char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
 
 #define MAX_MQTT_USERNAME_LEN      34
-char MQTT_UserName  [MAX_MQTT_USERNAME_LEN]   = "";
+char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
 
 #define MAX_MQTT_PW_LEN        34
-char MQTT_PW   [MAX_MQTT_PW_LEN]  = "";
+char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
 
 #define MAX_MQTT_SUBS_TOPIC_LEN      34
-char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN]   = "";
+char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
 
 #define MAX_MQTT_PUB_TOPIC_LEN       34
-char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN]  = "";
+char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
 
 MenuItem myMenuItems [] =
 {
@@ -361,6 +228,15 @@ MenuItem myMenuItems [] =
 };
 
 uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+
+#else
+
+MenuItem myMenuItems [] = {};
+
+uint16_t NUM_MENU_ITEMS = 0;
+#endif
+
+
 /////// // End dynamic Credentials ///////////
 
 #else
@@ -492,11 +368,9 @@ void setup()
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
-  // Use configurable AP IP, instead of default IP 192.168.4.1
-  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
   // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
+  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
   Blynk_WF.setConfigPortalChannel(0);
-  // Set personalized Hostname
   Blynk_WF.begin("ESP32-WiFi-GSM");
 #else
   Blynk_WF.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT);
@@ -535,7 +409,7 @@ void setup()
 #endif
 }
 
-#if USE_BLYNK_WM
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
 void displayCredentials(void)
 {
   Serial.println("Your stored Credentials :");
@@ -561,7 +435,7 @@ void loop()
 
   check_status();
   
-#if USE_BLYNK_WM
+#if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
   static bool displayedCredentials = false;
 
   if (!displayedCredentials)
@@ -637,7 +511,14 @@ Subs Topics = SubsTopic1
 Pubs Topics = PubsTopic1
 BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG
 ```
+
+### Releases v1.0.8
+
+1. Fix potential dangerous bug in code and examples of v1.07.
+
 ### Releases v1.0.7
+
+#### Potential dangerous bug, Don't use this version
 
 1. WiFi Password max length is 63, according to WPA2 standard.
 2. Permit to input special chars such as ***%*** and ***#*** into data fields.

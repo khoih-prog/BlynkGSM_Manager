@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.7
+   Version: 1.0.8
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -26,6 +26,7 @@
     1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
     1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
     1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
+    1.0.8   K Hoang      14/04/2020 Fix bug.
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleESP8266_GSM_WFM
@@ -678,6 +679,9 @@ class BlynkWifi
         char* _pointer = myMenuItems[i].pdata;
         totalDataSize += myMenuItems[i].maxlen;
         
+        // Actual size of pdata is [maxlen + 1]
+        memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
+        
         file.readBytes(_pointer, myMenuItems[i].maxlen);
                
         for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++)
@@ -712,7 +716,7 @@ class BlynkWifi
       {       
         char* _pointer = myMenuItems[i].pdata;
         
-        BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        //BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
         
         if (file)
         {
@@ -751,7 +755,7 @@ class BlynkWifi
       {       
         char* _pointer = myMenuItems[i].pdata;
         
-        BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        //BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
         
         if (file)
         {
@@ -878,7 +882,8 @@ class BlynkWifi
         
         for (int i = 0; i < NUM_MENU_ITEMS; i++)
         {
-          memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen);
+          // Actual size of pdata is [maxlen + 1]
+          memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
         }
 
         BLYNK_LOG2(BLYNK_F("InitCfgFile,sz="), sizeof(BlynkGSM_ESP8266_config));
@@ -898,7 +903,7 @@ class BlynkWifi
         
         for (int i = 0; i < NUM_MENU_ITEMS; i++)
         {
-          strncpy(myMenuItems[i].pdata, NO_CONFIG, myMenuItems[i].maxlen - 1);
+          strncpy(myMenuItems[i].pdata, NO_CONFIG, myMenuItems[i].maxlen);
         }
         
         // Don't need
@@ -967,6 +972,9 @@ class BlynkWifi
       {       
         char* _pointer = myMenuItems[i].pdata;
         totalDataSize += myMenuItems[i].maxlen;
+        
+        // Actual size of pdata is [maxlen + 1]
+        memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
                
         for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++,offset++)
         {
@@ -997,7 +1005,7 @@ class BlynkWifi
       {       
         char* _pointer = myMenuItems[i].pdata;
         
-        BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
+        //BLYNK_LOG4(F("pdata="), myMenuItems[i].pdata, F(",len="), myMenuItems[i].maxlen);
                             
         for (uint16_t j = 0; j < myMenuItems[i].maxlen; j++,_pointer++,offset++)
         {
@@ -1037,7 +1045,8 @@ class BlynkWifi
         
         for (int i = 0; i < NUM_MENU_ITEMS; i++)
         {
-          memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen);
+          // Actual size of pdata is [maxlen + 1]
+          memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
         }
         
         // Including Credentials CSum
@@ -1059,7 +1068,7 @@ class BlynkWifi
         
         for (int i = 0; i < NUM_MENU_ITEMS; i++)
         {
-          strncpy(myMenuItems[i].pdata, NO_CONFIG, myMenuItems[i].maxlen - 1);
+          strncpy(myMenuItems[i].pdata, NO_CONFIG, myMenuItems[i].maxlen);
         }
         
         // Don't need
@@ -1324,13 +1333,16 @@ class BlynkWifi
         {
           if (key == myMenuItems[i].id)
           {
-            BLYNK_LOG4(F("h:"), myMenuItems[i].id, F("="), value.c_str() );
+            //BLYNK_LOG4(F("h:"), myMenuItems[i].id, F("="), value.c_str() );
             number_items_Updated++;
 
-            if ((int) strlen(value.c_str()) < myMenuItems[i].maxlen - 1)
+            // Actual size of pdata is [maxlen + 1]
+            memset(myMenuItems[i].pdata, 0, myMenuItems[i].maxlen + 1);
+
+            if ((int) strlen(value.c_str()) < myMenuItems[i].maxlen)
               strcpy(myMenuItems[i].pdata, value.c_str());
             else
-              strncpy(myMenuItems[i].pdata, value.c_str(), myMenuItems[i].maxlen - 1);
+              strncpy(myMenuItems[i].pdata, value.c_str(), myMenuItems[i].maxlen);
           }
         }
         
