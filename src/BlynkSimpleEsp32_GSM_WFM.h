@@ -1197,7 +1197,8 @@ class BlynkWifi
 
         if (key == "" && value == "")
         {
-          String result = createHTML();
+          String result;
+          createHTML(result);
 
           BLYNK_LOG1(BLYNK_F("h:repl"));
 
