@@ -15,6 +15,8 @@
 
 ### Releases v1.0.6
 
+#### Potential dangerous bug, Don't use this version
+
 1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
 2. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
 3. See issue [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
@@ -526,6 +528,8 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 2. Permit to input special chars such as ***%*** and ***#*** into data fields.
 
 ### Releases v1.0.6
+
+#### Potential dangerous bug, Don't use this version
 
 1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
 2. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
