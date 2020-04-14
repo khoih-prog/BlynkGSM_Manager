@@ -243,6 +243,8 @@ void setup()
 {
   // Set console baud rate
   SerialMon.begin(115200);
+  while (!SerialMon);
+  
   SerialMon.println(F("\nStart TTGO-TCALL-GSM"));
 
   // Set-up modem reset, enable, power pins

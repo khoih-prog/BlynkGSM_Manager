@@ -243,6 +243,8 @@ void setup()
 {
   // Set console baud rate
   SerialMon.begin(115200);
+  while (!SerialMon);
+  
   SerialMon.println(F("\nStart ESP8266-WIFI-GSM"));
 
   // Set-up modem reset, enable, power pins

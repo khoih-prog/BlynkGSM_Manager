@@ -4,7 +4,7 @@
 
 ### Releases v1.0.8
 
-1. Fix potential dangerous bug in code and examples of v1.07.
+1. Fix potential dangerous bug in code and examples of v1.0.7.
 
 ### Releases v1.0.7
 
@@ -347,6 +347,8 @@ void setup()
 {
   // Set console baud rate
   SerialMon.begin(115200);
+  while (!SerialMon);
+  
   SerialMon.println(F("\nStart ESP32-WIFI-GSM"));
 
   // Set-up modem reset, enable, power pins
@@ -514,7 +516,7 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 
 ### Releases v1.0.8
 
-1. Fix potential dangerous bug in code and examples of v1.07.
+1. Fix potential dangerous bug in code and examples of v1.0.7.
 
 ### Releases v1.0.7
 
