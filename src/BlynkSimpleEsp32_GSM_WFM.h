@@ -1153,9 +1153,7 @@ class BlynkWifi
     }
 
     // NEW
-    String root_html_template;
-       
-    String createHTML(void)
+    void createHTML(String &root_html_template)
     {
       String pitem;
       
@@ -1185,7 +1183,7 @@ class BlynkWifi
       
       root_html_template += String(BLYNK_GSM_HTML_SCRIPT_END) + BLYNK_GSM_HTML_END;
       
-      return root_html_template;     
+      return;     
     }
     
     void handleRequest()
