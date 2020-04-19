@@ -1,6 +1,10 @@
 ## BlynkGSM_Manager
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
+[![GitHub release](https://img.shields.io/github/release/khoih-prog/BlynkGSM_Manager.svg)](https://github.com/khoih-prog/BlynkGSM_Manager/releases)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/LICENSE)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
+[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/BlynkGSM_Manager.svg)](http://github.com/khoih-prog/BlynkGSM_Manager/issues)
 
 ### Releases v1.0.8
 
