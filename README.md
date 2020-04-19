@@ -1,10 +1,6 @@
 ## BlynkGSM_Manager
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
-[![GitHub release](https://img.shields.io/github/release/khoih-prog/BlynkGSM_Manager.svg)](https://github.com/khoih-prog/BlynkGSM_Manager/releases)
-[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/LICENSE)
-[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
-[![GitHub issues](https://img.shields.io/github/issues/khoih-prog/BlynkGSM_Manager.svg)](http://github.com/khoih-prog/BlynkGSM_Manager/issues)
 
 ### Releases v1.0.8
 
@@ -184,8 +180,131 @@ MenuItem myMenuItems [] = {};
 uint16_t NUM_MENU_ITEMS = 0;
 #endif
 
+/////// // End dynamic Credentials ///////////
+```
 
-/////// // End dynamic Credentials ///////////#define USE_DYNAMIC_PARAMETERS      true
+Also see examples: 
+1. [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM)
+2. [ESP32_GSM](examples/ESP32_GSM)
+3. [ESP8266_GSM](examples/ESP8266_GSM)
+
+
+## So, how it works?
+
+If it detects no valid stored Credentials or it cannot connect to the Blynk server in 30 seconds, it will switch to ***Configuration Mode***. You will see your built-in LED turned ON. In `Configuration Mode`, it starts a WiFi access point called ***ESP_xxxxxx***. Connect to it using password ***MyESP_xxxxxx***.
+
+You can set:
+
+1. static Config Portal IP address by using `Blynk_WF.setConfigPortalIP(IPAddress(xxx, xxx, xxx, xxx))`
+2. random Config Portal WiFi channel by using `Blynk_WF.setConfigPortalChannel(0)`
+3. selected Config Portal WiFi channel by using `Blynk_WF.setConfigPortalChannel(channel)`
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_1.jpg">
+</p>
+
+After you connected, go to http://192.168.4.1., the Browser will display the following page:
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_2.png">
+</p>
+
+Enter your credentials (WiFi SSID/Password/WiFi-Token, GPRS APN/User/Pass/PIN, Blynk Server/Port/GSM-Token).
+
+<p align="center">
+    <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_3.png">
+</p>
+
+Then click ***Save***. After the  board auto-restarted, you will see if it's connected to your Blynk server successfully.
+
+
+This `Blynk.begin()` is not a blocking call, so you can use it for critical functions requiring in loop(). 
+Anyway, this is better for projects using Blynk just for GUI (graphical user interface).
+
+In operation, if GSM/GPRS or Blynk connection is lost, `Blynk_WF.run()` or `Blynk_GSM.run()` will try reconnecting automatically. Therefore, `Blynk_WF.run()` `Blynk_GSM.run()` and must be called in the `loop()` function. Don't use:
+
+```cpp
+void loop()
+{
+  if (Blynk.connected())
+     Blynk_WF.run();
+     
+  ...
+}
+```
+just
+
+```cpp
+void loop()
+{
+  Blynk_WF.run();
+  ...
+}
+```
+
+## Example [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM)
+Please take a look at other examples, as well.
+
+```
+#ifndef ESP32
+#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
+#endif
+
+#define BLYNK_PRINT         Serial
+#define BLYNK_HEARTBEAT     60
+
+// TTGO T-Call pin definitions
+#define MODEM_RST            5      // Pin D5 mapped to pin GPIO5/SPISS/VSPI_SS of ESP32
+#define MODEM_PWKEY          4      // Pin D4 mapped to pin GPIO4/ADC10/TOUCH0 of ESP32
+#define MODEM_POWER_ON       23     // Pin D23 mapped to pin GPIO23/VSPI_MOSI of ESP32
+#define MODEM_TX             27     // Pin D27 mapped to pin GPIO27/ADC17/TOUCH7 of ESP32 
+#define MODEM_RX             26     // Pin D26 mapped to pin GPIO26/ADC19/DAC2 of ESP32
+#define I2C_SDA              21     // Pin D21 mapped to pin GPIO21/SDA of ESP32
+#define I2C_SCL              22     // Pin D22 mapped to pin GPIO22/SCL of ESP32
+
+// Select your modem:
+#define TINY_GSM_MODEM_SIM800
+//#define TINY_GSM_MODEM_SIM808
+//#define TINY_GSM_MODEM_SIM868
+//#define TINY_GSM_MODEM_SIM900
+//#define TINY_GSM_MODEM_SIM5300
+//#define TINY_GSM_MODEM_SIM5320
+//#define TINY_GSM_MODEM_SIM5360
+//#define TINY_GSM_MODEM_SIM7000
+//#define TINY_GSM_MODEM_SIM7100
+//#define TINY_GSM_MODEM_SIM7500
+//#define TINY_GSM_MODEM_SIM7600
+//#define TINY_GSM_MODEM_SIM7800
+//#define TINY_GSM_MODEM_UBLOX
+//#define TINY_GSM_MODEM_SARAR4
+//#define TINY_GSM_MODEM_M95
+//#define TINY_GSM_MODEM_BG96
+//#define TINY_GSM_MODEM_A6
+//#define TINY_GSM_MODEM_A7
+//#define TINY_GSM_MODEM_M590
+//#define TINY_GSM_MODEM_MC60
+//#define TINY_GSM_MODEM_MC60E
+//#define TINY_GSM_MODEM_XBEE
+//#define TINY_GSM_MODEM_SEQUANS_MONARCH
+
+// Increase RX buffer if needed
+#define TINY_GSM_RX_BUFFER 1024
+
+//#define USE_BLYNK_WM      false
+#define USE_BLYNK_WM      true
+
+#define USE_SPIFFS        false
+//#define USE_SPIFFS        true
+
+#define EEPROM_SIZE       2048
+#define EEPROM_START      256
+
+#include <BlynkSimpleTinyGSM_M.h>
+
+#if USE_BLYNK_WM
+#include <BlynkSimpleEsp32_GSM_WFM.h>
+
+#define USE_DYNAMIC_PARAMETERS      true
 
 /////////////// Start dynamic Credentials ///////////////
 
@@ -256,12 +375,13 @@ uint16_t NUM_MENU_ITEMS = 0;
 //#define USE_LOCAL_SERVER      false
 
 #if USE_LOCAL_SERVER
-#define wifi_blynk_tok        "****"
+#define wifi_blynk_tok       "****"
 #define gsm_blynk_tok         "****"
 //#define blynk_server          "account.duckdns.org"
+// Usedirect IPAddress in case GPRS can't use DDNS fast enough and can't connect
 #define blynk_server          "xxx.xxx.xxx.xxx"
 #else
-#define wifi_blynk_tok        "****"
+#define wifi_blynk_tok       "****"
 #define gsm_blynk_tok         "****"
 #define blynk_server          "blynk-cloud.com"
 #endif
@@ -278,16 +398,11 @@ uint16_t NUM_MENU_ITEMS = 0;
 // Set serial for debug console (to the Serial Monitor, default speed 115200)
 #define SerialMon Serial
 
-#define RXD2      16
-#define TXD2      17
-// Use ESP32 Serial2 for GSM
-#define SerialAT  Serial2
+// Use ESP32 Serial2 for GSM, Serial1 for TTGO T-Call
+#define SerialAT  Serial1
 
 // Uncomment this if you want to see all AT commands
 #define DUMP_AT_COMMANDS      false
-
-//#include <SoftwareSerial.h>
-//SoftwareSerial SerialAT(MODEM_RX, MODEM_TX); // RX, TX
 
 #if DUMP_AT_COMMANDS
 #include <StreamDebugger.h>
@@ -355,7 +470,7 @@ void setup()
   SerialMon.begin(115200);
   while (!SerialMon);
   
-  SerialMon.println(F("\nStart ESP32-WIFI-GSM"));
+  SerialMon.println(F("\nStart TTGO-TCALL-GSM"));
 
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);
@@ -369,17 +484,18 @@ void setup()
   SerialMon.println(F("Set GSM module baud rate"));
 
   // Set GSM module baud rate
-  //SerialAT.begin(115200);
   SerialAT.begin(115200, SERIAL_8N1, MODEM_RX, MODEM_TX);
   delay(3000);
 
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
-  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
+  // Use configurable AP IP, instead of default IP 192.168.4.1
   Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
+  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
-  Blynk_WF.begin("ESP32-WiFi-GSM");
+  // Set personalized Hostname
+  Blynk_WF.begin("TTGO-TCALL-GSM");
 #else
   Blynk_WF.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT);
 
@@ -435,14 +551,13 @@ void loop()
 
 #if USE_BLYNK_WM
   if (valid_apn)
+    Blynk_GSM.run();
+#else
+  Blynk_GSM.run();
 #endif
-  {
-    if (GSM_CONNECT_OK)
-      Blynk_GSM.run();
-  }
 
   check_status();
-  
+
 #if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
   static bool displayedCredentials = false;
 
@@ -571,6 +686,21 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 
 1. Change Synch XMLHttpRequest to Async to avoid ["InvalidAccessError" DOMException](https://xhr.spec.whatwg.org/)
 2. Reduce memory usage.
+
+## TO DO
+
+1. Same features for other boards with GSM/GPRS shield as well as other GSM/GPRS shields (SIM7x00, etc.).
+
+## DONE
+
+1. Permit EEPROM size and location configurable to avoid conflict with others.
+2. More flexible to configure reconnection timeout.
+3. For fresh config data, don't need to wait for connecting timeout before entering config portal.
+4. If the config data not entered completely (APN, GPRS User, GPRS Pass, Server, HardwarePort and Blynk token), entering config portal
+5. Better Cofig Portal GUI
+6. WiFi Password max length is 63, according to WPA2 standard.
+7. Permit to input special chars such as ***%*** and ***#*** into data fields.
+8. Dynamic custom parameters
 
 ### Contributions and thanks
 
