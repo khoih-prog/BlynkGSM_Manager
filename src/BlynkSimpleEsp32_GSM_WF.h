@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.8
+   Version: 1.0.9
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -27,6 +27,8 @@
     1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
     1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
     1.0.8   K Hoang      14/04/2020 Fix bug.
+    1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
+                                    Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
  *****************************************************************************************************************************/
 
 #ifndef BlynkSimpleEsp32_GSM_WF_h

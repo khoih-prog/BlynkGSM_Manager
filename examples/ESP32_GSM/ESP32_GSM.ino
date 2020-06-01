@@ -6,7 +6,7 @@
    Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
    Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
    Licensed under MIT license
-   Version: 1.0.8
+   Version: 1.0.9
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -19,182 +19,13 @@
     1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
     1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
     1.0.8   K Hoang      14/04/2020 Fix bug.
+    1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
+                                    Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
  *****************************************************************************************************************************/
 
-#ifndef ESP32
-#error This code is intended to run on the ESP32 platform! Please check your Tools->Board setting.
-#endif
-
-#define BLYNK_PRINT         Serial
-#define BLYNK_HEARTBEAT     60
-
-// TTGO T-Call pin definitions
-#define MODEM_RST            5
-#define MODEM_PWKEY          4
-#define MODEM_POWER_ON       23
-
-#define MODEM_TX             27
-#define MODEM_RX             26
-
-#define I2C_SDA              21
-#define I2C_SCL              22
-
-// Select your modem:
-#define TINY_GSM_MODEM_SIM800
-//#define TINY_GSM_MODEM_SIM808
-//#define TINY_GSM_MODEM_SIM868
-//#define TINY_GSM_MODEM_SIM900
-//#define TINY_GSM_MODEM_SIM5300
-//#define TINY_GSM_MODEM_SIM5320
-//#define TINY_GSM_MODEM_SIM5360
-//#define TINY_GSM_MODEM_SIM7000
-//#define TINY_GSM_MODEM_SIM7100
-//#define TINY_GSM_MODEM_SIM7500
-//#define TINY_GSM_MODEM_SIM7600
-//#define TINY_GSM_MODEM_SIM7800
-//#define TINY_GSM_MODEM_UBLOX
-//#define TINY_GSM_MODEM_SARAR4
-//#define TINY_GSM_MODEM_M95
-//#define TINY_GSM_MODEM_BG96
-//#define TINY_GSM_MODEM_A6
-//#define TINY_GSM_MODEM_A7
-//#define TINY_GSM_MODEM_M590
-//#define TINY_GSM_MODEM_MC60
-//#define TINY_GSM_MODEM_MC60E
-//#define TINY_GSM_MODEM_XBEE
-//#define TINY_GSM_MODEM_SEQUANS_MONARCH
-
-
-// Increase RX buffer if needed
-#define TINY_GSM_RX_BUFFER 1024
-
-#include <TinyGsmClient.h>
-
-#define USE_SPIFFS      true
-//#define USE_SPIFFS      false
-
-//#define USE_BLYNK_WM      false
-#define USE_BLYNK_WM      true
-
-#define EEPROM_SIZE       2048
-#define EEPROM_START      512
-
-#include <BlynkSimpleTinyGSM_M.h>
-
-#if USE_BLYNK_WM
-#include <BlynkSimpleEsp32_GSM_WFM.h>
-
-#define USE_DYNAMIC_PARAMETERS      true
-
-/////////////// Start dynamic Credentials ///////////////
-
-//Defined in <BlynkSimpleEsp32_GSM_WFM.h>
-/**************************************
-  #define MAX_ID_LEN                5
-  #define MAX_DISPLAY_NAME_LEN      16
-
-  typedef struct
-  {
-  char id             [MAX_ID_LEN + 1];
-  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
-  char *pdata;
-  uint8_t maxlen;
-  } MenuItem;
-**************************************/
-
-#if USE_DYNAMIC_PARAMETERS
-
-#define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
-
-#define MAX_MQTT_PORT_LEN        6
-char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
-
-#define MAX_MQTT_USERNAME_LEN      34
-char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
-
-#define MAX_MQTT_PW_LEN        34
-char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
-
-#define MAX_MQTT_SUBS_TOPIC_LEN      34
-char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
-
-#define MAX_MQTT_PUB_TOPIC_LEN       34
-char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
-
-MenuItem myMenuItems [] =
-{
-  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
-  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
-  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
-  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
-  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
-  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
-};
-
-uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-
-#else
-
-MenuItem myMenuItems [] = {};
-
-uint16_t NUM_MENU_ITEMS = 0;
-#endif
-
-
-/////// // End dynamic Credentials ///////////
-
-#else
-#include <BlynkSimpleEsp32_GSM_WF.h>
-
-// Your WiFi credentials.
-#define ssid  "****"
-#define pass  "****"
-
-#define USE_LOCAL_SERVER      true
-//#define USE_LOCAL_SERVER      false
-
-#if USE_LOCAL_SERVER
-#define wifi_blynk_tok        "****"
-#define gsm_blynk_tok         "****"
-//#define blynk_server          "account.duckdns.org"
-#define blynk_server          "xxx.xxx.xxx.xxx"
-#else
-#define wifi_blynk_tok        "****"
-#define gsm_blynk_tok         "****"
-#define blynk_server          "blynk-cloud.com"
-#endif
-
-#define apn         "rogers-core-appl1.apn"
-#define gprsUser    ""    //"wapuser1"
-#define gprsPass    ""    //"wap"
-#endif
-
-#define BLYNK_HARDWARE_PORT       8080
-
-#include <TinyGsmClient.h>
-
-// Set serial for debug console (to the Serial Monitor, default speed 115200)
-#define SerialMon Serial
-
-#define RXD2      16
-#define TXD2      17
-// Use ESP32 Serial2 for GSM
-#define SerialAT  Serial2
-
-// Uncomment this if you want to see all AT commands
-#define DUMP_AT_COMMANDS      false
-
-//#include <SoftwareSerial.h>
-//SoftwareSerial SerialAT(MODEM_RX, MODEM_TX); // RX, TX
-
-#if DUMP_AT_COMMANDS
-#include <StreamDebugger.h>
-StreamDebugger debugger(SerialAT, SerialMon);
-TinyGsm modem(debugger);
-#else
-TinyGsm modem(SerialAT);
-#endif
+#include "defines.h"
+#include "Credentials.h"
+#include "dynamicParams.h"
 
 void heartBeatPrint(void)
 {
@@ -254,7 +85,8 @@ void setup()
   SerialMon.begin(115200);
   while (!SerialMon);
   
-  SerialMon.println(F("\nStart ESP32-WIFI-GSM"));
+  SerialMon.print(F("\nStart ESP32-WIFI-GSM using "));
+  SerialMon.println(CurrentFileFS);
 
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);
@@ -276,7 +108,7 @@ void setup()
 
 #if USE_BLYNK_WM
   // Use configurable AP IP, instead of default IP 192.168.4.1
-  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
+  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 240, 1));
   // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
   // Set personalized Hostname
@@ -299,7 +131,7 @@ void setup()
   Serial.print(F("gprs apn = "));
   Serial.println(localBlynkGSM_ESP32_config.apn);
 
-  if (String(localBlynkGSM_ESP32_config.apn) == String("nothing"))
+  if (String(localBlynkGSM_ESP32_config.apn) == NO_CONFIG)
   {
     Serial.println(F("No valid stored apn. Must run WiFi to Open config portal"));
     valid_apn = false;
@@ -308,12 +140,20 @@ void setup()
   {
     valid_apn = true;
 
-    Blynk_GSM.config(modem, localBlynkGSM_ESP32_config.gsm_blynk_tok, localBlynkGSM_ESP32_config.blynk_server, BLYNK_HARDWARE_PORT);
-    GSM_CONNECT_OK = Blynk_GSM.connectNetwork(localBlynkGSM_ESP32_config.apn, localBlynkGSM_ESP32_config.gprsUser,
-                     localBlynkGSM_ESP32_config.gprsPass);
+    for (int index = 0; index < NUM_BLYNK_CREDENTIALS; index++)
+    {
+      Blynk_GSM.config(modem, localBlynkGSM_ESP32_config.Blynk_Creds[index].gsm_blynk_token,
+                       localBlynkGSM_ESP32_config.Blynk_Creds[index].blynk_server, localBlynkGSM_ESP32_config.blynk_port);
 
-    if (GSM_CONNECT_OK)
-      Blynk_GSM.connect();
+      GSM_CONNECT_OK = Blynk_GSM.connectNetwork(localBlynkGSM_ESP32_config.apn, localBlynkGSM_ESP32_config.gprsUser,
+                       localBlynkGSM_ESP32_config.gprsPass);
+
+      if (GSM_CONNECT_OK)
+      {
+        if ( Blynk_GSM.connect() == true )
+          break;
+      }
+    }
   }
 #endif
 }
@@ -321,7 +161,7 @@ void setup()
 #if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
 void displayCredentials(void)
 {
-  Serial.println("Your stored Credentials :");
+  Serial.println("\nYour stored Credentials :");
 
   for (int i = 0; i < NUM_MENU_ITEMS; i++)
   {
