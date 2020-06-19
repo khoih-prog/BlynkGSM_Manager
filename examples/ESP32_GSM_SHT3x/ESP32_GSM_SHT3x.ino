@@ -145,6 +145,8 @@ void setup()
   SerialMon.print(F("\nStart ESP32-WIFI-GSM_SHT3x using "));
   SerialMon.println(CurrentFileFS);
 
+  Sensor.Begin();
+
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);
   pinMode(MODEM_RST, OUTPUT);
