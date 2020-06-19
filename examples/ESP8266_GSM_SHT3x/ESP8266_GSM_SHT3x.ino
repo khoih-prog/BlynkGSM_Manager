@@ -1,28 +1,28 @@
 /****************************************************************************************************************************
-     TTGO-TCALL_SHT3x.ino
-     For ESP32 TTGO-TCALL boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
-     Uploading SHT3x temperature and humidity data to Blynk
+   ESP8266_GSM_SHT3x.ino
+   For ESP8266 boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
+   Uploading SHT3x temperature and humidity data to Blynk
 
-     Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
-     Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-     Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
-     Licensed under MIT license
-     Version: 1.0.9
+   Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
+   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+   Licensed under MIT license
+   Version: 1.0.9
 
-     Version Modified By   Date      Comments
-     ------- -----------  ---------- -----------
-  1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
-  1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
-  1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
-  1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
-  1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
-  1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
-  1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
-  1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
-  1.0.8   K Hoang      14/04/2020 Fix bug.
-  1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
-                                  Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
-   *****************************************************************************************************************************/
+   Version Modified By   Date      Comments
+   ------- -----------  ---------- -----------
+    1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
+    1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
+    1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
+    1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
+    1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
+    1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
+    1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
+    1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
+    1.0.8   K Hoang      14/04/2020 Fix bug.
+    1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
+                                    Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
+ *****************************************************************************************************************************/
 
 #include "defines.h"
 #include "Credentials.h"
@@ -142,10 +142,8 @@ void setup()
   SerialMon.begin(115200);
   while (!SerialMon);
 
-  SerialMon.print(F("\nStart TTGO-TCALL-GSM_SHT3x using "));
+  SerialMon.print(F("\nStart ESP8266-WIFI-GSM_SHT3x using "));
   SerialMon.println(CurrentFileFS);
-
-  Sensor.Begin();
   
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);
@@ -159,7 +157,8 @@ void setup()
   SerialMon.println(F("Set GSM module baud rate"));
 
   // Set GSM module baud rate
-  SerialAT.begin(115200, SERIAL_8N1, MODEM_RX, MODEM_TX);
+  SerialAT.begin(115200);
+
   delay(3000);
 
   Serial.println(F("Use WiFi to connect Blynk"));
@@ -170,7 +169,7 @@ void setup()
   // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
   // Set personalized Hostname
-  Blynk_WF.begin("TTGO-TCALL-GSM");
+  Blynk_WF.begin("ESP8266-WiFi-GSM");
 #else
   Blynk_WF.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT);
 
@@ -182,14 +181,14 @@ void setup()
 #endif
 
 #if USE_BLYNK_WM
-  Blynk_WF_Configuration localBlynkGSM_ESP32_config;
+  Blynk_WF_Configuration localBlynkGSM_ESP8266_config;
 
-  Blynk_WF.getFullConfigData(&localBlynkGSM_ESP32_config);
+  Blynk_WF.getFullConfigData(&localBlynkGSM_ESP8266_config);
 
   Serial.print(F("gprs apn = "));
-  Serial.println(localBlynkGSM_ESP32_config.apn);
+  Serial.println(localBlynkGSM_ESP8266_config.apn);
 
-  if (String(localBlynkGSM_ESP32_config.apn) == NO_CONFIG)
+  if (String(localBlynkGSM_ESP8266_config.apn) == NO_CONFIG)
   {
     Serial.println(F("No valid stored apn. Must run WiFi to Open config portal"));
     valid_apn = false;
@@ -200,11 +199,11 @@ void setup()
 
     for (int index = 0; index < NUM_BLYNK_CREDENTIALS; index++)
     {
-      Blynk_GSM.config(modem, localBlynkGSM_ESP32_config.Blynk_Creds[index].gsm_blynk_token,
-                       localBlynkGSM_ESP32_config.Blynk_Creds[index].blynk_server, localBlynkGSM_ESP32_config.blynk_port);
+      Blynk_GSM.config(modem, localBlynkGSM_ESP8266_config.Blynk_Creds[index].gsm_blynk_token,
+                       localBlynkGSM_ESP8266_config.Blynk_Creds[index].blynk_server, localBlynkGSM_ESP8266_config.blynk_port);
 
-      GSM_CONNECT_OK = Blynk_GSM.connectNetwork(localBlynkGSM_ESP32_config.apn, localBlynkGSM_ESP32_config.gprsUser,
-                       localBlynkGSM_ESP32_config.gprsPass);
+      GSM_CONNECT_OK = Blynk_GSM.connectNetwork(localBlynkGSM_ESP8266_config.apn, localBlynkGSM_ESP8266_config.gprsUser,
+                       localBlynkGSM_ESP8266_config.gprsPass);
 
       if (GSM_CONNECT_OK)
       {
@@ -234,10 +233,11 @@ void loop()
 
 #if USE_BLYNK_WM
   if (valid_apn)
-    Blynk_GSM.run();
-#else
-  Blynk_GSM.run();
 #endif
+  {
+    if (GSM_CONNECT_OK)
+      Blynk_GSM.run();
+  }
 
   check_status();
 
