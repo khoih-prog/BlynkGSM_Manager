@@ -6,7 +6,9 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](#Contributing)
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/BlynkGSM_Manager.svg)](http://github.com/khoih-prog/BlynkGSM_Manager/issues)
 
-By design, Blynk user can run ESP32/ESP8266 boards with either WiFi or GSM/GPRS by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk GSM/GPRS and WiFi libraries in one sketch, run ***both WiFi and GSM/GPRS simultaneously***, or select one to use at runtime after reboot.
+---
+
+By design, Blynk user can run ESP32/ESP8266 boards with **either WiFi or GSM/GPRS** by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk GSM/GPRS and WiFi libraries in one sketch, run ***both WiFi and GSM/GPRS simultaneously***, or select one to use at runtime after reboot.
 
 This is also a Blynk and WiFiManager Library for configuring/auto(re)connecting ESP8266/ESP32 modules to the available MultiWiFi APs and MultiBlynk servers at runtime. Connection is with or without SSL. Configuration data to be saved in either LittleFS / SPIFFS or EEPROM. Default Credentials as well as Dynamic custom parameters can be added and modified easily without coding knowledge. DoubleResetDetector is used to force Config Portal opening even if the Credentials are still valid.
 
@@ -20,9 +22,18 @@ New recent features:
 - ***DoubleDetectDetector*** feature to force Config Portal when double reset is detected within predetermined time, default 10s.
 - Configurable ***Config Portal Title*** to be either HostName, BoardName or default undistinguishable names.
 - Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
+- `Multiple WiFi Credentials (SSID, Password) and system will autoconnect to the best and available WiFi SSID.`
+- `Multiple Blynk Credentials (Server, Token) and system will autoconnect to the available Blynk Servers.`
 
+---
 
-### Major Releases v1.0.9
+### Releases v1.0.10
+
+1. Use ESP8266/ESP32 MultiWiFi feature to autoconnect to the best and available WiFi SSID.
+2. Auto format SPIFFS/LittleFS for first time usage.
+3. Fix bug and logic of USE_DEFAULT_CONFIG_DATA. 
+
+#### Major Releases v1.0.9
 
 1. Add MultiWiFi/Blynk features for WiFi
 2. Add MultiBlynk feature for GPRS/GSM
@@ -31,28 +42,8 @@ New recent features:
 5. Add Configurable Config Portal Title
 6. Add Default Config Data. 
 
-### Releases v1.0.8
-
-1. Fix potential dangerous bug in code and examples of v1.0.7.
-
-### Releases v1.0.7
-
-#### Potential dangerous bug, Don't use this version
-
-1. WiFi Password max length is 63, according to WPA2 standard.
-2. Permit to input special chars such as ***%*** and ***#*** into data fields.
-
-### Releases v1.0.6
-
-#### Potential dangerous bug, Don't use this version
-
-1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
-2. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
-3. See issue [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
-
-### Releases v1.0.5
-
-1. Add more modem supports. Thanks to new [TinyGSM library v0.10.5+](https://github.com/vshymanskyy/TinyGSM).
+---
+---
 
 ## Supported modems
 
@@ -89,32 +80,37 @@ More modems may be supported later:
 - [ ] ZTE MG2639
 - [ ] Hi-Link HLK-RM04
 
-### Releases v1.0.4
-
-1. Enhance Config Portal GUI.
-2. Reduce code size.
-
 ---
 
 ## Prerequisite
-1. [`Arduino IDE 1.8.12 or later` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. [`ESP32 core 1.0.4 or later`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
-3. [`ESP8266 core 2.6.3 or later`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager)
-3. [`Blynk library 0.6.1 or later`](https://github.com/blynkkk/blynk-library/releases)
-4. [`TinyGSM library 0.10.5 or later`](https://github.com/vshymanskyy/TinyGSM) 
+1. [`Arduino IDE 1.8.12+` for Arduino](https://www.arduino.cc/en/Main/Software)
+2. [`ESP32 core 1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
+3. [`ESP8266 core 2.7.3+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager)
+4. [`Blynk library 0.6.1+`](https://github.com/blynkkk/blynk-library/releases)
+5. [`TinyGSM library 0.10.8+`](https://github.com/vshymanskyy/TinyGSM)
+6. [`ESP_DoubleResetDetector library 1.0.3+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com
+ 
+---
 
-#### Use Arduino Library Manager
+## Installation
 
-1. The easiest way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager`, then select / install the latest version.
-2. More detailed instructions at [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager)
+### Use Arduino Library Manager
+The best and easiest way is to use `Arduino Library Manager`. Search for `BlynkGSM_Manager`, then select / install the latest version. You can also use this link [![arduino-library-badge](https://www.ardu-badge.com/badge/BlynkGSM_Manager.svg?)](https://www.ardu-badge.com/BlynkGSM_Manager) for more detailed instructions.
 
-#### Manual Install
+### Manual Install
 
 1. Navigate to [BlynkGSM_Manager](https://github.com/khoih-prog/BlynkGSM_Manager) page.
 2. Download the latest release `BlynkGSM_Manager-master.zip`.
 3. Extract the zip file to `BlynkGSM_Manager-master` directory 
-4. Copy whole 
-  - `BlynkGSM_Manager-master` folder to Arduino libraries directory such as `~/Arduino/libraries`.
+4. Copy the whole `BlynkGSM_Manager-master` folder to Arduino libraries' directory such as `~/Arduino/libraries/`.
+
+### VS Code & PlatformIO:
+1. Install [VS Code](https://code.visualstudio.com/)
+2. Install [PlatformIO](https://platformio.org/platformio-ide)
+3. Install **BlynkGSM_Manager** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for **BlynkGSM_Manager** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
+4. Use included [platformio.ini](examples/platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically
+
+---
 
 ### Important information
 
@@ -124,17 +120,20 @@ Please read more information in [TinyGSM Library](https://github.com/vshymanskyy
 
 ### How to use
 
-For ESP32 and ESP8266, in your code : 
-1. Replace
-   - `BlynkSimpleTinyGSM.h` with 
-   - `BlynkSimpleTinyGSM_M.h` 
+For ESP32 and ESP8266, in your code :
 
-2. Then replace 
+1. Replace
+
+   - `BlynkSimpleTinyGSM.h` with `BlynkSimpleTinyGSM_M.h` 
+
+2. Then replace
+
    - `Blynk.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT)` with `Blynk_WF.begin("TTGO-TCALL-GSM")` for WiFi
    - `Blynk.xxx()` with `Blynk_WF.xxx()` for WiFi
    - `Blynk.xxx()` with `Blynk_GSM.xxx()` for GSM/GPRS
    
 3. Add
+
 ```cpp
   #if USE_BLYNK_WM
     #include <BlynkSimpleEsp32_GSM_WFM.h>
@@ -145,20 +144,20 @@ For ESP32 and ESP8266, in your code :
 
 4. then add
 
-```
+```cpp
 // Only for ESP8266
 #define USE_LITTLEFS  true
 #define USE_SPIFFS    false
 ```
 to use LittleFS (for ESP8266), or
 
-```
+```cpp
 #define USE_LITTLEFS  false
 #define USE_SPIFFS    true
 ```
 to use SPIFFS or
 
-```
+```cpp
 #define USE_LITTLEFS  false
 #define USE_SPIFFS    false
 ```
@@ -167,7 +166,7 @@ to use EEPROM. Currently, data size in v1.0.9, with DRD and not including dynami
 
 5. 
 
-```
+```cpp
 // Force some params in Blynk, only valid for library version 1.0.1 and later
 #define TIMEOUT_RECONNECT_WIFI                    10000L
 #define RESET_IF_CONFIG_TIMEOUT                   true
@@ -176,22 +175,25 @@ to use EEPROM. Currently, data size in v1.0.9, with DRD and not including dynami
 ```
 6. To use personalized Config Portal AP SSID and Password, as well as IP Address, channel e.g. call :
 
-```
-  // Use configurable AP IP, instead of default IP 192.168.4.1
-  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
-  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
-  Blynk_WF.setConfigPortalChannel(0);
+```cpp
+// Set config portal SSID and Password
+Blynk.setConfigPortal("TestPortal-ESP32", "TestPortalPass");
+
+// Use configurable AP IP, instead of default IP 192.168.4.1
+Blynk.setConfigPortalIP(IPAddress(192, 168, 232, 1));
+// Set config portal channel, default = 1. Use 0 => random channel from 1-12 to avoid conflict
+Blynk_WF.setConfigPortalChannel(0);
 ```
 
 7. You can specify STA-mode Static IP address,  Gateway, Subnet Mask, as well as DNS server 1 and 2:
 
-```
-// From v1.0.5, select either one of these to set static IP
-  Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 220), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0));
-  //Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 220), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
-  //                           IPAddress(192, 168, 2, 1), IPAddress(8, 8, 8, 8));
-  //Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 220), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
-  //                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
+```cpp
+// Select either one of these to set static IP + DNS
+Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0));
+//Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+//                           IPAddress(192, 168, 2, 1), IPAddress(8, 8, 8, 8));
+//Blynk.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+//                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
 ```
 
 8. Change `Blynk.run()` for WiFi to `Blynk_WF.run()`.
@@ -200,76 +202,246 @@ to use EEPROM. Currently, data size in v1.0.9, with DRD and not including dynami
 
 That's it.
 
-### How to add dynamic parameters from sketch
+---
+---
 
-- To add custom parameters, just modify from the example below
+### HOWTO Use default Credentials and have them pre-loaded onto Config Portal
+
+See this example and modify as necessary
+
+#### 1. To load [Default Credentials](examples/TTGO_TCALL_GSM/Credentials.h)
+
+```cpp
+bool LOAD_DEFAULT_CONFIG_DATA = true;
+```
+
+#### 2. To use system default to load "blank" when there is no valid Credentials
+
+```cpp
+bool LOAD_DEFAULT_CONFIG_DATA = false;
+```
+
+#### 3. Example of [Default Credentials](examples/TTGO_TCALL_GSM/Credentials.h)
+
+```cpp
+#if USE_BLYNK_WM
+
+  /// Start Default Config Data //////////////////
+  
+  /*
+    // Defined in <BlynkSimpleESP8266_GSM_WFM.h> 
+  
+    #define SSID_MAX_LEN      32
+    //From v1.0.10, WPA2 passwords can be up to 63 characters long.
+    #define PASS_MAX_LEN      64
+    
+    typedef struct
+    {
+      char wifi_ssid[SSID_MAX_LEN];
+      char wifi_pw  [PASS_MAX_LEN];
+    }  WiFi_Credentials;
+    
+    #define BLYNK_SERVER_MAX_LEN      32
+    #define BLYNK_TOKEN_MAX_LEN       36
+    
+    typedef struct
+    {
+      char blynk_server     [BLYNK_SERVER_MAX_LEN];
+      char wifi_blynk_token [BLYNK_TOKEN_MAX_LEN];
+      char gsm_blynk_token  [BLYNK_TOKEN_MAX_LEN];
+    }  Blynk_Credentials;
+    
+    #define NUM_WIFI_CREDENTIALS      2
+    #define NUM_BLYNK_CREDENTIALS     2
+    
+    // Configurable items besides fixed Header
+    #define NUM_CONFIGURABLE_ITEMS    ( 6 + (2 * NUM_WIFI_CREDENTIALS) + (3 * NUM_BLYNK_CREDENTIALS) )
+    #define DEFAULT_GPRS_PIN          "1234"
+    
+    typedef struct Configuration
+    {
+      char header         [16];
+      WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
+      Blynk_Credentials Blynk_Creds [NUM_BLYNK_CREDENTIALS];
+      int  blynk_port;
+      // YOUR GSM / GPRS RELATED
+      char apn            [32];
+      char gprsUser       [32];
+      char gprsPass       [32];
+      char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode  
+      // END OF YOUR GSM / GPRS RELATED
+      char board_name     [24];
+      int  checkSum;
+    } Blynk_WF_Configuration;
+  
+  */
+  
+  //bool LOAD_DEFAULT_CONFIG_DATA = true;
+  bool LOAD_DEFAULT_CONFIG_DATA = false;
+  
+  Blynk_WF_Configuration defaultConfig =
+  {
+    //char header[16], dummy, not used
+    "GSM",
+    //WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS]
+    //WiFi_Creds.wifi_ssid and WiFi_Creds.wifi_pw
+    "SSID1", "password1",
+    "SSID2", "password2",
+    // Blynk_Credentials Blynk_Creds [NUM_BLYNK_CREDENTIALS];
+    // Blynk_Creds.blynk_server, Blynk_Creds.wifi_blynk_token and Blynk_Creds.gsm_blynk_token 
+    "account.ddns.net",     "wifi_token",  "gsm_token",
+    "account.duckdns.org",  "wifi_token1", "gsm_token1",
+    //int  blynk_port;
+    8080,
+    // YOUR GSM / GPRS RELATED
+    //char apn            [32];
+    "rogers-core-appl1.apn",
+    //char gprsUser       [32];
+    "wapuser1",
+    //char gprsPass       [32];
+    "wap",
+    //char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode
+    "1245678",
+      // END OF YOUR GSM / GPRS RELATED
+    //char board_name     [24];
+    "ESP32-GSM-WiFi",
+    //int  checkSum, dummy, not used
+    0
+  };
+  
+  /////////// End Default Config Data /////////////
+
+#endif    // #if USE_BLYNK_WM
+```
+
+#### 4. How to add dynamic parameters from sketch
+
+- To add custom parameters, just modify the example below
+
+```cpp
+#if USE_BLYNK_WM
+
+  #define USE_DYNAMIC_PARAMETERS      true
+  
+  /////////////// Start dynamic Credentials ///////////////
+  
+  //Defined in <BlynkSimpleEsp32_GSM_WFM.h>
+  /**************************************
+    #define MAX_ID_LEN                5
+    #define MAX_DISPLAY_NAME_LEN      16
+  
+    typedef struct
+    {
+    char id             [MAX_ID_LEN + 1];
+    char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+    char *pdata;
+    uint8_t maxlen;
+    } MenuItem;
+  **************************************/
+  
+  #if USE_DYNAMIC_PARAMETERS
+  
+  #define MAX_MQTT_SERVER_LEN      34
+  char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "mqtt.ddns.net";
+  
+  #define MAX_MQTT_PORT_LEN        6
+  char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "1883";
+  
+  #define MAX_MQTT_USERNAME_LEN      34
+  char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "mqtt-user";
+  
+  #define MAX_MQTT_PW_LEN        34
+  char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "mqtt-pass";
+  
+  #define MAX_MQTT_SUBS_TOPIC_LEN      34
+  char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "SubTopic_ESP32_GSM";
+  
+  #define MAX_MQTT_PUB_TOPIC_LEN       34
+  char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "PubTopic_ESP32_GSM";
+  
+  MenuItem myMenuItems [] =
+  {
+    { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
+    { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
+    { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
+    { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
+    { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
+    { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
+  };
+  
+  uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+  
+  #else
+  
+  MenuItem myMenuItems [] = {};
+  
+  uint16_t NUM_MENU_ITEMS = 0;
+  #endif
+  
+  
+  /////// // End dynamic Credentials ///////////
+
+#endif    // #if USE_BLYNK_WM
 
 ```
-#define USE_DYNAMIC_PARAMETERS      true
+#### 5. If you don't need to add dynamic parameters
 
+Use the following code snippet in sketch
+
+```cpp
+#define USE_DYNAMIC_PARAMETERS     false
+```
+
+or
+
+```cpp
 /////////////// Start dynamic Credentials ///////////////
-
-//Defined in <BlynkSimpleEsp32_GSM_WFM.h>
-/**************************************
-  #define MAX_ID_LEN                5
-  #define MAX_DISPLAY_NAME_LEN      16
-
-  typedef struct
-  {
-  char id             [MAX_ID_LEN + 1];
-  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
-  char *pdata;
-  uint8_t maxlen;
-  } MenuItem;
-**************************************/
-
-#if USE_DYNAMIC_PARAMETERS
-
-#define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "";
-
-#define MAX_MQTT_PORT_LEN        6
-char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "";
-
-#define MAX_MQTT_USERNAME_LEN      34
-char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "";
-
-#define MAX_MQTT_PW_LEN        34
-char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "";
-
-#define MAX_MQTT_SUBS_TOPIC_LEN      34
-char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "";
-
-#define MAX_MQTT_PUB_TOPIC_LEN       34
-char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "";
-
-MenuItem myMenuItems [] =
-{
-  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
-  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
-  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
-  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
-  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
-  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
-};
-
-uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-
-#else
 
 MenuItem myMenuItems [] = {};
 
 uint16_t NUM_MENU_ITEMS = 0;
-#endif
-
 /////// // End dynamic Credentials ///////////
+
 ```
+
+---
 
 Also see examples: 
 1. [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM)
 2. [ESP32_GSM](examples/ESP32_GSM)
 3. [ESP8266_GSM](examples/ESP8266_GSM)
+4. [TTGO_TCALL_SHT3x](examples/TTGO_TCALL_SHT3x)
+5. [ESP32_GSM_SHT3x](examples/ESP32_GSM_SHT3x)
+6. [ESP8266_GSM_SHT3x](examples/ESP8266_GSM_SHT3x)
 
+---
+
+### Important Notes for using Dynamic Parameters' ids
+
+1. These ids (such as "mqtt" in example) must be ***unique***.
+
+Please be noted that the following ***reserved names are already used in library***:
+
+```
+"id"    for WiFi SSID
+"pw"    for WiFi PW
+"id1"   for WiFi1 SSID
+"pw1"   for WiFi1 PW
+"apn"   for GPRS/GSM apn
+"usr"   for GPRS/GSM user
+"pwd"   for GPRS/GSM password
+"pin"   for GPRS/GSM pin
+"sv"    for Blynk Server
+"wtk"   for Blynk WiFi Token
+"gtk"   for Blynk GPRS/GSM Token
+"sv1"   for Blynk Server1
+"wtk1"  for Blynk WiFi Token1
+"gtk1"  for Blynk GPRS/GSM Token1
+"pt"    for Blynk Port
+"nm"    for Board Name
+```
+
+---
 ---
 
 ## So, how it works?
@@ -281,6 +453,7 @@ You can set:
 1. static Config Portal IP address by using `Blynk_WF.setConfigPortalIP(IPAddress(xxx, xxx, xxx, xxx))`
 2. random Config Portal WiFi channel by using `Blynk_WF.setConfigPortalChannel(0)`
 3. selected Config Portal WiFi channel by using `Blynk_WF.setConfigPortalChannel(channel)`
+4. selected Config Portal SSID and Password by using `Blynk_WF.setConfigPortal("PortalSSID", "PortalPass")`
 
 <p align="center">
     <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_1.jpg">
@@ -338,226 +511,13 @@ void loop()
 ```
 
 ---
-
-### How to use default Credentials and have them pre-loaded onto Config Portal
-
-See this example and modify as necessary
-
-1. To load [Default Credentials](examples/TTGO_TCALL_GSM/Credentials.h)
-```
-bool LOAD_DEFAULT_CONFIG_DATA = true;
-```
-
-2. To use system default to load "blank" when there is no valid Credentials
-```
-bool LOAD_DEFAULT_CONFIG_DATA = false;
-```
-
-3. Example of [Default Credentials](examples/TTGO_TCALL_GSM/Credentials.h)
-
-```cpp
-/// Start Default Config Data //////////////////
-
-/*
-  // Defined in <BlynkSimpleESP8266_GSM_WFM.h> 
-
-  #define SSID_MAX_LEN      32
-  //From v1.0.10, WPA2 passwords can be up to 63 characters long.
-  #define PASS_MAX_LEN      64
-  
-  typedef struct
-  {
-    char wifi_ssid[SSID_MAX_LEN];
-    char wifi_pw  [PASS_MAX_LEN];
-  }  WiFi_Credentials;
-  
-  #define BLYNK_SERVER_MAX_LEN      32
-  #define BLYNK_TOKEN_MAX_LEN       36
-  
-  typedef struct
-  {
-    char blynk_server     [BLYNK_SERVER_MAX_LEN];
-    char wifi_blynk_token [BLYNK_TOKEN_MAX_LEN];
-    char gsm_blynk_token  [BLYNK_TOKEN_MAX_LEN];
-  }  Blynk_Credentials;
-  
-  #define NUM_WIFI_CREDENTIALS      2
-  #define NUM_BLYNK_CREDENTIALS     2
-  
-  // Configurable items besides fixed Header
-  #define NUM_CONFIGURABLE_ITEMS    ( 6 + (2 * NUM_WIFI_CREDENTIALS) + (3 * NUM_BLYNK_CREDENTIALS) )
-  #define DEFAULT_GPRS_PIN          "1234"
-  
-  typedef struct Configuration
-  {
-    char header         [16];
-    WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
-    Blynk_Credentials Blynk_Creds [NUM_BLYNK_CREDENTIALS];
-    int  blynk_port;
-    // YOUR GSM / GPRS RELATED
-    char apn            [32];
-    char gprsUser       [32];
-    char gprsPass       [32];
-    char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode  
-    // END OF YOUR GSM / GPRS RELATED
-    char board_name     [24];
-    int  checkSum;
-  } Blynk_WF_Configuration;
-
-*/
-
-bool LOAD_DEFAULT_CONFIG_DATA = true;
-//bool LOAD_DEFAULT_CONFIG_DATA = false;
-
-Blynk_WF_Configuration defaultConfig =
-{
-  //char header[16], dummy, not used
-  "GSM",
-  //WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS]
-  //WiFi_Creds.wifi_ssid and WiFi_Creds.wifi_pw
-  "SSID1", "password1",
-  "SSID2", "password2",
-  // Blynk_Credentials Blynk_Creds [NUM_BLYNK_CREDENTIALS];
-  // Blynk_Creds.blynk_server, Blynk_Creds.wifi_blynk_token and Blynk_Creds.gsm_blynk_token 
-  "account.ddns.net",     "wifi_token",  "gsm_token",
-  "account.duckdns.org",  "wifi_token1", "gsm_token1",
-  //int  blynk_port;
-  8080,
-  // YOUR GSM / GPRS RELATED
-  //char apn            [32];
-  "rogers-core-appl1.apn",
-  //char gprsUser       [32];
-  "wapuser1",
-  //char gprsPass       [32];
-  "wap",
-  //char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode
-  "1245678",
-    // END OF YOUR GSM / GPRS RELATED
-  //char board_name     [24];
-  "ESP32-GSM-WiFi",
-  //int  checkSum, dummy, not used
-  0
-};
-
-/////////// End Default Config Data /////////////
-```
-
-### How to add dynamic parameters from sketch
-
-- To add custom parameters, just modify the example below
-
-```
-#define USE_DYNAMIC_PARAMETERS      true
-
-/////////////// Start dynamic Credentials ///////////////
-
-//Defined in <BlynkSimpleEsp32_GSM_WFM.h>
-/**************************************
-  #define MAX_ID_LEN                5
-  #define MAX_DISPLAY_NAME_LEN      16
-
-  typedef struct
-  {
-  char id             [MAX_ID_LEN + 1];
-  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
-  char *pdata;
-  uint8_t maxlen;
-  } MenuItem;
-**************************************/
-
-#if USE_DYNAMIC_PARAMETERS
-
-#define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "mqtt.ddns.net";
-
-#define MAX_MQTT_PORT_LEN        6
-char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "1883";
-
-#define MAX_MQTT_USERNAME_LEN      34
-char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "mqtt-user";
-
-#define MAX_MQTT_PW_LEN        34
-char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "mqtt-pass";
-
-#define MAX_MQTT_SUBS_TOPIC_LEN      34
-char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "SubTopic_ESP32_GSM";
-
-#define MAX_MQTT_PUB_TOPIC_LEN       34
-char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "PubTopic_ESP32_GSM";
-
-MenuItem myMenuItems [] =
-{
-  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
-  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
-  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
-  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
-  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
-  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
-};
-
-uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-
-#else
-
-MenuItem myMenuItems [] = {};
-
-uint16_t NUM_MENU_ITEMS = 0;
-#endif
-
-
-/////// // End dynamic Credentials ///////////
-
-```
-- If you don't need to add dynamic parameters, use the following in sketch
-
-```
-#define USE_DYNAMIC_PARAMETERS     false
-```
-
-or
-
-```
-/////////////// Start dynamic Credentials ///////////////
-
-MenuItem myMenuItems [] = {};
-
-uint16_t NUM_MENU_ITEMS = 0;
-/////// // End dynamic Credentials ///////////
-
-```
-
-### Important Notes for using Dynamic Parameters' ids
-
-1. These ids (such as "mqtt" in example) must be ***unique***.
-
-Please be noted that the following ***reserved names are already used in library***:
-
-```
-"id"    for WiFi SSID
-"pw"    for WiFi PW
-"id1"   for WiFi1 SSID
-"pw1"   for WiFi1 PW
-"apn"   for GPRS/GSM apn
-"usr"   for GPRS/GSM user
-"pwd"   for GPRS/GSM password
-"pin"   for GPRS/GSM pin
-"sv"    for Blynk Server
-"wtk"   for Blynk WiFi Token
-"gtk"   for Blynk GPRS/GSM Token
-"sv1"   for Blynk Server1
-"wtk1"  for Blynk WiFi Token1
-"gtk1"  for Blynk GPRS/GSM Token1
-"pt"    for Blynk Port
-"nm"    for Board Name
-```
-
 ---
 
 ## Example [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM)
 
 Please take a look at other examples, as well.
 
-1. File [ESP32WM_Config.ino](examples/TTGO_TCALL_GSM/TTGO_TCALL_GSM.ino)
+1. File [TTGO_TCALL_GSM.ino](examples/TTGO_TCALL_GSM/TTGO_TCALL_GSM.ino)
 
 ```
 #include "defines.h"
@@ -623,7 +583,8 @@ void setup()
   while (!SerialMon);
   
   SerialMon.print(F("\nStart TTGO-TCALL-GSM using "));
-  SerialMon.println(CurrentFileFS);
+  SerialMon.print(CurrentFileFS);
+  SerialMon.println(" on " + String(ARDUINO_BOARD));
 
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);
@@ -643,11 +604,26 @@ void setup()
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
+
+  // Set config portal SSID and Password
+  Blynk_WF.setConfigPortal("TestPortal-ESP32", "TestPortalPass");
+    
   // Use configurable AP IP, instead of default IP 192.168.4.1
-  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
-  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
+  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 232, 1));
+  // Set config portal channel, default = 1. Use 0 => random channel from 1-12 to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
-  // Set personalized Hostname
+
+  // Select either one of these to set static IP + DNS
+  Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0));
+  //Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+  //                           IPAddress(192, 168, 2, 1), IPAddress(8, 8, 8, 8));
+  //Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+  //                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
+  
+  // Use this to default DHCP hostname to ESP8266-XXXXXX or ESP32-XXXXXX
+  //Blynk_WF.begin();
+  // Use this to personalize DHCP hostname (RFC952 conformed)
+  // 24 chars max,- only a..z A..Z 0..9 '-' and no '-' as last char
   Blynk_WF.begin("TTGO-TCALL-GSM");
 #else
   Blynk_WF.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT);
@@ -768,7 +744,7 @@ void loop()
 // EEPROM_SIZE must be <= 2048 and >= CONFIG_DATA_SIZE (currently 172 bytes)
   #define EEPROM_SIZE    (2 * 1024)
   // EEPROM_START + CONFIG_DATA_SIZE must be <= EEPROM_SIZE
-  #define EEPROM_START  0
+  #define EEPROM_START  0  
 #endif
 
 // Force some params in Blynk, only valid for library version 1.0.1 and later
@@ -889,91 +865,94 @@ void loop()
 #ifndef Credentials_h
 #define Credentials_h
 
-/// Start Default Config Data //////////////////
+#if USE_BLYNK_WM
 
-/*
-  // Defined in <BlynkSimpleESP8266_GSM_WFM.h> 
-
-  #define SSID_MAX_LEN      32
-  //From v1.0.10, WPA2 passwords can be up to 63 characters long.
-  #define PASS_MAX_LEN      64
+  /// Start Default Config Data //////////////////
   
-  typedef struct
+  /*
+    // Defined in <BlynkSimpleESP8266_GSM_WFM.h> 
+  
+    #define SSID_MAX_LEN      32
+    //From v1.0.10, WPA2 passwords can be up to 63 characters long.
+    #define PASS_MAX_LEN      64
+    
+    typedef struct
+    {
+      char wifi_ssid[SSID_MAX_LEN];
+      char wifi_pw  [PASS_MAX_LEN];
+    }  WiFi_Credentials;
+    
+    #define BLYNK_SERVER_MAX_LEN      32
+    #define BLYNK_TOKEN_MAX_LEN       36
+    
+    typedef struct
+    {
+      char blynk_server     [BLYNK_SERVER_MAX_LEN];
+      char wifi_blynk_token [BLYNK_TOKEN_MAX_LEN];
+      char gsm_blynk_token  [BLYNK_TOKEN_MAX_LEN];
+    }  Blynk_Credentials;
+    
+    #define NUM_WIFI_CREDENTIALS      2
+    #define NUM_BLYNK_CREDENTIALS     2
+    
+    // Configurable items besides fixed Header
+    #define NUM_CONFIGURABLE_ITEMS    ( 6 + (2 * NUM_WIFI_CREDENTIALS) + (3 * NUM_BLYNK_CREDENTIALS) )
+    #define DEFAULT_GPRS_PIN          "1234"
+    
+    typedef struct Configuration
+    {
+      char header         [16];
+      WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
+      Blynk_Credentials Blynk_Creds [NUM_BLYNK_CREDENTIALS];
+      int  blynk_port;
+      // YOUR GSM / GPRS RELATED
+      char apn            [32];
+      char gprsUser       [32];
+      char gprsPass       [32];
+      char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode  
+      // END OF YOUR GSM / GPRS RELATED
+      char board_name     [24];
+      int  checkSum;
+    } Blynk_WF_Configuration;
+  
+  */
+  
+  //bool LOAD_DEFAULT_CONFIG_DATA = true;
+  bool LOAD_DEFAULT_CONFIG_DATA = false;
+  
+  Blynk_WF_Configuration defaultConfig =
   {
-    char wifi_ssid[SSID_MAX_LEN];
-    char wifi_pw  [PASS_MAX_LEN];
-  }  WiFi_Credentials;
-  
-  #define BLYNK_SERVER_MAX_LEN      32
-  #define BLYNK_TOKEN_MAX_LEN       36
-  
-  typedef struct
-  {
-    char blynk_server     [BLYNK_SERVER_MAX_LEN];
-    char wifi_blynk_token [BLYNK_TOKEN_MAX_LEN];
-    char gsm_blynk_token  [BLYNK_TOKEN_MAX_LEN];
-  }  Blynk_Credentials;
-  
-  #define NUM_WIFI_CREDENTIALS      2
-  #define NUM_BLYNK_CREDENTIALS     2
-  
-  // Configurable items besides fixed Header
-  #define NUM_CONFIGURABLE_ITEMS    ( 6 + (2 * NUM_WIFI_CREDENTIALS) + (3 * NUM_BLYNK_CREDENTIALS) )
-  #define DEFAULT_GPRS_PIN          "1234"
-  
-  typedef struct Configuration
-  {
-    char header         [16];
-    WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS];
-    Blynk_Credentials Blynk_Creds [NUM_BLYNK_CREDENTIALS];
-    int  blynk_port;
+    //char header[16], dummy, not used
+    "GSM",
+    //WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS]
+    //WiFi_Creds.wifi_ssid and WiFi_Creds.wifi_pw
+    "SSID1", "password1",
+    "SSID2", "password2",
+    // Blynk_Credentials Blynk_Creds [NUM_BLYNK_CREDENTIALS];
+    // Blynk_Creds.blynk_server, Blynk_Creds.wifi_blynk_token and Blynk_Creds.gsm_blynk_token 
+    "account.ddns.net",     "wifi_token",  "gsm_token",
+    "account.duckdns.org",  "wifi_token1", "gsm_token1",
+    //int  blynk_port;
+    8080,
     // YOUR GSM / GPRS RELATED
-    char apn            [32];
-    char gprsUser       [32];
-    char gprsPass       [32];
-    char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode  
-    // END OF YOUR GSM / GPRS RELATED
-    char board_name     [24];
-    int  checkSum;
-  } Blynk_WF_Configuration;
+    //char apn            [32];
+    "rogers-core-appl1.apn",
+    //char gprsUser       [32];
+    "wapuser1",
+    //char gprsPass       [32];
+    "wap",
+    //char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode
+    "1245678",
+      // END OF YOUR GSM / GPRS RELATED
+    //char board_name     [24];
+    "ESP32-GSM-WiFi",
+    //int  checkSum, dummy, not used
+    0
+  };
+  
+  /////////// End Default Config Data /////////////
 
-*/
-
-bool LOAD_DEFAULT_CONFIG_DATA = true;
-//bool LOAD_DEFAULT_CONFIG_DATA = false;
-
-Blynk_WF_Configuration defaultConfig =
-{
-  //char header[16], dummy, not used
-  "GSM",
-  //WiFi_Credentials  WiFi_Creds  [NUM_WIFI_CREDENTIALS]
-  //WiFi_Creds.wifi_ssid and WiFi_Creds.wifi_pw
-  "SSID1", "password1",
-  "SSID2", "password2",
-  // Blynk_Credentials Blynk_Creds [NUM_BLYNK_CREDENTIALS];
-  // Blynk_Creds.blynk_server, Blynk_Creds.wifi_blynk_token and Blynk_Creds.gsm_blynk_token 
-  "account.ddns.net",     "wifi_token",  "gsm_token",
-  "account.duckdns.org",  "wifi_token1", "gsm_token1",
-  //int  blynk_port;
-  8080,
-  // YOUR GSM / GPRS RELATED
-  //char apn            [32];
-  "rogers-core-appl1.apn",
-  //char gprsUser       [32];
-  "wapuser1",
-  //char gprsPass       [32];
-  "wap",
-  //char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode
-  "1245678",
-    // END OF YOUR GSM / GPRS RELATED
-  //char board_name     [24];
-  "ESP32-GSM-WiFi",
-  //int  checkSum, dummy, not used
-  0
-};
-
-/////////// End Default Config Data /////////////
-
+#endif    // #if USE_BLYNK_WM
 
 #endif    //Credentials_h
 ```
@@ -984,76 +963,89 @@ Blynk_WF_Configuration defaultConfig =
 #ifndef dynamicParams_h
 #define dynamicParams_h
 
-#define USE_DYNAMIC_PARAMETERS      true
+#if USE_BLYNK_WM
 
-/////////////// Start dynamic Credentials ///////////////
-
-//Defined in <BlynkSimpleEsp32_GSM_WFM.h>
-/**************************************
-  #define MAX_ID_LEN                5
-  #define MAX_DISPLAY_NAME_LEN      16
-
-  typedef struct
+  #define USE_DYNAMIC_PARAMETERS      true
+  
+  /////////////// Start dynamic Credentials ///////////////
+  
+  //Defined in <BlynkSimpleEsp32_GSM_WFM.h>
+  /**************************************
+    #define MAX_ID_LEN                5
+    #define MAX_DISPLAY_NAME_LEN      16
+  
+    typedef struct
+    {
+    char id             [MAX_ID_LEN + 1];
+    char displayName    [MAX_DISPLAY_NAME_LEN + 1];
+    char *pdata;
+    uint8_t maxlen;
+    } MenuItem;
+  **************************************/
+  
+  #if USE_DYNAMIC_PARAMETERS
+  
+  #define MAX_MQTT_SERVER_LEN      34
+  char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "mqtt.ddns.net";
+  
+  #define MAX_MQTT_PORT_LEN        6
+  char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "1883";
+  
+  #define MAX_MQTT_USERNAME_LEN      34
+  char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "mqtt-user";
+  
+  #define MAX_MQTT_PW_LEN        34
+  char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "mqtt-pass";
+  
+  #define MAX_MQTT_SUBS_TOPIC_LEN      34
+  char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "SubTopic_ESP32_GSM";
+  
+  #define MAX_MQTT_PUB_TOPIC_LEN       34
+  char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "PubTopic_ESP32_GSM";
+  
+  MenuItem myMenuItems [] =
   {
-  char id             [MAX_ID_LEN + 1];
-  char displayName    [MAX_DISPLAY_NAME_LEN + 1];
-  char *pdata;
-  uint8_t maxlen;
-  } MenuItem;
-**************************************/
+    { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
+    { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
+    { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
+    { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
+    { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
+    { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
+  };
+  
+  uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
+  
+  #else
+  
+  MenuItem myMenuItems [] = {};
+  
+  uint16_t NUM_MENU_ITEMS = 0;
+  #endif
+  
+  
+  /////// // End dynamic Credentials ///////////
 
-#if USE_DYNAMIC_PARAMETERS
-
-#define MAX_MQTT_SERVER_LEN      34
-char MQTT_Server  [MAX_MQTT_SERVER_LEN + 1]   = "mqtt.ddns.net";
-
-#define MAX_MQTT_PORT_LEN        6
-char MQTT_Port   [MAX_MQTT_PORT_LEN + 1]  = "1883";
-
-#define MAX_MQTT_USERNAME_LEN      34
-char MQTT_UserName  [MAX_MQTT_USERNAME_LEN + 1]   = "mqtt-user";
-
-#define MAX_MQTT_PW_LEN        34
-char MQTT_PW   [MAX_MQTT_PW_LEN + 1]  = "mqtt-pass";
-
-#define MAX_MQTT_SUBS_TOPIC_LEN      34
-char MQTT_SubsTopic  [MAX_MQTT_SUBS_TOPIC_LEN + 1]   = "SubTopic_ESP32_GSM";
-
-#define MAX_MQTT_PUB_TOPIC_LEN       34
-char MQTT_PubTopic   [MAX_MQTT_PUB_TOPIC_LEN + 1]  = "PubTopic_ESP32_GSM";
-
-MenuItem myMenuItems [] =
-{
-  { "mqtt", "MQTT Server",      MQTT_Server,      MAX_MQTT_SERVER_LEN },
-  { "mqpt", "Port",             MQTT_Port,        MAX_MQTT_PORT_LEN   },
-  { "user", "MQTT UserName",    MQTT_UserName,    MAX_MQTT_USERNAME_LEN },
-  { "mqpw", "MQTT PWD",         MQTT_PW,          MAX_MQTT_PW_LEN },
-  { "subs", "Subs Topics",      MQTT_SubsTopic,   MAX_MQTT_SUBS_TOPIC_LEN },
-  { "pubs", "Pubs Topics",      MQTT_PubTopic,    MAX_MQTT_PUB_TOPIC_LEN },
-};
-
-uint16_t NUM_MENU_ITEMS = sizeof(myMenuItems) / sizeof(MenuItem);  //MenuItemSize;
-
-#else
-
-MenuItem myMenuItems [] = {};
-
-uint16_t NUM_MENU_ITEMS = 0;
-#endif
-
-
-/////// // End dynamic Credentials ///////////
+#endif    // #if USE_BLYNK_WM
 
 #endif      //dynamicParams_h
 ```
 ---
+---
+
+### Debug Termimal Output Samples
 
 #### This is the terminal debug output when running both WiFi and GSM/GPRS at the same time using example [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM)
 
 ```
-Start TTGO-TCALL-GSM
+
+Start TTGO-TCALL-GSM_SHT3x using SPIFFS on ESP32_DEV
 Set GSM module baud rate
 Use WiFi to connect Blynk
+
+SPIFFS Flag read = 0xd0d04321
+No doubleResetDetected
+Saving config file...
+Saving config file OK
 [3108] Hostname=TTGO-TCALL-GSM
 [3169] LoadCfgFile 
 [3169] OK
@@ -1116,8 +1108,15 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 ```
 
 ---
+---
 
-### Major Releases v1.0.9
+### Releases v1.0.10
+
+1. Use ESP8266/ESP32 MultiWiFi feature to autoconnect to the best and available WiFi SSID.
+2. Auto format SPIFFS/LittleFS for first time usage.
+3. Fix bug and logic of USE_DEFAULT_CONFIG_DATA. 
+
+#### Major Releases v1.0.9
 
 1. Add MultiWiFi/Blynk features for WiFi
 2. Add MultiBlynk feature for GPRS/GSM
@@ -1126,18 +1125,18 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 5. Add Configurable Config Portal Title
 6. Add Default Config Data. 
 
-### Releases v1.0.8
+#### Releases v1.0.8
 
 1. Fix potential dangerous bug in code and examples of v1.0.7.
 
-### Releases v1.0.7
+#### Releases v1.0.7
 
 #### Potential dangerous bug, Don't use this version
 
 1. WiFi Password max length is 63, according to WPA2 standard.
 2. Permit to input special chars such as ***%*** and ***#*** into data fields.
 
-### Releases v1.0.6
+#### Releases v1.0.6
 
 #### Potential dangerous bug, Don't use this version
 
@@ -1145,25 +1144,25 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 2. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
 3. See issue [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
 
-### Releases v1.0.5
+#### Releases v1.0.5
 
 1. Add more modem supports. Thanks to new [TinyGSM library v0.10.1+](https://github.com/vshymanskyy/TinyGSM).
 
-### Releases v1.0.4
+#### Releases v1.0.4
 
 ***Why this version***
 
 1. Enhance Config Portal GUI.
 2. Reduce code size.
 
-### Releases v1.0.3
+#### Releases v1.0.3
 
 ***New in this version***
 
 1. Add checksum for more reliable data
 2. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
 
-### Releases v1.0.2
+#### Releases v1.0.2
 
 ***New in this version***
 
@@ -1171,13 +1170,14 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 2. Add many more useful functions such as `setConfigPortalChannel()`, `getFullConfigData()`, etc.
 3. Completely ***restructure*** the library.
 
-### Releases v1.0.1
+#### Releases v1.0.1
 
 ***New in this version***
 
 1. Change Synch XMLHttpRequest to Async to avoid ["InvalidAccessError" DOMException](https://xhr.spec.whatwg.org/)
 2. Reduce memory usage.
 
+---
 ---
 
 ## TO DO
@@ -1186,14 +1186,21 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 
 ## DONE
 
-1. Permit EEPROM size and location configurable to avoid conflict with others.
-2. More flexible to configure reconnection timeout.
-3. For fresh config data, don't need to wait for connecting timeout before entering config portal.
-4. If the config data not entered completely (APN, GPRS User, GPRS Pass, Server, HardwarePort and Blynk token), entering config portal
-5. Better Cofig Portal GUI
-6. WiFi Password max length is 63, according to WPA2 standard.
-7. Permit to input special chars such as ***%*** and ***#*** into data fields.
-8. Dynamic custom parameters
+ 1. Permit EEPROM size and location configurable to avoid conflict with others.
+ 2. More flexible to configure reconnection timeout.
+ 3. For fresh config data, don't need to wait for connecting timeout before entering config portal.
+ 4. If the config data not entered completely (APN, GPRS User, GPRS Pass, Server, HardwarePort and Blynk token), entering config portal
+ 5. Better Cofig Portal GUI
+ 6. WiFi Password max length is 63, according to WPA2 standard.
+ 7. Permit to input special chars such as ***%*** and ***#*** into data fields.
+ 8. Add Dynamic Custom Parameters with checksum
+ 9. Add function to configure AP Channel (fixed or random) to avoid channel conflict.
+10. Default Credentials and dynamic parameters
+11. **DoubleDetectDetector** to force Config Portal when double reset is detected within predetermined time, default 10s.
+12. Configurable Config Portal Title
+13. Re-structure all examples to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
+
+---
 
 ### Contributions and thanks
 
@@ -1202,6 +1209,17 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 3. Thanks to [FRANAIRBUS](https://github.com/FRANAIRBUS) to open the request to [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
 4. Thanks to [brondolin](https://github.com/brondolin) to provide the amazing fix. See [Issue 3](https://github.com/khoih-prog/Blynk_WM/issues/3).
 
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/vshymanskyy"><img src="https://github.com/vshymanskyy.png" width="100px;" alt="vshymanskyy"/><br /><sub><b>⭐️ vshymanskyy</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/mikekgr"><img src="https://github.com/mikekgr.png" width="100px;" alt="mikekgr"/><br /><sub><b>mikekgr</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/FRANAIRBUS"><img src="https://github.com/FRANAIRBUS.png" width="100px;" alt="FRANAIRBUS"/><br /><sub><b>FRANAIRBUS</b></sub></a><br /></td>
+    <td align="center"><a href="https://github.com/brondolin"><img src="https://github.com/brondolin.png" width="100px;" alt="brondolin"/><br /><sub><b>brondolin</b></sub></a><br /></td>
+  </tr> 
+</table>
+
+---
+
 ## Contributing
 
 If you want to contribute to this project:
@@ -1209,6 +1227,14 @@ If you want to contribute to this project:
 - Ask for enhancements
 - Create issues and pull requests
 - Tell other people about this library
+
+---
+
+### License
+
+- The library is licensed under [MIT](https://github.com/khoih-prog/WebSockets2_Generic/blob/master/LICENSE)
+
+---
 
 ## Copyright
 

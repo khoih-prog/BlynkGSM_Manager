@@ -1,26 +1,28 @@
 /****************************************************************************************************************************
-   ESP8266_GSM.ino
-   For ESP8266 boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
+  ESP8266_GSM.ino
+  For ESP8266 boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
+  
+  Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
+  Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+  Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_Manager
+  Licensed under MIT license
+  Version: 1.0.10
 
-   Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
-   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
-   Licensed under MIT license
-   Version: 1.0.9
-
-   Version Modified By   Date      Comments
-   ------- -----------  ---------- -----------
-    1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
-    1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
-    1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
-    1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
-    1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
-    1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
-    1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
-    1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
-    1.0.8   K Hoang      14/04/2020 Fix bug.
-    1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
-                                    Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
+  Version Modified By   Date      Comments
+  ------- -----------  ---------- -----------
+  1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
+  1.0.1   K Hoang      27/01/2020 Change Synch XMLHttpRequest to Async (https://xhr.spec.whatwg.org/). Reduce code size
+  1.0.2   K Hoang      08/02/2020 Enable GSM/GPRS and WiFi running simultaneously
+  1.0.3   K Hoang      18/02/2020 Add checksum. Add clearConfigData()
+  1.0.4   K Hoang      14/03/2020 Enhance Config Portal GUI. Reduce code size.
+  1.0.5   K Hoang      20/03/2020 Add more modem supports. See the list in README.md
+  1.0.6   K Hoang      07/04/2020 Enable adding dynamic custom parameters from sketch
+  1.0.7   K Hoang      09/04/2020 SSID password maxlen is 63 now. Permit special chars # and % in input data.
+  1.0.8   K Hoang      14/04/2020 Fix bug.
+  1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
+                                  Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
+  1.0.10  K Hoang      26/08/2020 Use MultiWiFi. Auto format SPIFFS/LittleFS for first time usage.
+                                  Fix bug and logic of USE_DEFAULT_CONFIG_DATA. 
  *****************************************************************************************************************************/
 
 #include "defines.h"
@@ -87,7 +89,8 @@ void setup()
   while (!SerialMon);
 
   SerialMon.print(F("\nStart ESP8266-WIFI-GSM using "));
-  SerialMon.println(CurrentFileFS);
+  SerialMon.print(CurrentFileFS);
+  SerialMon.println(" on " + String(ARDUINO_BOARD));
   
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);
@@ -108,12 +111,28 @@ void setup()
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
+
+  // Set config portal SSID and Password
+  Blynk_WF.setConfigPortal("TestPortal-ESP8266", "TestPortalPass");
+    
   // Use configurable AP IP, instead of default IP 192.168.4.1
-  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
-  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
+  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 232, 1));
+  // Set config portal channel, default = 1. Use 0 => random channel from 1-12 to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
-  // Set personalized Hostname
+
+  // Select either one of these to set static IP + DNS
+  Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0));
+  //Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+  //                           IPAddress(192, 168, 2, 1), IPAddress(8, 8, 8, 8));
+  //Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+  //                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
+  
+  // Use this to default DHCP hostname to ESP8266-XXXXXX or ESP32-XXXXXX
+  //Blynk_WF.begin();
+  // Use this to personalize DHCP hostname (RFC952 conformed)
+  // 24 chars max,- only a..z A..Z 0..9 '-' and no '-' as last char
   Blynk_WF.begin("ESP8266-WiFi-GSM");
+  
 #else
   Blynk_WF.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT);
 

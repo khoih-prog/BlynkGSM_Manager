@@ -1,12 +1,10 @@
 /****************************************************************************************************************************
    BlynkGsm_ESP8266M.h
-   For ESP8266 with GSM/GPRS and WiFi running simultaneously, with WiFi config portal
-
    Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
-   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_Manager
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Original Blynk Library author:
    @file       BlynkSimpleESP8266.h
@@ -29,6 +27,8 @@
     1.0.8   K Hoang      14/04/2020 Fix bug.
     1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
                                     Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
+    1.0.10  K Hoang      26/08/2020 Use MultiWiFi. Auto format SPIFFS/LittleFS for first time usage.
+                                    Fix bug and logic of USE_DEFAULT_CONFIG_DATA.   
  *****************************************************************************************************************************/
 #ifndef ESP8266
 #error This code is designed to run on ESP8266, not ESP32 nor Arduino AVR platform! Please check your Tools->Board setting.

@@ -1,13 +1,13 @@
 /****************************************************************************************************************************
-   defines.h for ESP32_GSM_SHT3x.ino
+   defines.h
    For ESP32 TTGO-TCALL boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
    Uploading SHT3x temperature and humidity data to Blynk
 
    Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
-   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_Manager
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -22,6 +22,8 @@
     1.0.8   K Hoang      14/04/2020 Fix bug.
     1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
                                     Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
+    1.0.10  K Hoang      26/08/2020 Use MultiWiFi. Auto format SPIFFS/LittleFS for first time usage.
+                                    Fix bug and logic of USE_DEFAULT_CONFIG_DATA. 
  *****************************************************************************************************************************/
 
 #ifndef defines_h

@@ -31,12 +31,6 @@ syncAll	KEYWORD2
 syncVirtual	KEYWORD2
 setProperty	KEYWORD2
 logEvent	KEYWORD2
-loadConfigData  KEYWORD2
-saveConfigData  KEYWORD2
-getConfigData KEYWORD2
-connectToWifi KEYWORD2
-handleRequest KEYWORD2
-startConfigurationMode  KEYWORD2
 setConfigPortalIP KEYWORD2
 setConfigPortal KEYWORD2
 setConfigPortalChannel  KEYWORD2

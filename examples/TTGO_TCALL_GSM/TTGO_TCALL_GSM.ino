@@ -3,10 +3,10 @@
    For ESP32 TTGO-TCALL boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
 
    Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
-   Forked from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
-   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_ESPManager
+   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
+   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_Manager
    Licensed under MIT license
-   Version: 1.0.9
+   Version: 1.0.10
 
    Version Modified By   Date      Comments
    ------- -----------  ---------- -----------
@@ -21,6 +21,8 @@
     1.0.8   K Hoang      14/04/2020 Fix bug.
     1.0.9   K Hoang      31/05/2020 Update to use LittleFS for ESP8266 core 2.7.1+. Add Configurable Config Portal Title,
                                     Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
+    1.0.10  K Hoang      26/08/2020 Use MultiWiFi. Auto format SPIFFS/LittleFS for first time usage.
+                                    Fix bug and logic of USE_DEFAULT_CONFIG_DATA. 
  *****************************************************************************************************************************/
 
 #include "defines.h"
@@ -86,7 +88,8 @@ void setup()
   while (!SerialMon);
   
   SerialMon.print(F("\nStart TTGO-TCALL-GSM using "));
-  SerialMon.println(CurrentFileFS);
+  SerialMon.print(CurrentFileFS);
+  SerialMon.println(" on " + String(ARDUINO_BOARD));
 
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);
@@ -106,11 +109,26 @@ void setup()
   Serial.println(F("Use WiFi to connect Blynk"));
 
 #if USE_BLYNK_WM
+
+  // Set config portal SSID and Password
+  Blynk_WF.setConfigPortal("TestPortal-ESP32", "TestPortalPass");
+    
   // Use configurable AP IP, instead of default IP 192.168.4.1
-  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 100, 1));
-  // Use channel = 0 => random Config Portal WiFi channel to avoid conflict
+  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 232, 1));
+  // Set config portal channel, default = 1. Use 0 => random channel from 1-12 to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
-  // Set personalized Hostname
+
+  // Select either one of these to set static IP + DNS
+  Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0));
+  //Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+  //                           IPAddress(192, 168, 2, 1), IPAddress(8, 8, 8, 8));
+  //Blynk_WF.setSTAStaticIPConfig(IPAddress(192, 168, 2, 232), IPAddress(192, 168, 2, 1), IPAddress(255, 255, 255, 0),
+  //                           IPAddress(4, 4, 4, 4), IPAddress(8, 8, 8, 8));
+  
+  // Use this to default DHCP hostname to ESP8266-XXXXXX or ESP32-XXXXXX
+  //Blynk_WF.begin();
+  // Use this to personalize DHCP hostname (RFC952 conformed)
+  // 24 chars max,- only a..z A..Z 0..9 '-' and no '-' as last char
   Blynk_WF.begin("TTGO-TCALL-GSM");
 #else
   Blynk_WF.begin(wifi_blynk_tok, ssid, pass, blynk_server, BLYNK_HARDWARE_PORT);
