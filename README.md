@@ -11,9 +11,9 @@
 
 ### Important Note
 
-This [**BlynkGSM_Manager**](https://github.com/khoih-prog/Blynk_WM) has just been modified to create the new [**Blynk_Async_GSM_Manager**](https://github.com/khoih-prog/Blynk_Async_GSM_Manager) in order to use the better and more efficient [**ESPAsyncWebServer Library**](https://github.com/me-no-dev/ESPAsyncWebServer), instead of the (ESP8266)WebServer library.
+This [**BlynkGSM_Manager**](https://github.com/khoih-prog/BlynkGSM_Manager) has just been modified to create the new [**Blynk_Async_GSM_Manager**](https://github.com/khoih-prog/Blynk_Async_GSM_Manager) in order to use the better and more efficient [**ESPAsyncWebServer Library**](https://github.com/me-no-dev/ESPAsyncWebServer), instead of the (ESP8266)WebServer library.
 
-The new [**Blynk_Async_GSM_Manager**](https://github.com/khoih-prog/Blynk_Async_GSM_Manager) is based on and sync'ed with [**BlynkGSM_Manager**](https://github.com/khoih-prog/Blynk_WM). Therefore, all the features currently supported by this [**BlynkGSM_Manager**](https://github.com/khoih-prog/Blynk_WM) will be available to the new library. The code change is to port to the new library is also very negligible, **mostly just changing the include file from `BlynkSimpleEsp32_GSM_xyz.h` to `BlynkSimpleEsp32_GSM_Async_xyz.h`.**
+The new [**Blynk_Async_GSM_Manager**](https://github.com/khoih-prog/Blynk_Async_GSM_Manager) is based on and sync'ed with [**BlynkGSM_Manager**](https://github.com/khoih-prog/BlynkGSM_Manager). Therefore, all the features currently supported by this [**BlynkGSM_Manager**](https://github.com/khoih-prog/BlynkGSM_Manager) will be available to the new library. The code change is to port to the new library is also very negligible, **mostly just changing the include file from `BlynkSimpleEsp32_GSM_xyz.h` to `BlynkSimpleEsp32_GSM_Async_xyz.h`.**
 
 ---
 
