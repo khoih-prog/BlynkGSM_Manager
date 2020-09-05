@@ -7,12 +7,39 @@
 [![GitHub issues](https://img.shields.io/github/issues/khoih-prog/BlynkGSM_Manager.svg)](http://github.com/khoih-prog/BlynkGSM_Manager/issues)
 
 ---
+---
+
+### Important Note
+
+This [**BlynkGSM_Manager**](https://github.com/khoih-prog/Blynk_WM) has just been modified to create the new [**Blynk_Async_GSM_Manager**](https://github.com/khoih-prog/Blynk_Async_GSM_Manager) in order to use the better and more efficient [**ESPAsyncWebServer Library**](https://github.com/me-no-dev/ESPAsyncWebServer), instead of the (ESP8266)WebServer library.
+
+The new [**Blynk_Async_GSM_Manager**](https://github.com/khoih-prog/Blynk_Async_GSM_Manager) is based on and sync'ed with [**BlynkGSM_Manager**](https://github.com/khoih-prog/Blynk_WM). Therefore, all the features currently supported by this [**BlynkGSM_Manager**](https://github.com/khoih-prog/Blynk_WM) will be available to the new library. The code change is to port to the new library is also very negligible, **mostly just changing the include file from `BlynkSimpleEsp32_GSM_xyz.h` to `BlynkSimpleEsp32_GSM_Async_xyz.h`.**
+
+---
+
+#### Why do we need the new Async [Blynk_Async_GSM_Manager library](https://github.com/khoih-prog/Blynk_Async_GSM_Manager)
+
+- Using asynchronous network means that you can handle **more than one connection at the same time**
+- **You are called once the request is ready and parsed**
+- When you send the response, you are **immediately ready** to handle other connections while the server is taking care of sending the response in the background
+- **Speed is OMG**
+- **Easy to use API, HTTP Basic and Digest MD5 Authentication (default), ChunkedResponse**
+- Easily extensible to handle **any type of content**
+- Supports Continue 100
+- **Async WebSocket plugin offering different locations without extra servers or ports**
+- Async EventSource (Server-Sent Events) plugin to send events to the browser
+- URL Rewrite plugin for conditional and permanent url rewrites
+- ServeStatic plugin that supports cache, Last-Modified, default index and more
+- Simple template processing engine to handle templates
+
+---
+---
 
 By design, Blynk user can run ESP32/ESP8266 boards with **either WiFi or GSM/GPRS** by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk GSM/GPRS and WiFi libraries in one sketch, run ***both WiFi and GSM/GPRS simultaneously***, or select one to use at runtime after reboot.
 
 This is also a Blynk and WiFiManager Library for configuring/auto(re)connecting ESP8266/ESP32 modules to the available MultiWiFi APs and MultiBlynk servers at runtime. Connection is with or without SSL. Configuration data to be saved in either LittleFS / SPIFFS or EEPROM. Default Credentials as well as Dynamic custom parameters can be added and modified easily without coding knowledge. DoubleResetDetector is used to force Config Portal opening even if the Credentials are still valid.
 
-- This is the new library, adding to the current Blynk_WiFiManager. It's designed to help you eliminate `hardcoding` your Blynk credentials in `ESP32 and ESP8266` boards using GSM shield (SIM800, SIM900, etc).
+- This is the new library, adding to the current BlynkGSM_Manager. It's designed to help you eliminate `hardcoding` your Blynk credentials in `ESP32 and ESP8266` boards using GSM shield (SIM800, SIM900, etc).
 
 - You can update GSM Modem and Blynk Credentials any time you need to change via Configure Portal. Data are saved in LittleFS / SPIFFS or configurable locations in EEPROM.
 
