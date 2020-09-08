@@ -115,7 +115,7 @@ More modems may be supported later:
 3. [`ESP8266 core 2.7.3+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager)
 4. [`Blynk library 0.6.1+`](https://github.com/blynkkk/blynk-library/releases)
 5. [`TinyGSM library 0.10.8+`](https://github.com/vshymanskyy/TinyGSM)
-6. [`ESP_DoubleResetDetector library 1.0.3+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com
+6. [`ESP_DoubleResetDetector library 1.0.3+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
  
 ---
 
@@ -135,7 +135,7 @@ The best and easiest way is to use `Arduino Library Manager`. Search for `BlynkG
 1. Install [VS Code](https://code.visualstudio.com/)
 2. Install [PlatformIO](https://platformio.org/platformio-ide)
 3. Install **BlynkGSM_Manager** library by using [Library Manager](https://docs.platformio.org/en/latest/librarymanager/). Search for **BlynkGSM_Manager** in [Platform.io Author's Libraries](https://platformio.org/lib/search?query=author:%22Khoi%20Hoang%22)
-4. Use included [platformio.ini](examples/platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically
+4. Use included [platformio.ini](platformio/platformio.ini) file from examples to ensure that all dependent libraries will installed automatically. Please visit documentation for the other options and examples at [Project Configuration File](https://docs.platformio.org/page/projectconf.html)
 
 ---
 
