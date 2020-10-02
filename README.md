@@ -35,7 +35,7 @@ The new [**Blynk_Async_GSM_Manager**](https://github.com/khoih-prog/Blynk_Async_
 ---
 ---
 
-By design, Blynk user can run ESP32/ESP8266 boards with **either WiFi or GSM/GPRS** by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk GSM/GPRS and WiFi libraries in one sketch, run ***both WiFi and GSM/GPRS simultaneously***, or select one to use at runtime after reboot.
+By design, Blynk user can run ESP32/ESP8266 boards with **either WiFi or GSM/GPRS** by using different sketches, and have to upload / update firmware to change. This library enables user to include both Blynk GSM/GPRS and WiFi libraries in one sketch, run **both WiFi and GSM/GPRS simultaneously**, or select one to use at runtime after reboot.
 
 This is also a Blynk and WiFiManager Library for configuring/auto(re)connecting ESP8266/ESP32 modules to the available MultiWiFi APs and MultiBlynk servers at runtime. Connection is with or without SSL. Configuration data to be saved in either LittleFS / SPIFFS or EEPROM. Default Credentials as well as Dynamic custom parameters can be added and modified easily without coding knowledge. DoubleResetDetector is used to force Config Portal opening even if the Credentials are still valid.
 
@@ -45,9 +45,9 @@ This is also a Blynk and WiFiManager Library for configuring/auto(re)connecting 
 
 New recent features:
 
-- Optional default ***Credentials as well as Dynamic parameters to be optionally autoloaded into Config Portal*** to use or change instead of manually input.
-- ***DoubleDetectDetector*** feature to force Config Portal when double reset is detected within predetermined time, default 10s.
-- Configurable ***Config Portal Title*** to be either HostName, BoardName or default undistinguishable names.
+- Optional default **Credentials as well as Dynamic parameters to be optionally autoloaded into Config Portal** to use or change instead of manually input.
+- **DoubleDetectDetector** feature to force Config Portal when double reset is detected within predetermined time, default 10s.
+- Configurable **Config Portal Title** to be either HostName, BoardName or default undistinguishable names.
 - Examples are redesigned to separate Credentials / Defines / Dynamic Params / Code so that you can change Credentials / Dynamic Params quickly for each device.
 - `Multiple WiFi Credentials (SSID, Password) and system will autoconnect to the best and available WiFi SSID.`
 - `Multiple Blynk Credentials (Server, Token) and system will autoconnect to the available Blynk Servers.`
@@ -88,7 +88,7 @@ New recent features:
 - Sequans Monarch LTE Cat M1/NB1 (VZM20Q)
 - Quectel BG96
 - Quectel M95
-- Quectel MC60 ***(alpha)***
+- Quectel MC60 **(alpha)**
 
 ### Supported boards/modules
 - Arduino MKR GSM 1400
@@ -97,7 +97,7 @@ New recent features:
 - Adafruit FONA (Mini Cellular GSM Breakout)
 - Adafruit FONA 800/808 Shield
 - Industruino GSM
-- RAK WisLTE ***(alpha)***
+- RAK WisLTE **(alpha)**
 - ... other modules, based on supported modems. Some boards require [**special configuration**](https://github.com/vshymanskyy/TinyGSM/wiki/Board-configuration).
 
 More modems may be supported later:
@@ -108,11 +108,13 @@ More modems may be supported later:
 - [ ] Hi-Link HLK-RM04
 
 ---
+---
 
 ## Prerequisite
-1. [`Arduino IDE 1.8.12+` for Arduino](https://www.arduino.cc/en/Main/Software)
+
+1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
 2. [`ESP32 core 1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager)
-3. [`ESP8266 core 2.7.3+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager)
+3. [`ESP8266 core 2.7.4+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager)
 4. [`Blynk library 0.6.1+`](https://github.com/blynkkk/blynk-library/releases)
 5. [`TinyGSM library 0.10.8+`](https://github.com/vshymanskyy/TinyGSM)
 6. [`ESP_DoubleResetDetector library 1.0.3+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
@@ -445,9 +447,9 @@ Also see examples:
 
 ### Important Notes for using Dynamic Parameters' ids
 
-1. These ids (such as "mqtt" in example) must be ***unique***.
+1. These ids (such as "mqtt" in example) must be **unique**.
 
-Please be noted that the following ***reserved names are already used in library***:
+Please be noted that the following **reserved names are already used in library**:
 
 ```
 "id"    for WiFi SSID
@@ -473,7 +475,7 @@ Please be noted that the following ***reserved names are already used in library
 
 ## So, how it works?
 
-If it detects no valid stored Credentials or it cannot connect to the Blynk server in 30 seconds, it will switch to ***Configuration Mode***. You will see your built-in LED turned ON. In `Configuration Mode`, it starts a WiFi access point called ***ESP_xxxxxx***. Connect to it using password ***MyESP_xxxxxx***.
+If it detects no valid stored Credentials or it cannot connect to the Blynk server in 30 seconds, it will switch to **Configuration Mode**. You will see your built-in LED turned ON. In `Configuration Mode`, it starts a WiFi access point called **ESP_xxxxxx**. Connect to it using password **MyESP_xxxxxx**.
 
 You can set:
 
@@ -498,7 +500,7 @@ Enter your credentials (WiFi SSID/Password/WiFi-Token, GPRS APN/User/Pass/PIN, B
     <img src="https://github.com/khoih-prog/BlynkGSM_Manager/blob/master/pics/Selection_3.png">
 </p>
 
-Then click ***Save***. After the  board auto-restarted, you will see if it's connected to your Blynk server successfully.
+Then click **Save**. After the  board auto-restarted, you will see if it's connected to your Blynk server successfully.
 
 
 This `Blynk.begin()` is not a blocking call, so you can use it for critical functions requiring in loop(). 
@@ -527,10 +529,10 @@ void loop()
 ---
 
 ### Important notes
-1. Now you can use special chars such as ***~, !, @, #, $, %, ^, &, _, -, space,etc.***.
-2. The SSIDs, Passwords, BlynkServers and Tokens must be input (or to make them different from ***blank***). Otherwise, the Config Portal will re-open until those fields have been changed. If you don't need any field, just input anything or use duplicated data from similar field.
+1. Now you can use special chars such as **~, !, @, #, $, %, ^, &, _, -, space,etc.**.
+2. The SSIDs, Passwords, BlynkServers and Tokens must be input (or to make them different from **blank**). Otherwise, the Config Portal will re-open until those fields have been changed. If you don't need any field, just input anything or use duplicated data from similar field.
 3. WiFi password max length now is 63 chars according to WPA2 standard. Minimum password length is 8 chars.
-4. Sometimes, it's hard or not possible to connect to Config Portal WiFi AP, the majority cases are caused by WiFi channel conflict if there are too many WiFi APs running around. Please use ***random ConfigPortal WiFi AP channel*** in sketch (see code snippet below) and reset the board so that another channel is used. Repeat until connection is OK
+4. Sometimes, it's hard or not possible to connect to Config Portal WiFi AP, the majority cases are caused by WiFi channel conflict if there are too many WiFi APs running around. Please use **random ConfigPortal WiFi AP channel** in sketch (see code snippet below) and reset the board so that another channel is used. Repeat until connection is OK
 
 ```
 // Set config portal channel, default = 1. Use 0 => random channel from 1-13 to avoid conflict
@@ -1161,14 +1163,14 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 #### Potential dangerous bug, Don't use this version
 
 1. WiFi Password max length is 63, according to WPA2 standard.
-2. Permit to input special chars such as ***%*** and ***#*** into data fields.
+2. Permit to input special chars such as **%** and **#** into data fields.
 
 #### Releases v1.0.6
 
 #### Potential dangerous bug, Don't use this version
 
-1. New ***powerful-yet-simple-to-use feature to enable adding dynamic custom parameters*** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
-2. Dynamic custom parameters to be saved ***automatically in EEPROM, or SPIFFS***.
+1. New **powerful-yet-simple-to-use feature to enable adding dynamic custom parameters** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
+2. Dynamic custom parameters to be saved **automatically in EEPROM, or SPIFFS**.
 3. See issue [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
 
 #### Releases v1.0.5
@@ -1177,29 +1179,29 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
 
 #### Releases v1.0.4
 
-***Why this version***
+**Why this version**
 
 1. Enhance Config Portal GUI.
 2. Reduce code size.
 
 #### Releases v1.0.3
 
-***New in this version***
+**New in this version**
 
 1. Add checksum for more reliable data
 2. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
 
 #### Releases v1.0.2
 
-***New in this version***
+**New in this version**
 
-1. This new version enables user to include both GSM/GPRS and WiFi libraries in one sketch, run both ***`WiFi and GSM/GPRS simultaneously`***, or select one to use at runtime after reboot by pressing a switch.
+1. This new version enables user to include both GSM/GPRS and WiFi libraries in one sketch, run both **`WiFi and GSM/GPRS simultaneously`**, or select one to use at runtime after reboot by pressing a switch.
 2. Add many more useful functions such as `setConfigPortalChannel()`, `getFullConfigData()`, etc.
-3. Completely ***restructure*** the library.
+3. Completely **restructure** the library.
 
 #### Releases v1.0.1
 
-***New in this version***
+**New in this version**
 
 1. Change Synch XMLHttpRequest to Async to avoid ["InvalidAccessError" DOMException](https://xhr.spec.whatwg.org/)
 2. Reduce memory usage.
@@ -1219,7 +1221,7 @@ BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGB
  4. If the config data not entered completely (APN, GPRS User, GPRS Pass, Server, HardwarePort and Blynk token), entering config portal
  5. Better Cofig Portal GUI
  6. WiFi Password max length is 63, according to WPA2 standard.
- 7. Permit to input special chars such as ***%*** and ***#*** into data fields.
+ 7. Permit to input special chars such as **%** and **#** into data fields.
  8. Add Dynamic Custom Parameters with checksum
  9. Add function to configure AP Channel (fixed or random) to avoid channel conflict.
 10. Default Credentials and dynamic parameters
