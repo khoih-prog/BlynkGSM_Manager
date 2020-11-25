@@ -22,6 +22,27 @@
       "tests"
     ]
   },
+  "dependencies": 
+  [
+    {
+      "owner": "blynkkk",
+      "name": "Blynk",
+      "version": "^0.6.1",
+      "platforms": ["espressif8266", "espressif32"]
+    },
+    {
+      "owner": "khoih-prog",
+      "name": "ESP_DoubleResetDetector",
+      "version": "^1.0.3",
+      "platforms": ["espressif8266", "espressif32"]
+    },
+    {
+      "owner": "vshymanskyy",
+      "name": "TinyGSM",
+      "version": "^0.10.9",
+      "platforms": ["espressif8266", "espressif32"]
+    }
+  ],
   "frameworks": "*",
   "platforms": "*",
   "examples": "examples/*/*/*.ino"
