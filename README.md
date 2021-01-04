@@ -131,7 +131,7 @@ This [**BlynkGSM_Manager** library](https://github.com/khoih-prog/BlynkGSM_Manag
 
  1. **ESP8266 and ESP32-based boards using EEPROM, SPIFFS or LittleFS**.
 
-#### Supported modems
+#### Supported GSM modems
 
 - SIMCom SIM800 series (SIM800A, SIM800C, SIM800L, SIM800H, SIM808, SIM868)
 - SIMCom SIM900 series (SIM900A, SIM900D, SIM908, SIM968)
@@ -149,7 +149,7 @@ This [**BlynkGSM_Manager** library](https://github.com/khoih-prog/BlynkGSM_Manag
 - Quectel M95
 - Quectel MC60 **(alpha)**
 
-#### Supported boards/modules
+#### Supported boards-modules
 
 - Arduino MKR GSM 1400
 - GPRSbee
@@ -160,7 +160,7 @@ This [**BlynkGSM_Manager** library](https://github.com/khoih-prog/BlynkGSM_Manag
 - RAK WisLTE **(alpha)**
 - ... other modules, based on supported modems. Some boards require [**special configuration**](https://github.com/vshymanskyy/TinyGSM/wiki/Board-configuration).
 
-#### To be supported boards/modules in the future
+#### To be supported boards-modules in the future
 
 More modems may be supported later:
 - [ ] Quectel M10, UG95
