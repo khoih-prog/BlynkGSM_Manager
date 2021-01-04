@@ -91,6 +91,8 @@ void setup()
   SerialMon.begin(115200);
   while (!SerialMon);
 
+  delay(200);
+
   SerialMon.print(F("\nStart ESP8266_MRD_GSM (Simultaneous WiFi+GSM) using "));
   SerialMon.print(CurrentFileFS);
   SerialMon.println(" on " + String(ARDUINO_BOARD));

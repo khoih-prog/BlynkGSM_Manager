@@ -148,6 +148,8 @@ void setup()
   SerialMon.begin(115200);
   while (!SerialMon);
 
+  delay(200);
+
   SerialMon.print(F("\nStart ESP8266_GSM_SHT3x (Simultaneous WiFi+GSM) using "));
   SerialMon.print(CurrentFileFS);
   SerialMon.println(" on " + String(ARDUINO_BOARD));
