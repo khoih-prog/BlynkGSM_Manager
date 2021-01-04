@@ -7,8 +7,8 @@
   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_Manager
   Licensed under MIT license
-  Version: 1.0.10
-
+  Version: 1.1.0
+  
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
@@ -24,6 +24,7 @@
                                   Default Config Data and DRD. Add MultiWiFi/Blynk features for WiFi and GPRS/GSM
   1.0.10  K Hoang      26/08/2020 Use MultiWiFi. Auto format SPIFFS/LittleFS for first time usage.
                                   Fix bug and logic of USE_DEFAULT_CONFIG_DATA.
+  1.1.0   K Hoang      01/01/2021 Add support to ESP32 LittleFS. Remove possible compiler warnings. Update examples. Add MRD
  *****************************************************************************************************************************/
 
 #ifndef dynamicParams_h

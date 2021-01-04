@@ -1,6 +1,6 @@
 /****************************************************************************************************************************
   defines.h
-  For ESP32 boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
+  For ESP32 TTGO-TCALL boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
   
   Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
@@ -36,8 +36,40 @@
 #define BLYNK_PRINT         Serial
 #define BLYNK_HEARTBEAT     60
 
-#define DOUBLERESETDETECTOR_DEBUG     true  //false
 #define BLYNK_WM_DEBUG                1
+
+#define USING_MRD     true
+
+#if USING_MRD
+  // These definitions must be placed before #include <ESP_MultiResetDetector.h> to be used
+  // Otherwise, default values (MRD_TIMES = 3, MRD_TIMEOUT = 10 seconds and MRD_ADDRESS = 0) will be used
+  // Number of subsequent resets during MRD_TIMEOUT to activate
+  #define MRD_TIMES                     3
+  
+  // Number of seconds after reset during which a subseqent reset will be considered a mlti reset.
+  #define MRD_TIMEOUT                   10
+  
+  // RTC/EEPPROM Address for the MultiResetDetector to use
+  #define MRD_ADDRESS                   0
+
+  #define MULTIRESETDETECTOR_DEBUG       true 
+  
+  #warning Using MultiResetDetector MRD
+#else
+  // These definitions must be placed before #include <ESP_DoubleResetDetector.h> to be used
+  // Otherwise, default values (DRD_TIMEOUT = 10 seconds and DRD_ADDRESS = 0) will be used
+  // Number of subsequent resets during DRD_TIMEOUT to activate
+  
+  // Number of seconds after reset during which a subseqent reset will be considered a mlti reset.
+  #define DRD_TIMEOUT                   10
+
+// RTC/EEPPROM Address for the DoubleResetDetector to use
+  #define DRD_ADDRESS                   0
+
+  #define DOUBLERESETDETECTOR_DEBUG     true
+  
+  #warning Using DoubleResetDetector DRD 
+#endif
 
 // Not use #define USE_LITTLEFS and #define USE_SPIFFS  => using SPIFFS for configuration data in WiFiManager
 // (USE_LITTLEFS == false) and (USE_SPIFFS == false)    => using EEPROM for configuration data in WiFiManager
@@ -154,8 +186,8 @@
 #define RXD2      16
 #define TXD2      17
 
-// Use ESP32 Serial2 for GSM
-#define SerialAT  Serial2
+// Use ESP32 Serial2 for GSM, Serial1 for TTGO T-Call
+#define SerialAT  Serial1
 
 // Uncomment this if you want to see all AT commands
 #define DUMP_AT_COMMANDS      false

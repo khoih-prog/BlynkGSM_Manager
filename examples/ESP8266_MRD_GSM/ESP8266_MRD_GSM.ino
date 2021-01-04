@@ -1,5 +1,5 @@
 /****************************************************************************************************************************
-  ESP8266_GSM.ino
+  ESP8266_MRD_GSM.ino
   For ESP8266 boards to run GSM/GPRS and WiFi simultaneously, using config portal feature
   
   Library to enable GSM/GPRS and WiFi running simultaneously , with WiFi config portal.
@@ -91,10 +91,18 @@ void setup()
   SerialMon.begin(115200);
   while (!SerialMon);
 
-  SerialMon.print(F("\nStart ESP8266_GSM (Simultaneous WiFi+GSM) using "));
+  SerialMon.print(F("\nStart ESP8266_MRD_GSM (Simultaneous WiFi+GSM) using "));
   SerialMon.print(CurrentFileFS);
   SerialMon.println(" on " + String(ARDUINO_BOARD));
   SerialMon.println(BLYNK_GSM_MANAGER_VERSION);
+
+#if USE_BLYNK_WM
+  #if USING_MRD
+    Serial.println(ESP_MULTI_RESET_DETECTOR_VERSION);
+  #else
+    Serial.println(ESP_DOUBLE_RESET_DETECTOR_VERSION);
+  #endif
+#endif
   
   // Set-up modem reset, enable, power pins
   pinMode(MODEM_PWKEY, OUTPUT);

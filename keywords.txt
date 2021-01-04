@@ -1,6 +1,7 @@
 #######################################
 # Data types (KEYWORD1)
 #######################################
+
 Blynk	KEYWORD1
 BlynkTimer	KEYWORD1
 WidgetBridge	KEYWORD1
@@ -17,6 +18,7 @@ BlynkParamAllocated	KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
+
 begin	KEYWORD2
 config	KEYWORD2
 run	KEYWORD2
