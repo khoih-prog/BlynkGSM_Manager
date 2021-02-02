@@ -20,6 +20,7 @@
   * [Supported boards-modules](#supported-boards-modules)
   * [To be supported boards-modules in the future](#to-be-supported-boards-modules-in-the-future)
 * [Changelog](#changelog)
+  * [Major Releases v1.2.0](#major-releases-v120)
   * [Major Releases v1.1.0](#major-releases-v110)
   * [Releases v1.0.10](#releases-v1010)
   * [Major Releases v1.0.9](#major-releases-v109)
@@ -64,6 +65,10 @@
   * [1. TTGO_TCALL_GSM_SHT3x using SPIFFS on ESP32_DEV](#1-ttgo_tcall_gsm_sht3x-using-spiffs-on-esp32_dev)
   * [2. TTGO_TCALL_MRD_GSM using LittleFS on ESP32_DEV](#2-ttgo_tcall_mrd_gsm-using-littlefs-on-esp32_dev)
   * [3. ESP32_GSM using LittleFS on ESP32_DEV](#3-esp32_gsm-using-littlefs-on-esp32_dev)
+  * [4. TTGO_TCALL_GSM using LittleFS on TTGO_TCALL](#4-ttgo_tcall_gsm-using-littlefs-on-ttgo_tcall)
+    * [4.1. Normal](#41-normal)
+    * [4.2. Enter non-persistent ConfigPortal](#42-enter-non-persistent-configportal)
+    * [4.3. Enter persistent ConfigPortal](#43-enter-persistent-configportal)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
 * [Releases](#releases)
@@ -173,6 +178,14 @@ More modems may be supported later:
 ---
 
 ## Changelog
+
+### Major Releases v1.2.0
+
+1. To permit autoreset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
+2. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
+3. Add functions to control Config Portal from software or Virtual Switches. Check [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
+4. Add the new Virtual ConfigPortal SW feature to examples.
+5. Disable the GSM/GPRS modem initialization which blocks the operation of Config Portal when using Config Portal.
 
 ### Major Releases v1.1.0
 
@@ -750,9 +763,36 @@ void loop()
 #if USE_BLYNK_WM
   #include "Credentials.h"
   #include "dynamicParams.h"
+  
+  #define BLYNK_PIN_FORCED_CONFIG           V10
+  #define BLYNK_PIN_FORCED_PERS_CONFIG      V20
+
+// Use button V10 (BLYNK_PIN_FORCED_CONFIG) to forced Config Portal
+BLYNK_WRITE(BLYNK_PIN_FORCED_CONFIG)
+{ 
+  if (param.asInt())
+  {
+    Serial.println( F("\nCP Button Hit. Rebooting") ); 
+
+    // This will keep CP once, clear after reset, even you didn't enter CP at all.
+    Blynk.resetAndEnterConfigPortal(); 
+  }
+}
+
+// Use button V20 (BLYNK_PIN_FORCED_PERS_CONFIG) to forced Persistent Config Portal
+BLYNK_WRITE(BLYNK_PIN_FORCED_PERS_CONFIG)
+{ 
+  if (param.asInt())
+  {
+    Serial.println( F("\nPersistent CP Button Hit. Rebooting") ); 
+   
+    // This will keep CP forever, until you successfully enter CP, and Save data to clear the flag.
+    Blynk.resetAndEnterConfigPortalPersistent();
+  }
+}
 #endif
 
-void heartBeatPrint(void)
+void heartBeatPrint()
 {
   static int num = 1;
 
@@ -814,7 +854,7 @@ void setup()
   
   SerialMon.print(F("\nStart TTGO_TCALL_GSM (Simultaneous WiFi+GSM) using "));
   SerialMon.print(CurrentFileFS);
-  SerialMon.println(" on " + String(ARDUINO_BOARD));
+  SerialMon.print(F(" on ")); SerialMon.println(ARDUINO_BOARD);
   SerialMon.println(BLYNK_GSM_MANAGER_VERSION);
 
 #if USE_BLYNK_WM
@@ -844,7 +884,7 @@ void setup()
   Blynk_WF.setConfigPortal("TestPortal-ESP32", "TestPortalPass");
     
   // Use configurable AP IP, instead of default IP 192.168.4.1
-  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 232, 1));
+  //Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 232, 1));
   // Set config portal channel, default = 1. Use 0 => random channel from 1-12 to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
 
@@ -878,9 +918,9 @@ void setup()
   Serial.print(F("gprs apn = "));
   Serial.println(localBlynkGSM_ESP32_config.apn);
 
-  if (String(localBlynkGSM_ESP32_config.apn) == NO_CONFIG)
+  if ( Blynk.inConfigPortal() || (String(localBlynkGSM_ESP32_config.apn) == NO_CONFIG) )
   {
-    Serial.println(F("No valid stored apn. Must run WiFi to Open config portal"));
+    Serial.println(F("DRD/MRD, Forced Config Portal or No valid stored apn. Must run only WiFi to Open config portal"));
     valid_apn = false;
   }
   else
@@ -906,13 +946,15 @@ void setup()
 }
 
 #if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
-void displayCredentials(void)
+void displayCredentials()
 {
-  Serial.println("\nYour stored Credentials :");
+  Serial.println(F("\nYour stored Credentials :"));
 
   for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
   {
-    Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
+    Serial.print(myMenuItems[i].displayName);
+    Serial.print(F(" = "));
+    Serial.println(myMenuItems[i].pdata);
   }
 }
 #endif
@@ -999,6 +1041,9 @@ void loop()
 #define TIMEOUT_RECONNECT_WIFI                    10000L
 #define RESET_IF_CONFIG_TIMEOUT                   true
 #define CONFIG_TIMEOUT_RETRYTIMES_BEFORE_RESET    5
+
+// Config Timeout 120s (default 60s)
+#define CONFIG_TIMEOUT                            120000L
 // Those above #define's must be placed before #include <BlynkSimpleEsp8266_WM.h>
 
 // TTGO T-Call pin definitions
@@ -1048,7 +1093,8 @@ void loop()
 #include <BlynkSimpleTinyGSM_M.h>
 
 #if USE_BLYNK_WM
-
+  #define USE_DYNAMIC_PARAMETERS                    true
+  
   #include <BlynkSimpleEsp32_GSM_WFM.h>
 
 #else
@@ -1190,9 +1236,9 @@ void loop()
     "wapuser1",
     //char gprsPass       [32];
     "wap",
-    //char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode
+    //char gprsPin        [12];               // A PIN (Personal Identification Number) is a 4-8 digit passcode  
     "1245678",
-      // END OF YOUR GSM / GPRS RELATED
+      // END OF YOUR GSM / GPRS RELATED  
     //char board_name     [24];
     "ESP32-GSM-WiFi",
     //int  checkSum, dummy, not used
@@ -1217,7 +1263,11 @@ void loop()
 
 #if USE_BLYNK_WM
 
-  #define USE_DYNAMIC_PARAMETERS      true
+#if (USE_DYNAMIC_PARAMETERS)
+  #warning USE_DYNAMIC_PARAMETERS
+#endif
+
+// USE_DYNAMIC_PARAMETERS defined in defined.h
   
   /////////////// Start dynamic Credentials ///////////////
   
@@ -1293,7 +1343,7 @@ This is the terminal debug output when running both WiFi and GSM/GPRS at the sam
 
 ```
 Start TTGO_TCALL_GSM_SHT3x (Simultaneous WiFi+GSM) using SPIFFS on ESP32_DEV
-BlynkGSM_Manager v1.1.0
+BlynkGSM_Manager v1.2.0
 ESP_MultiResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1371,7 +1421,7 @@ This is the terminal debug output when running both WiFi and GSM/GPRS at the sam
 
 ```
 Start TTGO_TCALL_MRD_GSM (Simultaneous WiFi+GSM) using LittleFS on ESP32_DEV
-BlynkGSM_Manager v1.1.0
+BlynkGSM_Manager v1.2.0
 ESP_MultiResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1451,7 +1501,7 @@ This is the terminal debug output when running both WiFi and GSM/GPRS at the sam
 
 ```
 Start ESP32_GSM (Simultaneous WiFi+GSM) using LittleFS on ESP32_DEV
-BlynkGSM_Manager v1.1.0
+BlynkGSM_Manager v1.2.0
 ESP_DoubleResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1518,6 +1568,206 @@ MQTT PWD = mqtt-pass
 Subs Topics = SubTopic_ESP32_GSM
 Pubs Topics = PubTopic_ESP32_GSM
 ```
+
+---
+
+### 4. TTGO_TCALL_GSM using LittleFS on TTGO_TCALL
+
+This is the terminal debug output when running both WiFi and GSM/GPRS at the same time, using example [TTGO_TCALL_GSM](examples/TTGO_TCALL_GSM) on ESP32-based TTGO-TCALL
+
+### 4.1. Normal
+
+```
+Start TTGO_TCALL_GSM (Simultaneous WiFi+GSM) using LittleFS on TTGO_T1
+
+BlynkGSM_Manager v1.2.0
+ESP_DoubleResetDetector v1.1.1
+Set GSM module baud rate
+Use WiFi to connect Blynk
+LittleFS Flag read = 0xD0D04321
+No doubleResetDetected
+Saving config file...
+Saving config file OK
+[3378] Hostname=TTGO-TCALL-GSM
+[3406] LoadCfgFile 
+[3410] OK
+[3410] CCSum=0x5558,RCSum=0x5558
+[3424] LoadCredFile 
+[3428] OK
+[3428] CrCCsum=0x1cda,CrRCsum=0x1cda
+[3428] Hdr=ESP32_GSM_WFM,BrdName=TTGO_TCALL
+[3428] SSID=HueNet1,PW=12345678
+[3428] SSID1=HueNet2,PW1=12345678
+[3431] APN=rogers-core-appl1.apn,User=wapuser1
+[3435] PW=wap,PIN=12345678
+[3438] Server=account.duckdns.org,WiFi_Token=wifi_token,GSM_Token=gsm_token
+[3448] Server1=192.168.2.32,WiFi_Token1=wifi_token,GSM_Token1=gsm_token
+[3458] Port=8080
+[3460] ======= End Config Data =======
+[3472] LoadCPFile 
+[3476] OK
+[3476] Connecting MultiWifi...
+[9810] WiFi connected after time: 1
+[9810] SSID:HueNet1,RSSI=-33
+[9810] Channel:2,IP address:192.168.2.164
+[9810] bg: WiFi OK. Try Blynk
+[9811] 
+    ___  __          __
+   / _ )/ /_ _____  / /__
+  / _  / / // / _ \/  '_/
+ /____/_/\_, /_//_/_/\_\
+        /___/ v0.6.1 on ESP32
+
+[9964] Ready (ping: 5ms).
+[10032] Connected to Blynk Server = account.duckdns.org, Token = wifi_token
+[10032] bg: WiFi+Blynk OK
+gprs apn = rogers-core-appl1.apn
+[10032] 
+    ___  __          __
+   / _ )/ /_ _____  / /__
+  / _  / / // / _ \/  '_/
+ /____/_/\_, /_//_/_/\_\
+        /___/ v0.6.1 on ESP32
+
+[10091] InitModem
+[10113] Con2Network
+[10124] Network:Rogers Wireless
+[10124] Conn2 rogers-core-appl1.apn
+[18955] GPRSConOK
+[18965] BlynkArduinoClient.connect: Connecting to account.duckdns.org:8080
+[19609] Ready (ping: 315ms).
+Your stored Credentials :
+MQTT Server = mqtt.duckdns.org
+Port = 1883
+MQTT UserName = yourName
+MQTT PWD = yourPWD
+Subs Topics = SubsTopic1
+Pubs Topics = PubsTopic1
+BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG BGBGBGBGBGBGBGBGBGBG
+```
+
+#### 4.2 Enter non-persistent ConfigPortal
+
+**Non-Persistent CP will be removed after first reset or time-out, even you didn't enter the CP**. You can optionally enter CP, input and `Save` config data.
+
+```
+CP Button Hit. Rebooting
+[1459459] SaveCPFile 
+[1459461] OK
+[1459466] SaveBkUpCPFile 
+[1459468] OK
+ets Jun  8 2016 00:22:57
+
+Start TTGO_TCALL_GSM (Simultaneous WiFi+GSM) using LittleFS on TTGO_T1
+
+BlynkGSM_Manager v1.2.0
+ESP_DoubleResetDetector v1.1.1
+Set GSM module baud rate
+Use WiFi to connect Blynk
+LittleFS Flag read = 0xD0D04321
+No doubleResetDetected
+Saving config file...
+Saving config file OK
+[3340] Hostname=TTGO-TCALL-GSM
+[3357] LoadCfgFile 
+[3360] OK
+[3360] CCSum=0x5558,RCSum=0x5558
+[3368] LoadCredFile 
+[3371] OK
+[3371] CrCCsum=0x1cda,CrRCsum=0x1cda
+[3371] Hdr=ESP32_GSM_WFM,BrdName=TTGO_TCALL
+[3371] SSID=HueNet1,PW=12345678
+[3372] SSID1=HueNet2,PW1=12345678
+[3375] APN=rogers-core-appl1.apn,User=wapuser1
+[3380] PW=wap,PIN=12345678
+[3382] Server=account.duckdns.org,WiFi_Token=wifi_token,GSM_Token=gsm_token
+[3392] Server1=192.168.2.32,WiFi_Token1=wifi_token,GSM_Token1=gsm_token
+[3403] Port=8080
+[3404] ======= End Config Data =======
+[3414] LoadCPFile 
+[3416] OK
+[3416] bg:Stay forever in CP:Forced-non-Persistent
+[3422] SaveCPFile 
+[3425] OK
+[3432] SaveBkUpCPFile 
+[3435] OK
+[4280] 
+stConf:SSID=TestPortal-ESP32,PW=TestPortalPass
+[4280] IP=192.168.4.1,ch=8
+gprs apn = rogers-core-appl1.apn
+DRD/MRD, Forced Config Portal or No valid stored apn. Must run only WiFi to Open config portal
+FF
+Your stored Credentials :
+MQTT Server = mqtt.ddns.net
+Port = 1883
+MQTT UserName = mqtt-new_user
+MQTT PWD = mqtt-password
+Subs Topics = SubTopic_ESP32_GSM
+Pubs Topics = PubTopic_ESP32_GSM
+Stop doubleResetDetecting
+Saving config file...
+Saving config file OK
+```
+
+#### 4.3 Enter persistent ConfigPortal
+
+**Persistent CP will remain even after resets or time-out**. The only way to get rid of Config Portal is to enter CP, input (even fake data or none) and `Save` config data. So be careful to use this feature.
+
+```
+Persistent CP Button Hit. Rebooting
+[130508] SaveCPFile 
+[130512] OK
+[130522] SaveBkUpCPFile 
+[130526] OK
+ets Jun  8 2016 00:22:57
+
+Start TTGO_TCALL_GSM (Simultaneous WiFi+GSM) using LittleFS on TTGO_T1
+
+BlynkGSM_Manager v1.2.0
+ESP_DoubleResetDetector v1.1.1
+Set GSM module baud rate
+Use WiFi to connect Blynk
+LittleFS Flag read = 0xD0D04321
+No doubleResetDetected
+Saving config file...
+Saving config file OK
+[3352] Hostname=TTGO-TCALL-GSM
+[3390] LoadCfgFile 
+[3396] OK
+[3396] CCSum=0x5558,RCSum=0x5558
+[3414] LoadCredFile 
+[3420] OK
+[3420] CrCCsum=0x1cda,CrRCsum=0x1cda
+[3420] Hdr=ESP32_GSM_WFM,BrdName=TTGO_TCALL
+[3420] SSID=HueNet1,PW=12345678
+[3421] SSID1=HueNet2,PW1=12345678
+[3423] APN=rogers-core-appl1.apn,User=wapuser1
+[3427] PW=wap,PIN=12345678
+[3430] Server=account.duckdns.org,WiFi_Token=wifi_token,GSM_Token=gsm_token
+[3440] Server1=192.168.2.32,WiFi_Token1=wifi_token,GSM_Token1=gsm_token
+[3450] Port=8080
+[3452] ======= End Config Data =======
+[3466] LoadCPFile 
+[3470] OK
+[3470] bg:Stay forever in CP:Forced-Persistent
+[4315] 
+stConf:SSID=TestPortal-ESP32,PW=TestPortalPass
+[4315] IP=192.168.4.1,ch=10
+gprs apn = rogers-core-appl1.apn
+DRD/MRD, Forced Config Portal or No valid stored apn. Must run only WiFi to Open config portal
+FF
+Your stored Credentials :
+MQTT Server = mqtt.ddns.net
+Port = 1883
+MQTT UserName = mqtt-new_user
+MQTT PWD = mqtt-password
+Subs Topics = SubTopic_ESP32_GSM
+Pubs Topics = PubTopic_ESP32_GSM
+Stop doubleResetDetecting
+Saving config file...
+Saving config file OK
+```
+
 ---
 ---
 
@@ -1555,6 +1805,14 @@ Sometimes, the library will only work if you update the board core to the latest
 ---
 
 ## Releases
+
+### Major Releases v1.2.0
+
+1. To permit autoreset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
+2. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
+3. Add functions to control Config Portal from software or Virtual Switches. Check [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
+4. Add the new Virtual ConfigPortal SW feature to examples.
+5. Disable the GSM/GPRS modem initialization which blocks the operation of Config Portal when using Config Portal.
 
 ### Major Releases v1.1.0
 
@@ -1659,6 +1917,7 @@ Submit issues to: [BlynkGSM_Manager issues](https://github.com/khoih-prog/BlynkG
 17. Clean-up all compiler warnings possible.
 18. Add Table of Contents
 19. Add Version String
+20. Add functions to control Config Portal from software or Virtual Switches.
 
 ---
 ---

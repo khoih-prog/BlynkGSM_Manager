@@ -6,8 +6,8 @@
   Based on and modified from Blynk library v0.6.1 https://github.com/blynkkk/blynk-library/releases
   Built by Khoi Hoang https://github.com/khoih-prog/BlynkGSM_Manager
   Licensed under MIT license
-  Version: 1.1.0
-
+  Version: 1.2.0
+  
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
   1.0.0   K Hoang      17/01/2020 Initial coding. Add config portal similar to Blynk_WM library.
@@ -24,6 +24,8 @@
   1.0.10  K Hoang      26/08/2020 Use MultiWiFi. Auto format SPIFFS/LittleFS for first time usage.
                                   Fix bug and logic of USE_DEFAULT_CONFIG_DATA.
   1.1.0   K Hoang      01/01/2021 Add support to ESP32 LittleFS. Remove possible compiler warnings. Update examples. Add MRD
+  1.2.0   K Hoang      01/02/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
+                                  Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP
  *****************************************************************************************************************************/
 
 #include "defines.h"
@@ -31,9 +33,36 @@
 #if USE_BLYNK_WM
   #include "Credentials.h"
   #include "dynamicParams.h"
+  
+  #define BLYNK_PIN_FORCED_CONFIG           V10
+  #define BLYNK_PIN_FORCED_PERS_CONFIG      V20
+
+// Use button V10 (BLYNK_PIN_FORCED_CONFIG) to forced Config Portal
+BLYNK_WRITE(BLYNK_PIN_FORCED_CONFIG)
+{ 
+  if (param.asInt())
+  {
+    Serial.println( F("\nCP Button Hit. Rebooting") ); 
+
+    // This will keep CP once, clear after reset, even you didn't enter CP at all.
+    Blynk.resetAndEnterConfigPortal(); 
+  }
+}
+
+// Use button V20 (BLYNK_PIN_FORCED_PERS_CONFIG) to forced Persistent Config Portal
+BLYNK_WRITE(BLYNK_PIN_FORCED_PERS_CONFIG)
+{ 
+  if (param.asInt())
+  {
+    Serial.println( F("\nPersistent CP Button Hit. Rebooting") ); 
+   
+    // This will keep CP forever, until you successfully enter CP, and Save data to clear the flag.
+    Blynk.resetAndEnterConfigPortalPersistent();
+  }
+}
 #endif
 
-void heartBeatPrint(void)
+void heartBeatPrint()
 {
   static int num = 1;
 
@@ -95,7 +124,7 @@ void setup()
   
   SerialMon.print(F("\nStart TTGO_TCALL_GSM (Simultaneous WiFi+GSM) using "));
   SerialMon.print(CurrentFileFS);
-  SerialMon.println(" on " + String(ARDUINO_BOARD));
+  SerialMon.print(F(" on ")); SerialMon.println(ARDUINO_BOARD);
   SerialMon.println(BLYNK_GSM_MANAGER_VERSION);
 
 #if USE_BLYNK_WM
@@ -125,7 +154,7 @@ void setup()
   Blynk_WF.setConfigPortal("TestPortal-ESP32", "TestPortalPass");
     
   // Use configurable AP IP, instead of default IP 192.168.4.1
-  Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 232, 1));
+  //Blynk_WF.setConfigPortalIP(IPAddress(192, 168, 232, 1));
   // Set config portal channel, default = 1. Use 0 => random channel from 1-12 to avoid conflict
   Blynk_WF.setConfigPortalChannel(0);
 
@@ -159,9 +188,9 @@ void setup()
   Serial.print(F("gprs apn = "));
   Serial.println(localBlynkGSM_ESP32_config.apn);
 
-  if (String(localBlynkGSM_ESP32_config.apn) == NO_CONFIG)
+  if ( Blynk.inConfigPortal() || (String(localBlynkGSM_ESP32_config.apn) == NO_CONFIG) )
   {
-    Serial.println(F("No valid stored apn. Must run WiFi to Open config portal"));
+    Serial.println(F("DRD/MRD, Forced Config Portal or No valid stored apn. Must run only WiFi to Open config portal"));
     valid_apn = false;
   }
   else
@@ -187,13 +216,15 @@ void setup()
 }
 
 #if (USE_BLYNK_WM && USE_DYNAMIC_PARAMETERS)
-void displayCredentials(void)
+void displayCredentials()
 {
-  Serial.println("\nYour stored Credentials :");
+  Serial.println(F("\nYour stored Credentials :"));
 
   for (uint16_t i = 0; i < NUM_MENU_ITEMS; i++)
   {
-    Serial.println(String(myMenuItems[i].displayName) + " = " + myMenuItems[i].pdata);
+    Serial.print(myMenuItems[i].displayName);
+    Serial.print(F(" = "));
+    Serial.println(myMenuItems[i].pdata);
   }
 }
 #endif

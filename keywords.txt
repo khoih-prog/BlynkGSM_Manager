@@ -50,7 +50,10 @@ getGPRSPIN  KEYWORD2
 getHWPort KEYWORD2
 setHostname KEYWORD2
 getFullConfigData KEYWORD2
+inConfigPortal KEYWORD2
 clearConfigData KEYWORD2
+resetAndEnterConfigPortal KEYWORD2
+resetAndEnterConfigPortalPersistent KEYWORD2
 
 #######################################
 # Handler helpers
