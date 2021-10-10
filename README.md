@@ -19,11 +19,7 @@
   * [Supported GSM Modems](#supported-gsm-modems)
   * [Supported boards-modules](#supported-boards-modules)
   * [To be supported boards-modules in the future](#to-be-supported-boards-modules-in-the-future)
-* [Changelog](#changelog)
-  * [Major Releases v1.2.0](#major-releases-v120)
-  * [Major Releases v1.1.0](#major-releases-v110)
-  * [Releases v1.0.10](#releases-v1010)
-  * [Major Releases v1.0.9](#major-releases-v109)
+* [Changelog](changelog.md)
 * [Prerequisites](#prerequisites)
 * [Installation](#installation)
   * [Use Arduino Library Manager](#use-arduino-library-manager)
@@ -71,7 +67,6 @@
     * [4.3. Enter persistent ConfigPortal](#43-enter-persistent-configportal)
 * [Debug](#debug)
 * [Troubleshooting](#troubleshooting)
-* [Releases](#releases)
 * [Issues](#issues)
 * [TO DO](#to-do)
 * [DONE](#done)
@@ -177,54 +172,17 @@ More modems may be supported later:
 ---
 ---
 
-## Changelog
-
-### Major Releases v1.2.0
-
-1. To permit autoreset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
-2. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
-3. Add functions to control Config Portal from software or Virtual Switches. Check [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
-4. Add the new Virtual ConfigPortal SW feature to examples.
-5. Disable the GSM/GPRS modem initialization which blocks the operation of Config Portal when using Config Portal.
-
-### Major Releases v1.1.0
-
-1. Add support to LittleFS for ESP32 using [LittleFS_esp32](https://github.com/lorol/LITTLEFS) Library
-2. Add support to MultiDetectDetector. **MultiDetectDetector** feature to force Config Portal when configurable multi-reset is detected within predetermined time.
-3. Clean-up all compiler warnings possible.
-4. Add Table of Contents
-5. Add Version String
-6. Add MRD-related examples.
-
-### Releases v1.0.10
-
-1. Use ESP8266/ESP32 MultiWiFi feature to autoconnect to the best and available WiFi SSID.
-2. Auto format SPIFFS/LittleFS for first time usage.
-3. Fix bug and logic of USE_DEFAULT_CONFIG_DATA. 
-
-#### Major Releases v1.0.9
-
-1. Add MultiWiFi/Blynk features for WiFi
-2. Add MultiBlynk feature for GPRS/GSM
-3. Add DoubleResetDetector (DRD) feature.
-4. Update to use LittleFS for ESP8266 core 2.7.1+ to replace deprecated SPIFFS on ESP8266
-5. Add Configurable Config Portal Title
-6. Add Default Config Data. 
-
-
----
----
 
 ## Prerequisites
 
-1. [`Arduino IDE 1.8.13+` for Arduino](https://www.arduino.cc/en/Main/Software)
-2. [`ESP32 core 1.0.4+`](https://github.com/espressif/arduino-esp32/releases) for ESP32 (Use Arduino Board Manager). Check [![Latest Stable Release Version](https://img.shields.io/github/release/espressif/arduino-esp32.svg?style=plastic)](https://github.com/espressif/arduino-esp32/releases/latest/)
-3. [`ESP8266 core 2.7.4+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager). Check [![Latest Release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/)
-4. [`Blynk library 0.6.1+`](https://github.com/blynkkk/blynk-library/releases). To install, check [![GitHub version](https://img.shields.io/github/release/blynkkk/blynk-library.svg)](https://github.com/blynkkk/blynk-library/releases/latest)
-5. [`TinyGSM library 0.10.9+`](https://github.com/vshymanskyy/TinyGSM). To install, check [![GitHub version](https://img.shields.io/github/release/vshymanskyy/TinyGSM.svg)](https://github.com/vshymanskyy/TinyGSM/releases/latest)
+1. [`Arduino IDE 1.8.16+`](https://www.arduino.cc/en/Main/Software)
+2. [`ESP32 Core 2.0.0+`](https://github.com/espressif/arduino-esp32) for ESP32-based boards. [![Latest release](https://img.shields.io/github/release/espressif/arduino-esp32.svg)](https://github.com/espressif/arduino-esp32/releases/latest/)
+3. [`ESP8266 core 3.0.2+`](https://github.com/esp8266/Arduino/releases) for ES82662 (Use Arduino Board Manager). Check [![Latest Release](https://img.shields.io/github/release/esp8266/Arduino.svg)](https://github.com/esp8266/Arduino/releases/latest/)
+4. [`Blynk library 1.0.1+`](https://github.com/blynkkk/blynk-library/releases). To install, check [![GitHub version](https://img.shields.io/github/release/blynkkk/blynk-library.svg)](https://github.com/blynkkk/blynk-library/releases/latest)
+5. [`TinyGSM library 0.11.3+`](https://github.com/vshymanskyy/TinyGSM). To install, check [![GitHub version](https://img.shields.io/github/release/vshymanskyy/TinyGSM.svg)](https://github.com/vshymanskyy/TinyGSM/releases/latest)
 6. [`ESP_DoubleResetDetector library 1.1.1+`](https://github.com/khoih-prog/ESP_DoubleResetDetector) to use DRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_DoubleResetDetector.svg?)](https://www.ardu-badge.com/ESP_DoubleResetDetector).
 7. [`ESP_MultiResetDetector library 1.1.1+`](https://github.com/khoih-prog/ESP_MultiResetDetector) to use MRD feature. To install, check [![arduino-library-badge](https://www.ardu-badge.com/badge/ESP_MultiResetDetector.svg?)](https://www.ardu-badge.com/ESP_MultiResetDetector).
-8. [`LittleFS_esp32 v1.0.5+`](https://github.com/lorol/LITTLEFS) to use ESP32 LittleFS.
+
 
 ---
 
@@ -1343,7 +1301,7 @@ This is the terminal debug output when running both WiFi and GSM/GPRS at the sam
 
 ```
 Start TTGO_TCALL_GSM_SHT3x (Simultaneous WiFi+GSM) using SPIFFS on ESP32_DEV
-BlynkGSM_Manager v1.2.0
+BlynkGSM_Manager v1.2.1
 ESP_MultiResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1421,7 +1379,7 @@ This is the terminal debug output when running both WiFi and GSM/GPRS at the sam
 
 ```
 Start TTGO_TCALL_MRD_GSM (Simultaneous WiFi+GSM) using LittleFS on ESP32_DEV
-BlynkGSM_Manager v1.2.0
+BlynkGSM_Manager v1.2.1
 ESP_MultiResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1501,7 +1459,7 @@ This is the terminal debug output when running both WiFi and GSM/GPRS at the sam
 
 ```
 Start ESP32_GSM (Simultaneous WiFi+GSM) using LittleFS on ESP32_DEV
-BlynkGSM_Manager v1.2.0
+BlynkGSM_Manager v1.2.1
 ESP_DoubleResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1580,7 +1538,7 @@ This is the terminal debug output when running both WiFi and GSM/GPRS at the sam
 ```
 Start TTGO_TCALL_GSM (Simultaneous WiFi+GSM) using LittleFS on TTGO_T1
 
-BlynkGSM_Manager v1.2.0
+BlynkGSM_Manager v1.2.1
 ESP_DoubleResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1660,7 +1618,7 @@ ets Jun  8 2016 00:22:57
 
 Start TTGO_TCALL_GSM (Simultaneous WiFi+GSM) using LittleFS on TTGO_T1
 
-BlynkGSM_Manager v1.2.0
+BlynkGSM_Manager v1.2.1
 ESP_DoubleResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1723,7 +1681,7 @@ ets Jun  8 2016 00:22:57
 
 Start TTGO_TCALL_GSM (Simultaneous WiFi+GSM) using LittleFS on TTGO_T1
 
-BlynkGSM_Manager v1.2.0
+BlynkGSM_Manager v1.2.1
 ESP_DoubleResetDetector v1.1.1
 Set GSM module baud rate
 Use WiFi to connect Blynk
@@ -1800,87 +1758,6 @@ If you get compilation errors, more often than not, you may need to install a ne
 
 Sometimes, the library will only work if you update the board core to the latest version because I am using newly added functions.
 
-
----
----
-
-## Releases
-
-### Major Releases v1.2.0
-
-1. To permit autoreset after configurable timeout if DRD/MRD or non-persistent forced-CP. Check [**Good new feature: Blynk.resetAndEnterConfigPortal() Thanks & question #27**](https://github.com/khoih-prog/Blynk_WM/issues/27)
-2. Fix rare Config Portal bug not updating Config and dynamic Params data successfully in very noisy or weak WiFi situation
-3. Add functions to control Config Portal from software or Virtual Switches. Check [How to trigger a Config Portal from code #25](https://github.com/khoih-prog/Blynk_WM/issues/25)
-4. Add the new Virtual ConfigPortal SW feature to examples.
-5. Disable the GSM/GPRS modem initialization which blocks the operation of Config Portal when using Config Portal.
-
-### Major Releases v1.1.0
-
-1. Add support to LittleFS for ESP32 using [LittleFS_esp32](https://github.com/lorol/LITTLEFS) Library
-2. Add support to MultiDetectDetector. **MultiDetectDetector** feature to force Config Portal when configurable multi-reset is detected within predetermined time.
-3. Clean-up all compiler warnings possible.
-4. Add Table of Contents
-5. Add Version String
-6. Add MRD-related examples.
-
-### Releases v1.0.10
-
-1. Use ESP8266/ESP32 MultiWiFi feature to autoconnect to the best and available WiFi SSID.
-2. Auto format SPIFFS/LittleFS for first time usage.
-3. Fix bug and logic of USE_DEFAULT_CONFIG_DATA. 
-
-#### Major Releases v1.0.9
-
-1. Add MultiWiFi/Blynk features for WiFi
-2. Add MultiBlynk feature for GPRS/GSM
-3. Add DoubleResetDetector (DRD) feature.
-4. Update to use LittleFS for ESP8266 core 2.7.1+ to replace deprecated SPIFFS on ESP8266
-5. Add Configurable Config Portal Title
-6. Add Default Config Data. 
-
-#### Releases v1.0.8
-
-1. Fix potential dangerous bug in code and examples of v1.0.7.
-
-#### Releases v1.0.7
-
-#### Potential dangerous bug, Don't use this version
-
-1. WiFi Password max length is 63, according to WPA2 standard.
-2. Permit to input special chars such as **%** and **#** into data fields.
-
-#### Releases v1.0.6
-
-#### Potential dangerous bug, Don't use this version
-
-1. New **powerful-yet-simple-to-use feature to enable adding dynamic custom parameters** from sketch and input using the same Config Portal. Config Portal will be auto-adjusted to match the number of dynamic parameters.
-2. Dynamic custom parameters to be saved **automatically in EEPROM, or SPIFFS**.
-3. See issue [Add dynamic parameters](https://github.com/khoih-prog/BlynkGSM_Manager/issues/5)
-
-#### Releases v1.0.5
-
-1. Add more modem supports. Thanks to new [TinyGSM library v0.10.1+](https://github.com/vshymanskyy/TinyGSM).
-
-#### Releases v1.0.4
-
-1. Enhance Config Portal GUI.
-2. Reduce code size.
-
-#### Releases v1.0.3
-
-1. Add checksum for more reliable data
-2. Add clearConfigData() to enable forcing into ConfigPortal Mode when necessary
-
-#### Releases v1.0.2
-
-1. This new version enables user to include both GSM/GPRS and WiFi libraries in one sketch, run both **`WiFi and GSM/GPRS simultaneously`**, or select one to use at runtime after reboot by pressing a switch.
-2. Add many more useful functions such as `setConfigPortalChannel()`, `getFullConfigData()`, etc.
-3. Completely **restructure** the library.
-
-#### Releases v1.0.1
-
-1. Change Synch XMLHttpRequest to Async to avoid ["InvalidAccessError" DOMException](https://xhr.spec.whatwg.org/)
-2. Reduce memory usage.
 
 ---
 ---

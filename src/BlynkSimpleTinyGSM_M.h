@@ -15,7 +15,7 @@
   @date       Oct 2016
   @brief
 
-  Version: 1.2.0
+  Version: 1.2.1
   
   Version Modified By   Date      Comments
   ------- -----------  ---------- -----------
@@ -35,6 +35,7 @@
   1.1.0   K Hoang      01/01/2021 Add support to ESP32 LittleFS. Remove possible compiler warnings. Update examples. Add MRD
   1.2.0   K Hoang      01/02/2021 Add functions to control Config Portal (CP) from software or Virtual Switches
                                   Fix CP and Dynamic Params bugs. To permit autoreset after timeout if DRD/MRD or forced CP
+  1.2.1   K Hoang      09/10/2021 Update `platform.ini` and `library.json`
  *****************************************************************************************************************************/
  
 #pragma once
@@ -42,7 +43,7 @@
 #ifndef BlynkSimpleTinyGSM_M_h
 #define BlynkSimpleTinyGSM_M_h
 
-#define BLYNK_GSM_MANAGER_VERSION       "BlynkGSM_Manager v1.2.0"
+#define BLYNK_GSM_MANAGER_VERSION       "BlynkGSM_Manager v1.2.1"
 
 
 #if defined(ESP32)

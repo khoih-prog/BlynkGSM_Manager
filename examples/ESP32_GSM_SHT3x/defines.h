@@ -52,7 +52,7 @@
 
 // Config Timeout 120s (default 60s)
 #define CONFIG_TIMEOUT                            120000L
-// Those above #define's must be placed before #include <BlynkSimpleEsp8266_WM.h>
+// Those above #define's must be placed before #include <BlynkSimpleEsp32_GSM_WFM.h>
 
 // TTGO T-Call pin definitions
 #define MODEM_RST            5
